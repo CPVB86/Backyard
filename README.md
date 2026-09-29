@@ -104,10 +104,30 @@ Vanuit de projectroot, Windows:
 
 ```powershell
 .\.venv\Scripts\python -m pip install -r requirements-dev.txt
-.\.venv\Scripts\python -m pytest tests -q
+.\.venv\Scripts\pytest -v
 ```
 
-Linux: vervang `.\.venv\Scripts\python` door `.venv/bin/python`.
+Linux / Raspberry Pi, vanuit de projectroot:
+
+```bash
+source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+pytest -v
+```
+
+`pytest.ini` stelt `pythonpath = .` in relatief aan de projectroot en beperkt
+testdetectie met `testpaths = tests`. Daardoor vinden zowel `pytest` als
+`python -m pytest` het lokale `app`-package, zonder handmatig PYTHONPATH of
+package-installatie. Alleen de module-aanroep voegt van zichzelf de huidige
+map aan het importpad toe; dit verschil bestaat op Windows én Linux.
+Zie de [pytest-importdocumentatie](https://pytest.org/en/stable/explanation/pythonpath.html).
+
+Starlette 1.7.0 gebruikt bij voorkeur httpx2 voor TestClient. De ontwikkelset
+gebruikt daarom `httpx2==2.13.1` (Python >=3.10, inclusief 3.13), in plaats van
+httpx 0.28.1. Een al geïnstalleerde httpx mag blijven staan: Starlette kiest
+httpx2 zodra dit beschikbaar is. Er worden geen warnings onderdrukt en geen
+runtime-dependencies gewijzigd. Zie [Starlette-releases](https://starlette.dev/release-notes/)
+en [httpx2](https://pypi.org/project/httpx2/2.13.1/).
 Tests gebruiken tijdelijke databases; normale opslag blijft onaangeraakt.
 
 ## Volgende fase en Pi-services
@@ -147,3 +167,18 @@ Directe dependencies zijn vastgezet op de geteste versies; transitieve dependenc
 zijn nog niet volledig gelockt. Linux/ARM64-installatie blijft een acceptatiecheck.
 Lifecycle-tests gebruiken de contextmanager uit de
 [FastAPI-documentatie](https://fastapi.tiangolo.com/advanced/testing-events/).
+
+## Aanvullende platformverificatie
+
+De gebruiker heeft de API op Raspberry Pi 5, Debian 13 ARM64 en Python 3.13.5
+uitgevoerd: starten via `python -m uvicorn app.main:app` en de healthcheck vanaf
+het LAN werken. De bovenstaande eerdere Windows-verificatie blijft historisch.
+De pytest-console-importfout is ook lokaal op Windows gereproduceerd.
+
+Na de configuratie- en dependencywijziging lokaal uitgevoerd (Windows, Python
+3.14.7): `pytest -v` en `python -m pytest -v -W error` geven elk 6 passed,
+zonder warnings; PYTHONPATH was niet ingesteld. `pip check` meldt geen
+conflicten en Uvicorn kan `app.main:app` importeren. Alleen voor de lokale
+Windows-sandbox is een nieuwe TEMP/TMP-map gebruikt wegens bestaande
+toegangsrechten; dit is geen projectinstelling of vereiste voor de Pi.
+Deze gewijzigde tests zijn nog niet door Codex op Linux/ARM64 uitgevoerd.
