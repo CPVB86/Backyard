@@ -21,14 +21,25 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         try:
             initialize_database(engine)
             app.state.engine = engine
+            app.state.settings = config
             logger.info("Backyard started")
             yield
         finally:
             engine.dispose()
             logger.info("Backyard stopped")
 
-    app = FastAPI(title="Backyard", version="0.1.0", lifespan=lifespan)
+    app = FastAPI(title="Backyard", version="0.2.0", lifespan=lifespan)
     app.include_router(birds_router)
+
+    @app.exception_handler(SQLAlchemyError)
+    async def database_failure(request, error):
+        logger.error("Database operation failed")
+        return JSONResponse(status_code=503, content={"detail": "Database unavailable; retry later"})
+
+    @app.exception_handler(OSError)
+    async def storage_failure(request, error):
+        logger.error("Storage operation failed")
+        return JSONResponse(status_code=503, content={"detail": "Storage unavailable; retry later"})
 
     @app.get("/api/health", tags=["core"])
     def health(request: Request):

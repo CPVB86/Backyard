@@ -44,5 +44,5 @@ def create_database(settings: Settings):
 
 
 def initialize_database(engine):
-    from app.modules.birds import models  # noqa: F401
-    Base.metadata.create_all(engine)
+    from app.core.migrations import initialize_or_check
+    initialize_or_check(engine)

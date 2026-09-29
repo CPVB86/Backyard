@@ -8,3 +8,11 @@ data/*
 !data/.gitkeep
 logs/*
 !logs/.gitkeep
+
+# Database files/backups must remain local even with a custom database path.
+*.sqlite3
+*.sqlite3-*
+*.sqlite3.backup-*
+*.db
+*.db-*
+*.db.backup-*
