@@ -16,3 +16,7 @@ logs/*
 *.db
 *.db-*
 *.db.backup-*
+
+# Isolated ML environment and diagnostic recordings/model cache
+.venv-detector/
+.detector-test/

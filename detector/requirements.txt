@@ -1,0 +1,6 @@
+-c constraints-py313-linux.txt
+# Install only in .venv-detector (Linux ARM64 / CPython 3.13).
+# Never use the Backyard API venv for ML experiments.
+birdnet==1.1.1
+onnxruntime==1.30.0
+ai-edge-litert==2.2.0; python_version <= "3.13" and sys_platform == "linux"

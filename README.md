@@ -2,13 +2,16 @@
 
 Lokale backend voor Ã©Ã©n tuin. Backyard bewaart detecties en audio; BirdNET wordt
 later een producer. AvianVisitors en WordPress worden API-consumers.
-Deze repository bevat geen detector, microfoon-capture, systemd of retention.
+De losse diagnostische BirdNET-tools staan in [detector/](docs/DETECTOR_TEST.md).
+Dit zijn hardwaretests met een eigen venv, geen productiedetector of ingestkoppeling.
+Er is geen systemd of retention toegevoegd.
 
 ## Local development / demo mode
 
 Python 3.11+. De foundation is door de gebruiker geverifieerd op Raspberry Pi 5,
 Debian 13 ARM64, Python 3.13.5: healthcheck via LAN en 6 foundation-tests geslaagd.
-De nieuwe ingestfase moet nog op die Pi worden getest.
+Ook de ingestfase is daar door de gebruiker bevestigd: 56 tests geslaagd en
+healthcheck via het LAN werkt. De nieuwe BirdNET-hardwaretest volgt apart.
 
 Linux / Raspberry Pi, nieuwe checkout:
 
@@ -315,3 +318,9 @@ byte-identieke audio retrieval, latest en geldige OpenAPI-referenties.
 `pip check` meldt geen conflicten. Testserver gestopt en smoke-data verwijderd.
 Er is geen bestaande gebruikersdatabase gemigreerd of audio ingelezen.
 De nieuwe fase is nog niet op Linux/ARM64 uitgevoerd door Codex.
+
+## BirdNET: geisoleerde hardwaretest
+
+Zie [Pi-commando's, compatibiliteitsonderzoek en continue-capture-richting](docs/DETECTOR_TEST.md).
+Installeer detector/requirements.txt uitsluitend in .venv-detector.
+De sequentiele live-test heeft opnamegaten en is niet voor 24/7 productie.
