@@ -4,6 +4,8 @@ Lokale backend voor Ã©Ã©n tuin. Backyard bewaart detecties en audio; BirdNET
 later een producer. AvianVisitors en WordPress worden API-consumers.
 De losse diagnostische BirdNET-tools staan in [detector/](docs/DETECTOR_TEST.md).
 Dit zijn hardwaretests met een eigen venv, geen productiedetector of ingestkoppeling.
+De aparte continue monitor staat in [DETECTOR_MONITOR.md](docs/DETECTOR_MONITOR.md),
+inclusief handmatige Pi-validatie, backpressure en audio-ingest.
 Er is geen systemd of retention toegevoegd.
 
 ## Local development / demo mode
