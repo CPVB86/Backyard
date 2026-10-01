@@ -10,6 +10,7 @@ class Prediction:
     confidence: float
     start_seconds: float
     end_seconds: float
+    plausibility: dict | None = None
 
 
 def normalize(rows):

@@ -1,4 +1,5 @@
 """Persistent public BirdNET session, isolated for bounded shutdown on Linux."""
+from functools import partial
 import logging
 import multiprocessing
 import os
@@ -47,7 +48,7 @@ class BirdNETSession:
         return self.context.__exit__(*args)
 
 
-def session_worker(connection, threshold, temporary):
+def session_worker(connection, threshold, temporary, *, geography=None):
     # Own temporary directory also contains library logs; parent removes it.
     os.environ["TMPDIR"] = temporary
     tempfile.tempdir = temporary
@@ -76,6 +77,10 @@ def session_worker(connection, threshold, temporary):
                 return
             # Ensures the real backend is loaded before opening the microphone.
             loaded.analyze(bytes(48000 * 3 * 2), 48000)
+            geo = None
+            if geography:
+                from detector.providers import GeoPlausibility
+                geo = GeoPlausibility(*geography)
             connection.send(("ready", None))
             while not stopping:
                 if not connection.poll(0.1):
@@ -85,6 +90,8 @@ def session_worker(connection, threshold, temporary):
                     break
                 pcm, rate = item
                 predictions = loaded.analyze(pcm, rate)
+                if geo is not None:
+                    predictions = geo.annotate(predictions)
                 connection.send(("result", predictions))
     except (Exception, KeyboardInterrupt) as error:
         if not stopping:
@@ -97,10 +104,10 @@ def session_worker(connection, threshold, temporary):
 
 
 class PersistentBirdNET:
-    def __init__(self, threshold=0.60, target=session_worker):
+    def __init__(self, threshold=0.60, target=session_worker, geography=None):
         self.threshold = threshold
         self.temporary = None
-        self.target = target
+        self.target = partial(target, geography=geography) if geography else target
         self.process = None
         self.connection = None
         self.group_ready = False

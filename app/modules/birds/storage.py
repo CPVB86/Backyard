@@ -11,7 +11,7 @@ from uuid import uuid4
 from fastapi import HTTPException
 
 KEY_PATTERN = re.compile(
-    r"birds/audio/[0-9]{4}/[0-9]{2}/[0-9]{2}/[0-9a-f-]{36}\.wav"
+    r"(?:birds|bats|review/(?:bird|bat))/audio/[0-9]{4}/[0-9]{2}/[0-9]{2}/[0-9a-f-]{36}\.wav"
 )
 
 

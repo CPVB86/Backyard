@@ -14,7 +14,8 @@ class HTTPFailure(RuntimeError):
 
 
 class HTTPTransport:
-    def __init__(self, base_url, timeout):
+    def __init__(self, base_url, timeout, max_response=65536):
+        self.max_response = max_response
         self.origin = urlsplit(base_url)
         self.timeout = timeout
 
@@ -27,14 +28,14 @@ class HTTPTransport:
             response = connection.getresponse()
             # Bounded body and wall-clock checked between reads. No redirects.
             data = bytearray()
-            while len(data) <= 65536:
+            while len(data) <= self.max_response:
                 if time.monotonic() - started > self.timeout:
                     raise TimeoutError("HTTP response deadline exceeded")
-                part = response.read1(min(8192, 65537 - len(data)))
+                part = response.read1(min(8192, self.max_response + 1 - len(data)))
                 if not part:
                     break
                 data.extend(part)
-            if len(data) > 65536:
+            if len(data) > self.max_response:
                 raise ValueError("Oversized Backyard response")
             if response.status not in (200, 201):
                 raise HTTPFailure(response.status)
@@ -46,23 +47,33 @@ class HTTPTransport:
 class Uploader:
     def __init__(self, config, metrics, stop, transport=None):
         self.config, self.metrics, self.stop = config, metrics, stop
-        self.transport = transport or HTTPTransport(config.api_url, config.http_timeout)
+        self.transport = transport or HTTPTransport(config.api_url, config.http_timeout, max_response=512 * 1024)
 
     def send(self, upload):
         body = json.dumps(upload.payload, allow_nan=False, separators=(",", ":")).encode()
+        endpoint = "/api/observations" if "candidates" in upload.payload else "/api/birds/detections"
         detection_id = None
+        evidence_kind = None
         for attempt in range(self.config.attempts):
             if self.stop.is_set():
                 return False
             try:
                 if detection_id is None:
-                    reply = self.transport.request("POST", "/api/birds/detections",
+                    reply = self.transport.request("POST", endpoint,
                                                    body, "application/json")
+                    if reply.get("status") == "discarded":
+                        self.metrics.add("discarded_clips")
+                        return False
+                    evidence_kind = reply.get("evidence_kind")
                     detection_id = str(UUID(reply["id"]))
                     self.metrics.add("detections_uploaded")
-                self.transport.request("PUT", f"/api/birds/detections/{detection_id}/audio",
+                    if endpoint == "/api/observations":
+                        self.metrics.add("observations_created")
+                self.transport.request("PUT", f"{endpoint}/{detection_id}/audio",
                                        upload.wav, "audio/wav")
                 self.metrics.add("uploads_ok")
+                if evidence_kind in ("permanent", "review"):
+                    self.metrics.add(evidence_kind + "_clips")
                 return True
             except (HTTPFailure, OSError, socket.timeout, http.client.HTTPException,
                     ValueError, KeyError, TypeError) as error:

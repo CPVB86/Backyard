@@ -13,19 +13,29 @@ import time
 from detector.monitor_birdnet import PersistentBirdNET
 from detector.monitor_capture import ALSACapture
 from detector.monitor_http import Uploader
+from detector.observation_pipeline import ObservationPipeline
+from observations.policy import Policy
 from detector.stream import (MonitorConfig, StreamAnchor, PCMRing, LatestQueue,
-                             Metrics, Scheduler, ClipExtractor, candidates)
+                             Metrics, Scheduler, ClipExtractor)
 
 
 class Monitor:
-    def __init__(self, config, analyzer=None, capture_factory=ALSACapture, transport=None):
+    def __init__(self, config, analyzer=None, capture_factory=ALSACapture, transport=None, policy=None):
         self.config = config
-        self.analyzer = analyzer if analyzer is not None else PersistentBirdNET(config.threshold)
+        self.policy = policy or Policy.load()
+        if not config.capture_only:
+            if config.threshold > self.policy.review_lower:
+                raise ValueError("Base threshold must not exceed policy review_lower")
+            if config.ring_seconds < self.policy.max_event_seconds + self.policy.idle_seconds + config.pre_roll + config.post_roll:
+                raise ValueError("Ring too short for aggregation span + idle + pre/post context")
+        self.analyzer = analyzer if analyzer is not None else PersistentBirdNET(
+            config.threshold, geography=(config.latitude, config.longitude) if config.geography else None)
         self.capture_factory, self.transport = capture_factory, transport
         self.stop = Event()
         self.metrics = Metrics()
         self.ring = PCMRing(round(config.ring_seconds * config.rate))
         self.windows = LatestQueue(config.inference_queue)
+        self.policy_jobs = LatestQueue(config.policy_queue)
         self.clips = LatestQueue(config.clip_queue)
         self.outbound = LatestQueue(config.outbound_queue)
         self.scheduler = Scheduler(config, self.ring, self.windows, self.metrics)
@@ -34,6 +44,7 @@ class Monitor:
         self.threads = []
         self.capture = None
         self.anchor = None
+        self.observations = ObservationPipeline(config, self.policy, self.policy_jobs, self.clips, self.metrics, lambda: self.anchor)
         self.error = None
 
     def fail(self, message):
@@ -67,6 +78,7 @@ class Monitor:
         if not self.config.capture_only:
             self._launch("window-scheduler", self.scheduler.tick, 0.02)
             self._launch("birdnet-inference", self.infer_once, 0.01)
+            self._launch("observation-policy", self.observations.tick, 0.02)
             self._launch("clip-extractor", self.extractor.tick, 0.02)
             self._launch("http-uploader", self.upload_once, 0.02)
         print(f"Monitor gestart: stream={self.anchor.session_id} device={self.config.device} "
@@ -91,16 +103,10 @@ class Monitor:
         self.metrics.set(queue_wait_seconds=started - window.scheduled,
                          inference_seconds=elapsed,
                          latency_seconds=finished - self.anchor.monotonic - window.end / self.config.rate)
-        for candidate in candidates(predictions, window, self.anchor, self.config):
-            self.metrics.add("detections")
-            self.metrics.set(last_detection={
-                "species": candidate.payload["scientific_name"],
-                "confidence": candidate.payload["confidence"],
-                "utc": candidate.payload["detected_at"],
-                "event_id": candidate.payload["event_id"],
-            })
-            if self.clips.put(candidate) is not None:
-                self.metrics.add("clips_dropped")
+        self.metrics.add("detections", len(predictions))
+        self.metrics.add("raw_candidates", len(predictions))
+        if self.policy_jobs.put((window, predictions)) is not None:
+            self.metrics.add("policy_batches_dropped")
 
     def upload_once(self):
         item = self.outbound.take()
@@ -112,7 +118,12 @@ class Monitor:
             "samples_captured", "capture_gaps", "alsa_overruns", "ring_overruns",
             "windows_processed", "windows_dropped", "detections", "clips_expired",
             "clips_dropped", "uploads_ok", "uploads_failed", "uploads_dropped",
-            "http_failures", "queue_wait_seconds", "inference_seconds", "latency_seconds")}
+            "http_failures", "queue_wait_seconds", "inference_seconds", "latency_seconds",
+            "raw_candidates", "policy_candidates", "unsupported_domain_candidates", "observations_created",
+            "observations_planned",
+            "auto_accepted", "review_observations", "discarded_candidates", "permanent_clips",
+            "review_clips", "discarded_clips", "aggregation_count", "policy_batches_dropped",
+            "plausibility_normal", "plausibility_unusual", "plausibility_unknown")}
         result.update(self.metrics.snapshot())
         now = time.monotonic()
         if self.anchor:
@@ -128,7 +139,7 @@ class Monitor:
         result["inference_mean_seconds"] = round(average, 3)
         result["realtime_ratio"] = round(average / (self.config.hop_samples / self.config.rate), 3)
         result["realtime_ratio_last"] = round(result["inference_seconds"] / (self.config.hop_samples / self.config.rate), 3)
-        for name, queue in (("inference", self.windows), ("clips", self.clips), ("outbound", self.outbound)):
+        for name, queue in (("inference", self.windows), ("policy", self.policy_jobs), ("clips", self.clips), ("outbound", self.outbound)):
             depth, age = queue.status()
             result[f"{name}_depth"] = depth
             result[f"{name}_oldest_seconds"] = round(age, 3)
@@ -164,6 +175,8 @@ class Monitor:
         deadline = time.monotonic() + self.config.http_timeout + 0.5
         for thread in self.threads:
             thread.join(timeout=max(0, deadline - time.monotonic()))
+        self.observations.abandon()
+        self.metrics.set(policy_batches_abandoned=self.policy_jobs.clear())
         self.metrics.set(shutdown_threads_remaining=sum(t.is_alive() for t in self.threads),
                          windows_abandoned=self.windows.clear(),
                          clips_abandoned=self.clips.clear(),
@@ -192,7 +205,10 @@ def main(argv=None):
         config = MonitorConfig(**vars(args))
     except ValueError as error:
         argument_parser.error(str(error))
-    monitor = Monitor(config)
+    try:
+        monitor = Monitor(config)
+    except (ValueError, TypeError, OSError) as error:
+        argument_parser.error(str(error))
     code = 0
     try:
         monitor.run()

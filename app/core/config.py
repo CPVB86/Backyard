@@ -12,6 +12,7 @@ class Settings(BaseSettings):
         env_prefix="BACKYARD_", env_file=ROOT / ".env",
         env_file_encoding="utf-8", extra="forbid",
     )
+    policy_path: Path | None = None
     database_path: Path = Path("data/backyard.sqlite3")
     storage_root: Path = Path("data")
     max_audio_bytes: int = Field(default=8 * 1024 * 1024, ge=1024, le=64 * 1024 * 1024)

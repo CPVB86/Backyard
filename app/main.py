@@ -8,6 +8,8 @@ from app.core.config import Settings
 from app.core.database import create_database, initialize_database
 from app.core.logging import configure_logging
 from app.modules.birds.router import router as birds_router
+from app.modules.observations.router import router as observations_router
+from observations.policy import Policy
 
 logger = logging.getLogger("backyard.api")
 
@@ -22,6 +24,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             initialize_database(engine)
             app.state.engine = engine
             app.state.settings = config
+            app.state.observation_policy = Policy.load(config.policy_path)
             logger.info("Backyard started")
             yield
         finally:
@@ -30,6 +33,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(title="Backyard", version="0.2.0", lifespan=lifespan)
     app.include_router(birds_router)
+    app.include_router(observations_router)
 
     @app.exception_handler(SQLAlchemyError)
     async def database_failure(request, error):

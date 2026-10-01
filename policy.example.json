@@ -1,0 +1,18 @@
+{
+  "target_domains": [
+    "bird",
+    "bat"
+  ],
+  "review_lower": 0.6,
+  "auto_single": 0.9,
+  "auto_supported": 0.85,
+  "unknown_single": 0.97,
+  "strong_unusual": 0.9,
+  "required_windows": 2,
+  "max_event_seconds": 9.0,
+  "max_supports": 12,
+  "max_active": 64,
+  "idle_seconds": 5.0,
+  "geo_normal": 0.03,
+  "review_days": 14
+}

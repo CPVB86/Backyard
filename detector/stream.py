@@ -32,6 +32,10 @@ class MonitorConfig:
     attempts: int = 3
     status_seconds: float = 10.0
     capture_only: bool = False
+    geography: bool = False
+    latitude: str = ""
+    longitude: str = ""
+    policy_queue: int = 4
 
     def __post_init__(self):
         for name in ("threshold", "window", "overlap", "ring_seconds",
@@ -53,7 +57,7 @@ class MonitorConfig:
             raise ValueError("pre/post roll must be between 0 and 10 seconds")
         if not self.window + self.pre_roll + self.post_roll <= self.ring_seconds <= 300:
             raise ValueError("Ring must hold window + pre/post roll, at most 300 seconds")
-        for name in ("inference_queue", "clip_queue", "outbound_queue"):
+        for name in ("inference_queue", "clip_queue", "outbound_queue", "policy_queue"):
             value = getattr(self, name)
             if type(value) is not int or not 1 <= value <= 64:
                 raise ValueError(f"{name} must be an integer between 1 and 64")
@@ -61,6 +65,9 @@ class MonitorConfig:
             raise ValueError("attempts=1..5 and http_timeout=0.1..5 required")
         if not 1 <= self.status_seconds <= 60:
             raise ValueError("status_seconds must be between 1 and 60")
+        if self.geography:
+            if not (-90 <= float(self.latitude) <= 90 and -180 <= float(self.longitude) <= 180):
+                raise ValueError("Geography needs valid latitude/longitude")
         url = urlsplit(self.api_url)
         if url.port is not None and not 1 <= url.port <= 65535:
             raise ValueError("Invalid API port")

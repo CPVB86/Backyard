@@ -1,12 +1,14 @@
 # Backyard
 
-Lokale backend voor Ã©Ã©n tuin. Backyard bewaart detecties en audio; BirdNET wordt
-later een producer. AvianVisitors en WordPress worden API-consumers.
+Lokale backend voor Ã©Ã©n tuin. Backyard bewaart detecties, observations en audio; de
+continue BirdNET-monitor is een HTTP-producer. AvianVisitors en WordPress worden API-consumers.
 De losse diagnostische BirdNET-tools staan in [detector/](docs/DETECTOR_TEST.md).
 Dit zijn hardwaretests met een eigen venv, geen productiedetector of ingestkoppeling.
 De aparte continue monitor staat in [DETECTOR_MONITOR.md](docs/DETECTOR_MONITOR.md),
 inclusief handmatige Pi-validatie, backpressure en audio-ingest.
-Er is geen systemd of retention toegevoegd.
+De [observation-policyfase](docs/OBSERVATION_POLICY.md) voegt bird/bat observations,
+overlapaggregatie, permanente/review evidence en confirm/reject toe.
+Daar staat de volledige actuele Pi-acceptatieprocedure. Geen systemd/autostart.
 
 ## Local development / demo mode
 
@@ -61,10 +63,14 @@ de API en /openapi.json werken zonder cloud.
 - app/modules/birds/service.py: transacties en idempotency.
 - app/modules/birds/storage.py: PCM-WAV-controle en veilige bestandsopslag.
 - app/modules/birds/router.py: ingest, filters en audio retrieval.
-- tests: foundation, ingest/audio, migratie- en foutscenario's.
+- observations: gedeelde pure policy/aggregatie, zonder ML/database-afhankelijkheid.
+- app/modules/observations: generieke bird/bat observations, supports en review/evidence.
+- detector/providers.py: BirdNET-taxonomie en optioneel locatie/week-signaal.
+- tests: foundation, ingest/audio, policy/review, migratie- en foutscenario's.
 
-Weather, Garden en Bats krijgen later eigen modules. BirdNET zal alleen de
-publieke HTTP-contracten gebruiken; het importeert geen database-internals.
+Weather en Garden krijgen later eigen modules. Bats zijn voorbereid in de
+generieke observationlaag, zonder echte detector. BirdNET gebruikt alleen de
+publieke HTTP-contracten; het importeert geen database-internals.
 
 ## Configuratie
 
@@ -77,6 +83,7 @@ hebben voorrang. Er worden geen secrets of configuratie uit AvianVisitors geleze
 | BACKYARD_STORAGE_ROOT | data | Root voor relatieve audio storage keys |
 | BACKYARD_MAX_AUDIO_BYTES | 8388608 | Maximaal 8 MiB WAV per aanvraag; instelbaar 1024â€“67108864 bytes |
 | BACKYARD_LOG_LEVEL | INFO | DEBUG, INFO, WARNING, ERROR of CRITICAL |
+| BACKYARD_POLICY_PATH | policy.json indien aanwezig | Gedeelde observation-policy, anders ingebouwde defaults |
 
 Relatieve configuratiepaden zijn relatief aan de projectroot, onafhankelijk
 van de werkmap. Logs gaan naar stderr, zonder payloads, SQL-parameters of eigen
@@ -110,19 +117,24 @@ Daarna voert migratie 0â†’1 onder BEGIN IMMEDIATE Ã©Ã©n transactie uit:
 - Voegt event_id, source_version, ingest_hash en verification_status toe.
 - Maakt een unieke index op (source, event_id).
 - Maakt bird_audio met een foreign key naar de detectie.
-- Zet PRAGMA user_version op 1 na succesvolle schemawijzigingen.
+- Behoudt de oorspronkelijke detecties en het ingestcontract.
+
+De nieuwe migratie 1→2 voegt observations en observation_candidates toe.
+PRAGMA user_version wordt pas na alle succesvolle stappen op **2** gezet.
+Bestaande versie-1-data/audio wordt niet aangepast; ook de historische
+chimpansee blijft bewaard. Zie docs/OBSERVATION_POLICY.md.
 
 Bestaande IDs, timestamps, raw_metadata en audio_reference blijven bewaard.
 Oude records krijgen event_id=null en verification_status=unreviewed; ze
 worden niet achteraf gededupliceerd. Oude willekeurige audio_reference-paden
 worden niet publiek gemaakt of als bestanden geopend. Import daarvan is later werk.
 
-De migratie is herhaalbaar: op versie 1 doet ze niets en maakt geen extra back-up.
+De migratie is herhaalbaar: op versie 2 doet ze niets en maakt geen extra back-up.
 Fouten rollen schemawijzigingen terug; onbekende schema's/toekomstige versies
-worden geweigerd. Een bestaande versie-0-database blokkeert de nieuwe API-start
+worden geweigerd. Een bestaande versie-0/1-database blokkeert de nieuwe API-start
 met de migratie-instructie. Alleen een lege database mag de API zelf initialiseren.
 
-Voor deze ene, uitsluitend additieve SQLite-overgang gebruiken we een kleine
+Voor deze kleine, additieve SQLite-overgangen gebruiken we een kleine
 expliciete migratiereeks in app/core/migrations.py, met regressietests voor
 databehoud en DDL-rollback. Geen Alembic-dependency nodig voor deze stap.
 Nieuwe schemawijzigingen vereisen een **nieuwe** migratie/versie en tests:

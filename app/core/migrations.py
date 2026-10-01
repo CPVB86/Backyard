@@ -7,7 +7,9 @@ from uuid import uuid4
 
 from sqlalchemy import inspect
 
-SCHEMA_VERSION = 1
+from app.core.observation_migration import upgrade_1_to_2, validate_v1
+
+SCHEMA_VERSION = 2
 FOUNDATION_COLUMNS = {
     "id", "timestamp", "scientific_name", "common_name", "confidence",
     "source", "audio_reference", "model_version", "raw_metadata", "created_at",
@@ -62,6 +64,7 @@ def upgrade_0_to_1(connection):
 def initialize_or_check(engine):
     from app.core.database import Base
     from app.modules.birds import models  # noqa: F401
+    from app.modules.observations import models as observation_models  # noqa: F401
     with engine.connect() as connection:
         connection.exec_driver_sql("BEGIN IMMEDIATE")
         try:
@@ -81,18 +84,21 @@ def initialize_or_check(engine):
 
 
 def migrate(engine, database_path: Path):
-    """Back up a known legacy DB, then atomically apply schema version 1."""
+    """Back up a known legacy DB, then atomically apply all pending schema versions."""
     with engine.connect() as connection:
         current = version(connection)
         if current == SCHEMA_VERSION:
             return None
-        if current != 0:
+        if current not in (0, 1):
             raise RuntimeError("Unsupported database version; refusing migration")
         if not inspect(connection).get_table_names():
             connection.rollback()
             initialize_or_check(engine)
             return None
-        validate_foundation(connection)
+        if current == 0:
+            validate_foundation(connection)
+        else:
+            validate_v1(connection)
 
     # API/producers must be stopped. SQLite backup also handles committed WAL data.
     suffix = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -103,10 +109,12 @@ def migrate(engine, database_path: Path):
     with engine.connect() as connection:
         connection.exec_driver_sql("BEGIN IMMEDIATE")
         try:
-            if version(connection) != 0:
+            if version(connection) != current:
                 raise RuntimeError("Database changed during migration; retry after stopping writers")
-            validate_foundation(connection)
-            upgrade_0_to_1(connection)
+            if current == 0:
+                validate_foundation(connection)
+                upgrade_0_to_1(connection)
+            upgrade_1_to_2(connection)
             connection.exec_driver_sql(f"PRAGMA user_version = {SCHEMA_VERSION}")
             connection.commit()
         except BaseException:
