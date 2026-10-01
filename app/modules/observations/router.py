@@ -4,7 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, HTTPException, Query, Request, Response
 from fastapi.responses import FileResponse
 from pydantic import ValidationError
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 from starlette.concurrency import run_in_threadpool
 from app.modules.birds.router import bounded_body
@@ -14,6 +14,8 @@ from app.modules.observations.schemas import ObservationInput, ReviewInput, seri
 from app.modules.observations import service
 
 router = APIRouter(prefix="/api/observations", tags=["observations"])
+Status = Literal["auto_accepted", "pending_review", "review_recommended",
+                 "human_confirmed", "human_rejected"]
 
 
 @router.get("/policy")
@@ -38,12 +40,16 @@ async def create(request: Request, response: Response):
     return result
 
 
-def query(request, domain, status, limit):
-    statement = select(Observation)
+def filtered(statement, domain, status):
     if domain:
         statement = statement.where(Observation.domain == domain)
     if status:
         statement = statement.where(Observation.status.in_(status))
+    return statement
+
+
+def query(request, domain, status, limit):
+    statement = filtered(select(Observation), domain, status)
     with Session(request.app.state.engine) as session:
         return [serialize(row) for row in session.scalars(
             statement.order_by(Observation.start_at.desc(), Observation.id.desc()).limit(limit))]
@@ -51,8 +57,7 @@ def query(request, domain, status, limit):
 
 @router.get("")
 def observations(request: Request, domain: Literal["bird", "bat"] | None = None,
-                 status: Literal["auto_accepted", "pending_review", "review_recommended",
-                                 "human_confirmed", "human_rejected"] | None = None,
+                 status: Status | None = None,
                  limit: Annotated[int, Query(ge=1, le=100)] = 50):
     return query(request, domain, [status] if status else None, limit)
 
@@ -61,6 +66,15 @@ def observations(request: Request, domain: Literal["bird", "bat"] | None = None,
 def review_list(request: Request, domain: Literal["bird", "bat"] | None = None,
                 limit: Annotated[int, Query(ge=1, le=100)] = 50):
     return query(request, domain, ["pending_review", "review_recommended"], limit)
+
+
+@router.get("/count")
+def observation_count(request: Request, domain: Literal["bird", "bat"] | None = None,
+                      status: Status | None = None):
+    statement = filtered(select(func.count()).select_from(Observation),
+                         domain, [status] if status else None)
+    with Session(request.app.state.engine) as session:
+        return {"count": session.scalar(statement)}
 
 
 @router.get("/{identity}")

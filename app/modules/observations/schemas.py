@@ -49,7 +49,12 @@ class ReviewInput(BaseModel):
 
 
 def serialize(record):
+    audio_available = bool(record.audio and record.audio.get("status") == "available"
+                           and record.evidence_kind != "deleted")
     return {
+        "timestamp": record.start_at, "common_name_en": record.common_name,
+        "confidence": record.best_confidence, "supports": len(record.supports),
+        "evidence": record.evidence_kind, "audio_available": audio_available,
         "id": record.id, "event_id": record.event_id, "source": record.source,
         "domain": record.domain, "scientific_name": record.scientific_name,
         "common_name_de": localized_name(record.scientific_name, record.common_name, "de"),

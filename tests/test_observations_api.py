@@ -247,3 +247,71 @@ def test_unrepresentable_sample_timestamp_is_validation_error(client):
     payload["candidates"][0]["end_sample"] = 10**100 + 24000
     assert client.post("/api/observations", json=payload).status_code == 422
     assert client.get("/api/observations").json() == []
+
+
+def test_pending_birds_count_is_filtered_uncapped_and_does_not_load_observations(client):
+    from sqlalchemy import event
+    endpoint = "/api/observations/count?domain=bird&status=pending_review"
+    assert client.get(endpoint).json() == {"count": 0}
+    for index in range(3):
+        create(client, score=.68, stream=f"pending-{index}")
+    create(client, domain="bat", name="Pipistrellus pipistrellus", score=.68, stream="bat")
+    create(client, score=.99, state="unusual", stream="recommended")
+    create(client, score=.99, stream="accepted")
+    assert len(client.get("/api/observations?domain=bird&status=pending_review&limit=1").json()) == 1
+    statements = []
+    def track(conn, cursor, statement, parameters, context, executemany):
+        statements.append(statement)
+    event.listen(client.app.state.engine, "before_cursor_execute", track)
+    try:
+        with patch("app.modules.observations.router.serialize", side_effect=AssertionError("no serialization")):
+            assert client.get(endpoint).json() == {"count": 3}
+    finally:
+        event.remove(client.app.state.engine, "before_cursor_execute", track)
+    assert len(statements) == 1 and "count(" in statements[0].lower()
+    assert "observation_candidates" not in statements[0]
+    assert client.get("/api/observations/count?status=pending_review").json() == {"count": 4}
+    assert client.get("/api/observations/count?domain=bird").json() == {"count": 5}
+    assert client.get("/api/observations/count?domain=other").status_code == 422
+    assert client.get("/api/observations/count?status=other").status_code == 422
+    assert client.get(endpoint, headers={"Authorization":"Bearer wrong"}).status_code == 401
+
+
+def test_review_contract_and_existing_authenticated_audio_confirm_reject(client):
+    endpoint = "/api/observations/count?domain=bird&status=pending_review"
+    item = create(client, score=.68)
+    assert item["timestamp"] == item["start_at"]
+    assert item["common_name_en"] == item["common_name"]
+    assert item["confidence"] == item["best_confidence"] == .68
+    assert item["supports"] == item["supporting_candidate_count"] == 1
+    assert item["evidence"] == item["evidence_kind"] == "review"
+    assert item["audio_available"] is False and item["audio_url"] is None
+    assert {"id", "scientific_name", "common_name_nl", "common_name_de", "status"} <= item.keys()
+    item, audio = upload(client, item)
+    assert item["audio_available"] is True
+    listing = client.get("/api/observations?domain=bird&status=pending_review").json()
+    assert listing == [item]
+    for path in [item["audio_url"], f"/api/observations/{item['id']}"]:
+        assert client.get(path, headers={"Authorization":"Bearer wrong"}).status_code == 401
+    for action in ("confirm", "reject"):
+        assert client.post(f"/api/observations/{item['id']}/{action}",
+                           json={"expected_status":"pending_review"},
+                           headers={"Authorization":"Bearer wrong"}).status_code == 401
+    confirmed = client.post(f"/api/observations/{item['id']}/confirm",
+                            json={"expected_status":"pending_review"}).json()
+    assert confirmed["status"] == "human_confirmed" and confirmed["evidence"] == "permanent"
+    assert confirmed["audio_available"] is True
+    assert client.get(confirmed["audio_url"]).content == audio
+    assert client.get(endpoint).json() == {"count": 0}
+    item, audio = upload(client, create(client, score=.68, stream="reject"))
+    rejected = client.post(f"/api/observations/{item['id']}/reject",
+                           json={"expected_status":"pending_review"}).json()
+    assert rejected["status"] == "human_rejected" and rejected["evidence"] == "delete_pending"
+    assert rejected["audio_available"] is True
+    assert client.get(endpoint).json() == {"count": 0}
+    cleanup(client.app.state.engine, client.app.state.settings, apply=True,
+            now=datetime.now(timezone.utc) + timedelta(days=365))
+    deleted = client.get(f"/api/observations/{item['id']}").json()
+    assert deleted["evidence"] == "deleted" and deleted["audio_available"] is False
+    assert deleted["audio_url"] is None
+    assert client.get(item["audio_url"]).status_code == 404

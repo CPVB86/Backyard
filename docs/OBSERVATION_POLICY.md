@@ -559,3 +559,56 @@ Daarna eindigt deze fase: geen systemd, frontend of bat-hardware installeren.
   rollback en bestaande versie-0-migratietests slagen.
 - Nieuwe native BirdNET-geo/ALSA-uitvoering op ARM64 is hier niet uitgevoerd.
   Gebruik de volledige Pi-procedure hierboven voor die platformacceptatie.
+
+
+## Authenticated Birds-reviewflow voor API-consumers
+
+Gebruik server-side `Authorization: Bearer <BACKYARD_API_TOKEN>` voor alle
+onderstaande requests, inclusief audio. Geen publieke API of WordPress-code.
+
+- Lijst: `GET /api/observations?domain=bird&status=pending_review&limit=50`.
+  Bestaande nieuwste-eerst sortering, limit 1..100 (standaard 50).
+  `/api/observations/review?domain=bird` blijft de bredere bestaande lijst van
+  zowel pending_review als review_recommended; gebruik voor deze flow het
+  expliciete statusfilter hierboven.
+- Totaal: `GET /api/observations/count?domain=bird&status=pending_review` geeft
+  `{"count": 12}` (of 0). Dit is een enkele SQL COUNT met dezelfde filters,
+  zonder observations, candidates, labels of audio te laden. Geen lijstlimiet.
+  Domain/status zijn optioneel zoals bij de lijst; ongeldige waarden geven 422.
+  Het totaal kan tussen requests veranderen doordat ingest/review doorgaat.
+- Detail: `GET /api/observations/{id}`.
+- Audio: `GET /api/observations/{id}/audio`, via het bestaande `audio_url`.
+  Ondersteunt de bestaande WAV/Range-response. Stuur de header ook bij audio;
+  een kale browser/audio-tag-URL draagt het token niet vanzelf mee.
+- Bevestigen: `POST /api/observations/{id}/confirm`.
+- Afwijzen: `POST /api/observations/{id}/reject`.
+
+De laatste twee gebruiken ongewijzigd de bestaande reviewbody, bijvoorbeeld:
+
+```json
+{"expected_status": "pending_review", "note": "Beluisterd"}
+```
+
+Een gewijzigde observation geeft 409: ververs dan de lijst/detail. Confirm
+vereist intacte audio en maakt/behoudt die permanent; status human_confirmed.
+Reject geeft human_rejected/delete_pending en laat de bestaande expliciete
+cleanup na de bewaartermijn intact. Reject wist dus niet direct de WAV.
+
+De bestaande observation-responses (lijst/detail/ingest/audio-upload/review)
+behouden alle velden en krijgen alleen deze aanvullende aliases:
+
+| Veld | Betekenis |
+| --- | --- |
+| timestamp | start_at: begin van de observation, ISO 8601 UTC |
+| common_name_en | ongewijzigde opgeslagen common_name |
+| confidence | best_confidence, getal 0..1 |
+| supports | supporting_candidate_count, integer; details blijven in candidates |
+| evidence | evidence_kind: permanent, review, delete_pending of deleted |
+| audio_available | boolean: audio-metadata heeft status available en evidence is niet deleted |
+
+`id`, `scientific_name`, `common_name_nl`, `common_name_de`, `status`, `audio`
+en `audio_url` bestonden al en blijven behouden. NL/DE gebruiken de bestaande
+BirdNET-bron en Engelse fallback. Audio-availability betreft de geregistreerde
+uploadstatus: de lijst doet geen filesystemscan; de audio-GET controleert ook
+het bestand en kan 404 geven bij ontbrekende/verwijderde evidence.
+Geen schema-, policy-, confidence-, detector-, auth- of systemd-wijzigingen.
