@@ -1,5 +1,9 @@
 # Observations, policy en evidence
 
+Voor de actuele gecombineerde productie-/policy-duurtest: zie
+[OPERATIONS.md](OPERATIONS.md). De onderstaande losse handmatige procedure
+blijft beschikbaar als diagnostiek, maar is geen verplichte voorfase.
+
 Deze fase bouwt voort op de door de gebruiker op de Pi bewezen continue monitor
 (139 tests, 3s windows, 1.5s overlap, circa 0.31s inference). De nieuwe policy,
 migratie en review zijn lokaal automatisch getest. Herhaal de onderstaande

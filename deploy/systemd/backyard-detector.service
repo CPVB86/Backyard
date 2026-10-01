@@ -1,0 +1,38 @@
+[Unit]
+Description=Backyard continuous microphone and BirdNET monitor
+Wants=backyard-api.service network-online.target
+After=backyard-api.service network-online.target
+RequiresMountsFor=/home/cpvb86/Backyard
+# Missing USB/API must not put the monitor in a permanent start-limit state.
+StartLimitIntervalSec=0
+
+[Service]
+Type=exec
+User=cpvb86
+SupplementaryGroups=audio
+WorkingDirectory=/home/cpvb86/Backyard
+EnvironmentFile=/etc/backyard/backyard.env
+Environment=PYTHONUNBUFFERED=1
+ExecStartPre=/home/cpvb86/Backyard/.venv-detector/bin/python -m operations.wait_api --timeout 60 --check-policy
+ExecStart=/home/cpvb86/Backyard/.venv-detector/bin/python -m detector.monitor
+Restart=on-failure
+RestartSec=30s
+TimeoutStartSec=75s
+TimeoutStopSec=30s
+KillMode=mixed
+KillSignal=SIGTERM
+SendSIGKILL=yes
+LimitCORE=0
+UMask=0027
+NoNewPrivileges=yes
+ProtectSystem=full
+PrivateTmp=yes
+MemoryAccounting=yes
+CPUAccounting=yes
+TasksAccounting=yes
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=backyard-detector
+
+[Install]
+WantedBy=multi-user.target

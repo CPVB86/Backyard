@@ -23,3 +23,6 @@ logs/*
 
 # Local observation policy; committed defaults are in policy.example.json
 /policy.json
+
+# Optional local copy; production config lives in /etc/backyard
+/deploy/systemd/backyard.env

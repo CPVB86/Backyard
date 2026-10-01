@@ -386,7 +386,8 @@ def test_capture_only_never_loads_model_or_creates_jobs():
     analyzer.close.assert_not_called()
 
 
-def test_normal_ctrl_c_has_no_traceback_and_closes(monkeypatch, capsys):
+def test_normal_ctrl_c_has_no_traceback_and_closes(monkeypatch, capsys, tmp_path):
+    monkeypatch.setenv("BACKYARD_MONITOR_LOCK_FILE", str(tmp_path / "monitor.lock"))
     instance = Mock()
     instance.run.side_effect = KeyboardInterrupt()
     instance.status.return_value = {}

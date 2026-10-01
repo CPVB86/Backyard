@@ -4,7 +4,8 @@ Start handmatig met `python -m detector.monitor`. Dit is de nieuwe continue
 productiearchitectuur. Capture en 50% overlap zijn op de echte Pi bewezen.
 De observation-policyfase voegt schema 2 en review toe, zonder nieuwe dependencies.
 Zie [OBSERVATION_POLICY.md](OBSERVATION_POLICY.md) voor de volledige actuele
-Pi-acceptatie, policy, migratie en review. Geen systemd/autostart.
+Pi-acceptatie, policy, migratie en review. De actuele 24/7-installatie en duurtest
+staan in [OPERATIONS.md](OPERATIONS.md).
 
 De bestaande `detector.cli capture|analyze|live` blijft diagnostiek.
 `live` stopt capture tijdens analyse en blijft ongeschikt als 24/7-monitor.
@@ -192,7 +193,9 @@ De detector leest GEEN .env; zet deze keys niet in de strikt gevalideerde API-.e
 | --api-url | http://127.0.0.1:8010; origin zonder credentials/path |
 | --http-timeout | 2; 0.1..5s |
 | --attempts | 3; 1..5 |
-| --status-seconds | 10; 1..60s |
+| --status-seconds | CLI 10; production environment 30; 1..60s |
+| --inference-timeout | 60; 5..300s; vastgelopen call stopt voor serviceherstel |
+| --lock-file | projectroot/data/monitor.lock; Linux singleton, niet verwijderen tijdens run |
 | --capture-only | alleen RAM-capture, geen model/jobs/HTTP |
 
 Modelcache: .detector-test/model-cache, of bestaande BIRDNET_APP_DATA.
@@ -233,7 +236,7 @@ FastAPI/SQLite/storage, procesopruiming en foutinjectie. De nieuwe native
 geo-runtime en langdurige totale belasting moeten opnieuw op Pi worden getest.
 
 Geen hardwaretimestamps, automatische ALSA-gaprecovery, stereo/downmix,
-duurzame offline queue, service/autostart of power-loss-garantie.
+duurzame offline queue of power-loss-garantie. Systemd/autostart staat in OPERATIONS.md.
 Backpressure verliest expliciet oud werk; begrenzing maakt verlies niet onmogelijk.
 Onbeoordeelde reviewaudio wordt niet stil verwijderd; bewaak reviewvoorraad en
 schijfruimte. Native forced-stop is een noodpad, geen bewijs van normale cleanup.

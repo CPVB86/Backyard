@@ -10,6 +10,7 @@ import sys
 from threading import Event, Thread
 import time
 
+from detector.instance import exclusive_monitor
 from detector.monitor_birdnet import PersistentBirdNET
 from detector.monitor_capture import ALSACapture
 from detector.monitor_http import Uploader
@@ -46,6 +47,7 @@ class Monitor:
         self.anchor = None
         self.observations = ObservationPipeline(config, self.policy, self.policy_jobs, self.clips, self.metrics, lambda: self.anchor)
         self.error = None
+        self.phase = "initializing"
 
     def fail(self, message):
         if self.error is None:
@@ -81,9 +83,11 @@ class Monitor:
             self._launch("observation-policy", self.observations.tick, 0.02)
             self._launch("clip-extractor", self.extractor.tick, 0.02)
             self._launch("http-uploader", self.upload_once, 0.02)
+        self.phase = "running"
         print(f"Monitor gestart: stream={self.anchor.session_id} device={self.config.device} "
               f"rate={self.config.rate} window=3 overlap={self.config.overlap} "
               f"capture_only={self.config.capture_only}", flush=True)
+        print(json.dumps(self.status(), ensure_ascii=True), flush=True)
 
     def infer_once(self):
         window = self.windows.take()
@@ -125,6 +129,10 @@ class Monitor:
             "review_clips", "discarded_clips", "aggregation_count", "policy_batches_dropped",
             "plausibility_normal", "plausibility_unusual", "plausibility_unknown")}
         result.update(self.metrics.snapshot())
+        result["relevant_domain_candidates"] = max(0, result["policy_candidates"] - result["unsupported_domain_candidates"])
+        result.update(event="monitor_status", phase=self.phase, error=self.error,
+                      recorded_at=datetime.now(timezone.utc).isoformat(),
+                      stream_id=self.anchor.session_id if self.anchor else None)
         now = time.monotonic()
         if self.anchor:
             result["uptime_seconds"] = round(now - self.anchor.monotonic, 2)
@@ -145,13 +153,21 @@ class Monitor:
             result[f"{name}_oldest_seconds"] = round(age, 3)
         return result
 
+    def check_progress(self):
+        now = time.monotonic()
+        if now - self.capture.last_read > 3:
+            self.metrics.add("capture_gaps")
+            self.fail("No PCM received for >3s; stopping untrustworthy stream")
+        active = self.metrics.snapshot().get("inference_started_monotonic", 0)
+        if not self.config.capture_only and active and now - active > self.config.inference_timeout:
+            self.metrics.add("inference_timeouts")
+            self.fail(f"Inference exceeded {self.config.inference_timeout}s; stopping for service recovery")
+
     def run(self):
         self.start()
         next_status = time.monotonic() + self.config.status_seconds
         while not self.stop.wait(0.1):
-            if time.monotonic() - self.capture.last_read > 3:
-                self.metrics.add("capture_gaps")
-                self.fail("No PCM received for >3s; stopping untrustworthy stream")
+            self.check_progress()
             if time.monotonic() >= next_status:
                 if not self.config.capture_only:
                     size = self.analyzer.temporary_bytes()
@@ -164,6 +180,7 @@ class Monitor:
             raise RuntimeError(self.error)
 
     def close(self):
+        self.phase = "stopped"
         self.stop.set()
         if self.capture is not None:
             self.capture.close()
@@ -184,7 +201,7 @@ class Monitor:
 
 
 def parser():
-    result = argparse.ArgumentParser(description="Continuous ALSA/BirdNET monitor (manual foreground)")
+    result = argparse.ArgumentParser(description="Continuous ALSA/BirdNET monitor (foreground or systemd)")
     defaults = MonitorConfig()
     for field in fields(defaults):
         value = getattr(defaults, field.name)
@@ -198,20 +215,20 @@ def parser():
     return result
 
 
-def main(argv=None):
-    argument_parser = parser()
-    args = argument_parser.parse_args(argv)
-    try:
-        config = MonitorConfig(**vars(args))
-    except ValueError as error:
-        argument_parser.error(str(error))
-    try:
-        monitor = Monitor(config)
-    except (ValueError, TypeError, OSError) as error:
-        argument_parser.error(str(error))
+class ShutdownRequested(BaseException):
+    """SIGTERM interrupts startup as well as the running main loop."""
+
+
+def _service_stop(_signum, _frame):
+    raise ShutdownRequested()
+
+
+def run_monitor(monitor):
     code = 0
     try:
         monitor.run()
+    except ShutdownRequested:
+        print("SIGTERM: monitor wordt gecontroleerd gestopt.", flush=True)
     except KeyboardInterrupt:
         code = 130
         print("Ctrl+C: monitor wordt gestopt.", flush=True)
@@ -219,13 +236,35 @@ def main(argv=None):
         code = 1
         print(f"Monitor fout: {error}", flush=True)
     finally:
-        previous = signal.signal(signal.SIGINT, signal.SIG_IGN)
-        try:
-            monitor.close()
-        finally:
-            signal.signal(signal.SIGINT, previous)
+        # A repeated stop signal must not interrupt child cleanup.
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+        monitor.close()
         print("Monitor gestopt: " + json.dumps(monitor.status(), ensure_ascii=True), flush=True)
     return code
+
+
+def main(argv=None):
+    argument_parser = parser()
+    args = argument_parser.parse_args(argv)
+    try:
+        config = MonitorConfig(**vars(args))
+        monitor = Monitor(config)
+    except (ValueError, TypeError, OSError) as error:
+        argument_parser.error(str(error))
+    previous_int = signal.getsignal(signal.SIGINT)
+    previous_term = signal.signal(signal.SIGTERM, _service_stop)
+    try:
+        with exclusive_monitor(config.lock_file):
+            return run_monitor(monitor)
+    except ShutdownRequested:
+        return 0  # Stopped before hardware/model startup.
+    except (OSError, RuntimeError) as error:
+        print(f"Monitor fout: {error}", flush=True)
+        return 1
+    finally:
+        signal.signal(signal.SIGINT, previous_int)
+        signal.signal(signal.SIGTERM, previous_term)
 
 
 if __name__ == "__main__":

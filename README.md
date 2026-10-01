@@ -8,7 +8,9 @@ De aparte continue monitor staat in [DETECTOR_MONITOR.md](docs/DETECTOR_MONITOR.
 inclusief handmatige Pi-validatie, backpressure en audio-ingest.
 De [observation-policyfase](docs/OBSERVATION_POLICY.md) voegt bird/bat observations,
 overlapaggregatie, permanente/review evidence en confirm/reject toe.
-Daar staat de volledige actuele Pi-acceptatieprocedure. Geen systemd/autostart.
+Voor 24/7 bedrijf: volg [OPERATIONS.md](docs/OPERATIONS.md) voor systemd-installatie,
+automatische boot/crash recovery, reboot-test en de gecombineerde dag/nacht-duurtest.
+De policyfase hoeft daarvoor niet eerst apart handmatig geaccepteerd te worden.
 
 ## Local development / demo mode
 

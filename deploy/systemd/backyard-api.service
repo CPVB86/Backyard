@@ -1,0 +1,37 @@
+[Unit]
+Description=Backyard local API
+Wants=network-online.target
+After=network-online.target
+RequiresMountsFor=/home/cpvb86/Backyard
+# Keep retrying with a delay, including after a transient boot failure.
+StartLimitIntervalSec=0
+
+[Service]
+Type=exec
+User=cpvb86
+WorkingDirectory=/home/cpvb86/Backyard
+EnvironmentFile=/etc/backyard/backyard.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/cpvb86/Backyard/.venv/bin/python -m uvicorn app.main:app --workers 1 --no-access-log
+ExecStartPost=/home/cpvb86/Backyard/.venv/bin/python -m operations.wait_api --timeout 60
+Restart=on-failure
+RestartSec=10s
+TimeoutStartSec=75s
+TimeoutStopSec=30s
+KillMode=mixed
+KillSignal=SIGTERM
+SendSIGKILL=yes
+LimitCORE=0
+UMask=0027
+NoNewPrivileges=yes
+ProtectSystem=full
+PrivateTmp=yes
+MemoryAccounting=yes
+CPUAccounting=yes
+TasksAccounting=yes
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=backyard-api
+
+[Install]
+WantedBy=multi-user.target

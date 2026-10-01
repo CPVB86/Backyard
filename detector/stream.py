@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 import io
 import math
+from pathlib import Path
 from threading import Lock
 import time
 from urllib.parse import urlsplit
@@ -36,10 +37,12 @@ class MonitorConfig:
     latitude: str = ""
     longitude: str = ""
     policy_queue: int = 4
+    inference_timeout: float = 60.0
+    lock_file: str = str(Path(__file__).resolve().parents[1] / "data" / "monitor.lock")
 
     def __post_init__(self):
         for name in ("threshold", "window", "overlap", "ring_seconds",
-                     "pre_roll", "post_roll", "http_timeout", "status_seconds"):
+                     "pre_roll", "post_roll", "http_timeout", "status_seconds", "inference_timeout"):
             if not math.isfinite(getattr(self, name)):
                 raise ValueError(f"{name} must be finite")
         if not self.device.strip() or self.device.startswith("-"):
@@ -65,6 +68,10 @@ class MonitorConfig:
             raise ValueError("attempts=1..5 and http_timeout=0.1..5 required")
         if not 1 <= self.status_seconds <= 60:
             raise ValueError("status_seconds must be between 1 and 60")
+        if not 5 <= self.inference_timeout <= 300:
+            raise ValueError("inference_timeout must be 5..300 seconds")
+        if not self.lock_file.strip():
+            raise ValueError("lock_file must not be empty")
         if self.geography:
             if not (-90 <= float(self.latitude) <= 90 and -180 <= float(self.longitude) <= 180):
                 raise ValueError("Geography needs valid latitude/longitude")
