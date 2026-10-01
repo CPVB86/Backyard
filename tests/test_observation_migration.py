@@ -55,7 +55,7 @@ def test_upgrade_v1_preserves_historical_chimp_record_audio_and_backup(tmp_path)
         assert {str(p): p.read_bytes() for p in settings.resolved_storage_root.rglob("*.wav")} == before_files
     finally:
         engine.dispose()
-    with TestClient(create_app(settings)) as client:
+    with TestClient(create_app(settings), headers={"Authorization": "Bearer backyard-test-token"}) as client:
         record = client.get(f"/api/birds/detections/{identity}").json()
         assert record["scientific_name"] == "Pan troglodytes"
         assert client.get(record["audio_url"]).content == audio

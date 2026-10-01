@@ -123,7 +123,8 @@ def collect(settings, environment, hours=24, check_db=False, now=None):
     for unit in UNITS:
         report["services"][unit] = attempt(lambda unit=unit: service_status(unit))
     report["api_health"] = attempt(lambda: check_health(
-        environment.get("BACKYARD_MONITOR_API_URL", "http://127.0.0.1:8010")))
+        environment.get("BACKYARD_MONITOR_API_URL", "http://127.0.0.1:8010"),
+        api_token=settings.api_token.get_secret_value()))
     report["journal"] = attempt(lambda: read_journal(since, now))
     # SQLite errors are RuntimeError-independent, handled without modifying DB.
     import sqlite3

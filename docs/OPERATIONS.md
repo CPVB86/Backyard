@@ -223,6 +223,7 @@ sudo systemctl start backyard-api.service
 sudo systemctl start backyard-detector.service
 ```
 
+Genereer/configureer ook BACKYARD_API_TOKEN zoals hieronder; een lege waarde blokkeert API-start.
 Controleer in sudoedit device, eventuele eerdere geo-instellingen, policy-pad
 en eventuele bestaande database/storage-overrides. Houd defaults voor bewezen
 48kHz/3s/1.5s/0.60. Zet geen monitorvariabelen in API-.env.
@@ -232,7 +233,7 @@ Controleer voortgang; modelwarmup kan enkele minuten duren:
 ```bash
 systemctl is-enabled backyard-api backyard-detector
 systemctl status backyard-api backyard-detector --no-pager --full
-curl --fail http://127.0.0.1:8010/api/health
+curl -H "Authorization: Bearer $BACKYARD_API_TOKEN" --fail http://127.0.0.1:8010/api/health
 sudo journalctl -u backyard-detector -n 30 --no-pager
 sudo /home/cpvb86/Backyard/.venv/bin/python -m operations.status
 ```
@@ -291,13 +292,14 @@ Zorg dat de twee services eerst werken en enabled zijn. Voer daarna uit:
 sudo reboot
 ```
 
-Na opnieuw SSH-inloggen **geen applicatie handmatig starten**:
+Na opnieuw SSH-inloggen **geen applicatie handmatig starten**. Laad voor curl eerst
+het token zoals in de auth-sectie hieronder (status doet dit automatisch):
 
 ```bash
 cd /home/cpvb86/Backyard
 systemctl is-enabled backyard-api backyard-detector
 systemctl status backyard-api backyard-detector --no-pager --full
-curl --fail http://127.0.0.1:8010/api/health
+curl -H "Authorization: Bearer $BACKYARD_API_TOKEN" --fail http://127.0.0.1:8010/api/health
 sudo journalctl -b -u backyard-api -u backyard-detector -n 60 --no-pager
 sudo /home/cpvb86/Backyard/.venv/bin/python -m operations.status
 sleep 35
@@ -504,11 +506,11 @@ Luister een echte observation terug en inspecteer review wanneer de duurtest
 materiaal heeft opgeleverd:
 
 ```bash
-curl --fail 'http://127.0.0.1:8010/api/observations?domain=bird&limit=10' | .venv/bin/python -m json.tool
-curl --fail http://127.0.0.1:8010/api/observations/review | .venv/bin/python -m json.tool
+curl -H "Authorization: Bearer $BACKYARD_API_TOKEN" --fail 'http://127.0.0.1:8010/api/observations?domain=bird&limit=10' | .venv/bin/python -m json.tool
+curl -H "Authorization: Bearer $BACKYARD_API_TOKEN" --fail http://127.0.0.1:8010/api/observations/review | .venv/bin/python -m json.tool
 ```
 
-Open de getoonde audio_url op http://<PI-IP>:8010; Swagger staat op /docs.
+Haal de getoonde audio_url op met dezelfde Authorization-header; Swagger staat op /docs.
 Controleer labels, supports, reasons en daadwerkelijke audio. De policy is
 ongewijzigd: sterke normale observations zijn automatisch permanent;
 reviewaudio blijft behouden. Geen automatische verwijdering tijdens deze fase.
@@ -551,8 +553,8 @@ geen garantie dat kapotte hardware vanzelf werkt. Geen externe watchdog voor
 een volledig vastgelopen OS of geblokkeerde hoofdthread.
 
 Onbeoordeelde reviewaudio kan groeien; diskwaarschuwing vervangt geen beheer.
-Retentionbeleid is niet gewijzigd. API blijft zonder authenticatie en is alleen
-voor het vertrouwde LAN. Historische data worden niet herclassificeerd.
+Retentionbeleid is niet gewijzigd. Alle /api/* routes vereisen Bearer-authenticatie.
+Gebruik HTTPS buiten het vertrouwde LAN; een token versleutelt geen HTTP. Historische data worden niet herclassificeerd.
 Na deze operationsfase stoppen we; geen frontend of andere modules.
 
 ## Lokale oplevercontrole
@@ -568,3 +570,76 @@ policycheck, synthetische permanente/reviewaudio en read-only statusinventaris
 zijn geslaagd. Op Windows ontbrekend systemd/journal wordt correct als
 ATTENTION weergegeven. Systemd-unitvalidatie op Linux, hardwareherstel,
 reboot en de 24u-duurtest zijn nog via bovenstaande Pi-procedure te bevestigen.
+
+
+## Bearer-authenticatie na de duurtest
+
+Voer deze deployment pas NA de lopende 24-uursduurtest uit. Bewaar eerst het
+bestaande eindrapport. Alle `/api/*` routes, inclusief health, policy, audio en
+onbekende routes, vereisen het token. Ontbrekende/foute credentials geven 401
+met WWW-Authenticate: Bearer. Lege/ongeldige serverconfig weigert startup;
+er is geen anonieme fallback. /docs en /openapi.json bevatten alleen schema/UI.
+Swagger Authorize gebruikt dezelfde Bearer-header.
+
+```bash
+cd /home/cpvb86/Backyard
+sudo .venv/bin/python -m operations.status --json --check-db > .detector-test/operations-end.json
+sudo systemctl stop backyard-detector
+sudo systemctl stop backyard-api
+git status
+git pull --rebase origin main
+source .venv/bin/activate
+pytest -v -W error
+python -m pip check
+```
+
+Geen dependencies of schema gewijzigd; geen pip-install of migratie nodig.
+Genereer het token rechtstreeks in het bestaande configbestand, zonder het
+in shellhistorie, procesargumenten of uitvoer te plaatsen. Bestaande andere
+instellingen en bestandsrechten blijven behouden. Een bestaand token wordt
+bij opnieuw uitvoeren behouden:
+
+```bash
+sudo /home/cpvb86/Backyard/.venv/bin/python - <<'PY'
+from pathlib import Path
+import secrets
+from operations.environment import read_environment
+path = Path('/etc/backyard/backyard.env')
+env = read_environment(path)
+if not env.get('BACKYARD_API_TOKEN'):
+    lines = path.read_text().splitlines()
+    lines = [line for line in lines if not line.strip().startswith('BACKYARD_API_TOKEN=')]
+    lines.append('BACKYARD_API_TOKEN=' + secrets.token_urlsafe(32))
+    path.write_text('\n'.join(lines) + '\n')
+print('BACKYARD_API_TOKEN geconfigureerd; waarde niet getoond.')
+PY
+sudo systemctl start backyard-api
+sudo systemctl start backyard-detector
+sudo .venv/bin/python -m operations.status
+```
+
+Beide bestaande units lezen hetzelfde EnvironmentFile, ook hun ExecStartPre/
+ExecStartPost. Unitbestanden veranderen niet: daemon-reload is niet nodig.
+Bij latere tokenrotatie: detector stoppen, API herstarten, detector starten.
+De status-CLI leest zelf het configbestand, ook onder sudo; een shell-token
+overschrijft het productie-token niet. Readiness en HTTPTransport lezen het
+geerfde token automatisch. Het token komt niet in status/metrics/logging.
+
+Configureer dezelfde waarde in de aparte WordPress-plugin; gebruik bijvoorbeeld
+`sudoedit /etc/backyard/backyard.env` om deze zelf te bekijken/kopieren. Deel hem
+niet in logs of Git. Voor handmatige curl-checks na SSH-login:
+
+```bash
+export BACKYARD_API_TOKEN="$(.venv/bin/python - <<'PY'
+from operations.environment import read_environment
+print(read_environment('/etc/backyard/backyard.env')['BACKYARD_API_TOKEN'])
+PY
+)"
+curl --fail -H "Authorization: Bearer $BACKYARD_API_TOKEN" http://127.0.0.1:8010/api/health
+curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8010/api/health
+unset BACKYARD_API_TOKEN
+```
+
+Verwacht respectievelijk health ok en 401. Oude curl- en debugvoorbeelden in
+historische fase-documentatie vereisen nu ook deze header/omgevingsvariabele.
+Start geen extra monitor naast systemd.

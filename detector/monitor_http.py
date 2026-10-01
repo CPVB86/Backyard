@@ -1,6 +1,8 @@
 """Existing POST JSON + PUT WAV contract; bounded retries, no database imports."""
 import http.client
 import json
+import os
+import re
 import socket
 import time
 from urllib.parse import urlsplit
@@ -14,7 +16,10 @@ class HTTPFailure(RuntimeError):
 
 
 class HTTPTransport:
-    def __init__(self, base_url, timeout, max_response=65536):
+    def __init__(self, base_url, timeout, max_response=65536, api_token=None):
+        self._api_token = os.environ.get("BACKYARD_API_TOKEN", "") if api_token is None else api_token
+        if not re.fullmatch(r"[A-Za-z0-9._~+/-]+=*", self._api_token):
+            raise ValueError("Configure a nonempty valid BACKYARD_API_TOKEN for HTTP requests")
         self.max_response = max_response
         self.origin = urlsplit(base_url)
         self.timeout = timeout
@@ -24,7 +29,8 @@ class HTTPTransport:
         connection = cls(self.origin.hostname, self.origin.port, timeout=self.timeout)
         try:
             started = time.monotonic()
-            connection.request(method, path, body=body, headers={"Content-Type": content_type})
+            connection.request(method, path, body=body, headers={"Content-Type": content_type,
+                           "Authorization": "Bearer " + self._api_token})
             response = connection.getresponse()
             # Bounded body and wall-clock checked between reads. No redirects.
             data = bytearray()

@@ -1,6 +1,9 @@
 from contextlib import asynccontextmanager
 import logging
-from fastapi import FastAPI, Request
+import secrets
+import re
+from fastapi import FastAPI, Request, Security
+from fastapi.security import HTTPBearer
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -18,6 +21,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app):
         config = settings if settings is not None else Settings()
+        token = config.api_token.get_secret_value()
+        if not re.fullmatch(r"[A-Za-z0-9._~+/-]+=*", token):
+            raise RuntimeError("Configure a nonempty valid BACKYARD_API_TOKEN before starting the API")
         configure_logging(config.log_level)
         engine = create_database(config)
         try:
@@ -31,7 +37,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             engine.dispose()
             logger.info("Backyard stopped")
 
-    app = FastAPI(title="Backyard", version="0.2.0", lifespan=lifespan)
+    app = FastAPI(title="Backyard", version="0.2.0", lifespan=lifespan,
+                  dependencies=[Security(HTTPBearer(auto_error=False))])
+    @app.middleware("http")
+    async def authenticate_api(request: Request, call_next):
+        if request.url.path == "/api" or request.url.path.startswith("/api/"):
+            values = request.headers.getlist("authorization")
+            parts = values[0].split(" ") if len(values) == 1 else []
+            expected = request.app.state.settings.api_token.get_secret_value()
+            if (len(parts) != 2 or parts[0].lower() != "bearer"
+                    or not secrets.compare_digest(parts[1].encode("utf-8"), expected.encode("utf-8"))):
+                return JSONResponse(status_code=401, content={"detail": "Unauthorized"},
+                                    headers={"WWW-Authenticate": "Bearer"})
+        return await call_next(request)
+
     app.include_router(birds_router)
     app.include_router(observations_router)
 

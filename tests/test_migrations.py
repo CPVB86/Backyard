@@ -63,7 +63,7 @@ def test_legacy_requires_explicit_migration_then_preserves_data(tmp_path):
             assert record.event_id is None
     finally:
         engine.dispose()
-    with TestClient(create_app(config)) as client:
+    with TestClient(create_app(config), headers={"Authorization": "Bearer backyard-test-token"}) as client:
         item = client.get(f"/api/birds/detections/{identity}").json()
         assert item["id"] == identity and item["audio_url"] is None
         assert "/private" not in str(item)

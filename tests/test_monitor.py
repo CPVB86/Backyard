@@ -271,7 +271,7 @@ def test_real_api_contract_clip_upload_and_idempotency(tmp_path):
     incoming.put(candidate())
     ClipExtractor(ring, incoming, outgoing, stats, RATE).tick()
     upload = outgoing.take()
-    with TestClient(create_app(settings)) as client:
+    with TestClient(create_app(settings), headers={"Authorization": "Bearer backyard-test-token"}) as client:
         class LocalTransport:
             def request(self, method, path, body, content_type):
                 response = client.request(method, path, content=body,
@@ -452,7 +452,7 @@ def test_http_transport_contract_and_response_size(monkeypatch):
     assert transport.request("POST", "/api/birds/detections", b"{}", "application/json") == {"id": "example"}
     constructor.assert_called_with("127.0.0.1", 8010, timeout=2)
     connection.request.assert_called_with("POST", "/api/birds/detections", body=b"{}",
-                                         headers={"Content-Type": "application/json"})
+                                         headers={"Content-Type": "application/json", "Authorization": "Bearer backyard-test-token"})
     connection.close.assert_called_once()
     response.read1.side_effect = [b"x" * 8192] * 8 + [b"x"]
     with pytest.raises(ValueError, match="Oversized"):

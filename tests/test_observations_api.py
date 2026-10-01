@@ -29,7 +29,7 @@ def raw(start=0, score=.94, state="normal", domain="bird", name="Parus major", s
 @pytest.fixture
 def client(tmp_path):
     config = Settings(_env_file=None, database_path=tmp_path / "db.sqlite3", storage_root=tmp_path / "audio")
-    with TestClient(create_app(config)) as api:
+    with TestClient(create_app(config), headers={"Authorization": "Bearer backyard-test-token"}) as api:
         yield api
 
 

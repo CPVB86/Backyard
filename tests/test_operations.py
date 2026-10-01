@@ -214,7 +214,7 @@ def test_journal_reader_is_bounded_and_crosses_boots():
 
 def test_readonly_inventory_and_status_preserve_records_audio(tmp_path):
     settings = Settings(_env_file=None, database_path=tmp_path/"db.sqlite3",storage_root=tmp_path/"audio")
-    with TestClient(create_app(settings)) as client:
+    with TestClient(create_app(settings), headers={"Authorization": "Bearer backyard-test-token"}) as client:
         transport = APITransport(client)
         run("bird-auto", Policy(), transport)
         run("bird-review", Policy(), transport)

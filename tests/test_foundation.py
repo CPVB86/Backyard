@@ -24,7 +24,7 @@ def detection(**overrides):
 def test_start_empty_and_restart_persistence(tmp_path):
     config = settings(tmp_path)
     app = create_app(config)
-    with TestClient(app) as client:
+    with TestClient(app, headers={"Authorization": "Bearer backyard-test-token"}) as client:
         assert client.get("/api/health").json() == {
             "status": "ok", "service": "backyard", "database": "ok"}
         assert client.get("/api/birds/detections").json() == []
@@ -33,7 +33,7 @@ def test_start_empty_and_restart_persistence(tmp_path):
             session.add(row)
             session.commit()
             identity = row.id
-    with TestClient(create_app(config)) as client:
+    with TestClient(create_app(config), headers={"Authorization": "Bearer backyard-test-token"}) as client:
         result = client.get("/api/birds/detections").json()
         assert len(result) == 1
         assert result[0]["id"] == identity
@@ -45,7 +45,7 @@ def test_start_empty_and_restart_persistence(tmp_path):
 
 @pytest.mark.parametrize("confidence", [-0.1, 1.1])
 def test_database_confidence_constraint(tmp_path, confidence):
-    with TestClient(create_app(settings(tmp_path))) as client:
+    with TestClient(create_app(settings(tmp_path)), headers={"Authorization": "Bearer backyard-test-token"}) as client:
         with Session(client.app.state.engine) as session:
             session.add(detection(confidence=confidence))
             with pytest.raises(IntegrityError):
@@ -53,7 +53,7 @@ def test_database_confidence_constraint(tmp_path, confidence):
 
 
 def test_naive_timestamp_rejected(tmp_path):
-    with TestClient(create_app(settings(tmp_path))) as client:
+    with TestClient(create_app(settings(tmp_path)), headers={"Authorization": "Bearer backyard-test-token"}) as client:
         with Session(client.app.state.engine) as session:
             session.add(detection(timestamp=datetime(2026, 9, 29)))
             with pytest.raises(StatementError):
@@ -61,7 +61,7 @@ def test_naive_timestamp_rejected(tmp_path):
 
 
 def test_limit_and_health_failure(tmp_path):
-    with TestClient(create_app(settings(tmp_path))) as client:
+    with TestClient(create_app(settings(tmp_path)), headers={"Authorization": "Bearer backyard-test-token"}) as client:
         for limit in (0, 101):
             assert client.get(f"/api/birds/detections?limit={limit}").status_code == 422
         with patch.object(client.app.state.engine, "connect",

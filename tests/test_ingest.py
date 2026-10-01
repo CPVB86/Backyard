@@ -22,7 +22,7 @@ def client(tmp_path):
         _env_file=None, database_path=tmp_path / "db.sqlite3",
         storage_root=tmp_path / "storage", max_audio_bytes=16384,
     )
-    with TestClient(create_app(settings)) as api:
+    with TestClient(create_app(settings), headers={"Authorization": "Bearer backyard-test-token"}) as api:
         yield api
 
 

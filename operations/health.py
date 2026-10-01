@@ -4,10 +4,10 @@ from detector.monitor_http import HTTPTransport
 from detector.stream import MonitorConfig
 
 
-def check_health(url, timeout=2):
+def check_health(url, timeout=2, api_token=None):
     MonitorConfig(api_url=url)  # Validate an origin, without credentials or redirects.
     try:
-        health = HTTPTransport(url, timeout, max_response=4096).request(
+        health = HTTPTransport(url, timeout, max_response=4096, api_token=api_token).request(
             "GET", "/api/health", None, "application/json")
     except http.client.HTTPException as error:
         raise RuntimeError(f"Invalid HTTP health response: {error}") from error

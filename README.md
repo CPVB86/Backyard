@@ -29,6 +29,7 @@ source .venv/bin/activate
 python -m pip install -r requirements-dev.txt
 python -m app.core.migrate
 pytest -v
+export BACKYARD_API_TOKEN="$(python -c 'import secrets; print(secrets.token_urlsafe(32))')"
 python -m uvicorn app.main:app --host 127.0.0.1 --port 8010 --no-access-log
 ```
 
@@ -39,6 +40,7 @@ python -m venv .venv
 .\.venv\Scripts\python -m pip install -r requirements-dev.txt
 .\.venv\Scripts\python -m app.core.migrate
 .\.venv\Scripts\pytest -v
+$env:BACKYARD_API_TOKEN = & .\.venv\Scripts\python -c "import secrets; print(secrets.token_urlsafe(32))"
 .\.venv\Scripts\python -m uvicorn app.main:app --host 127.0.0.1 --port 8010 --no-access-log
 ```
 
@@ -52,8 +54,15 @@ Stop met Ctrl+C. GET http://127.0.0.1:8010/api/health controleert de database:
 
 Databasefalen geeft HTTP 503. De bestaande Uvicorn-startwijze blijft geldig.
 Voor bewust gebruik op het vertrouwde LAN: vervang --host 127.0.0.1 door
---host 0.0.0.0. Er is nog geen authenticatie: wie de API kan bereiken kan
-detecties/audio toevoegen en uitlezen. Maak deze fase niet publiek bereikbaar.
+--host 0.0.0.0. Alle `/api/*` endpoints, inclusief health en audio, vereisen
+`Authorization: Bearer <BACKYARD_API_TOKEN>`. Zonder geldig geconfigureerd token
+start de API niet. Gebruik voor productie het gedeelde `/etc/backyard/backyard.env`;
+zie [tokeninstallatie](docs/OPERATIONS.md#bearer-authenticatie-na-de-duurtest).
+Voor lokale ontwikkeling kan het token ook in `.env` staan. De detector en losse
+readinesschecks lezen de omgevingsvariabele; exporteer die bij handmatig gebruik.
+Swagger `/docs` heeft een Authorize-knop. Rechtstreeks een audio-URL in een browser
+openen stuurt geen Bearer-header: API-consumers moeten die zelf meesturen.
+Bearer-auth versleutelt HTTP niet; gebruik HTTPS bij verkeer buiten het vertrouwde LAN.
 Gebruik Ã©Ã©n API-worker. Swagger staat op /docs (interface gebruikt CDN-assets);
 de API en /openapi.json werken zonder cloud.
 
@@ -194,7 +203,7 @@ soort/tijd blijven afzonderlijke detecties. Dezelfde event_id van een andere
 source is ook een andere detectie. Geen heuristische tijdvenster-deduplicatie.
 
 ```bash
-curl --fail-with-body -X POST http://127.0.0.1:8010/api/birds/detections \
+curl -H "Authorization: Bearer $BACKYARD_API_TOKEN" --fail-with-body -X POST http://127.0.0.1:8010/api/birds/detections \
   -H 'Content-Type: application/json' \
   --data '{"event_id":"example-001","detected_at":"2026-09-29T10:00:00Z","scientific_name":"Columba livia","common_name":"Rotsduif","confidence":0.944,"source":"manual-test"}'
 ```
@@ -215,11 +224,11 @@ Dat is de expliciete tussenstatus van dit contract, geen half audiorecord.
 
 ```bash
 DETECTION_ID='vervang-door-de-id-uit-de-response'
-curl --fail-with-body -X PUT \
+curl -H "Authorization: Bearer $BACKYARD_API_TOKEN" --fail-with-body -X PUT \
   "http://127.0.0.1:8010/api/birds/detections/$DETECTION_ID/audio" \
   -H 'Content-Type: audio/wav' --data-binary @fragment.wav
 
-curl --fail \
+curl -H "Authorization: Bearer $BACKYARD_API_TOKEN" --fail \
   "http://127.0.0.1:8010/api/birds/detections/$DETECTION_ID/audio" \
   --output teruggeluisterd.wav
 ```
@@ -264,7 +273,7 @@ Indexen op tijd en (soort, tijd) ondersteunen latere statistieken; er is nu geen
 analytics-engine, paginering of review-UI.
 
 ```bash
-curl --fail --get http://127.0.0.1:8010/api/birds/detections \
+curl -H "Authorization: Bearer $BACKYARD_API_TOKEN" --fail --get http://127.0.0.1:8010/api/birds/detections \
   --data-urlencode 'scientific_name=Columba livia' \
   --data-urlencode 'since=2026-09-29T00:00:00+02:00' \
   --data-urlencode 'until=2026-09-30T00:00:00+02:00' \

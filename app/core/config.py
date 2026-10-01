@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -12,6 +12,7 @@ class Settings(BaseSettings):
         env_prefix="BACKYARD_", env_file=ROOT / ".env",
         env_file_encoding="utf-8", extra="forbid",
     )
+    api_token: SecretStr = SecretStr("")
     policy_path: Path | None = None
     database_path: Path = Path("data/backyard.sqlite3")
     storage_root: Path = Path("data")

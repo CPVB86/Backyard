@@ -34,7 +34,7 @@ class APITransport:
 ])
 def test_explicit_debug_cases_through_real_api(tmp_path, case, status, evidence, supports):
     settings = Settings(_env_file=None, database_path=tmp_path/"db.sqlite3", storage_root=tmp_path/"audio")
-    with TestClient(create_app(settings)) as client:
+    with TestClient(create_app(settings), headers={"Authorization": "Bearer backyard-test-token"}) as client:
         transport = APITransport(client)
         item = run(case, Policy(), transport)
         assert item["status"] == status
@@ -81,7 +81,7 @@ def test_policy_file_changes_fingerprint_and_unknown_fields_fail(tmp_path):
 def test_new_observation_uploader_retries_identical_post_and_put(tmp_path):
     from detector.debug_observation import build, silence
     settings = Settings(_env_file=None, database_path=tmp_path/"db.sqlite3", storage_root=tmp_path/"audio")
-    with TestClient(create_app(settings)) as client:
+    with TestClient(create_app(settings), headers={"Authorization": "Bearer backyard-test-token"}) as client:
         base = APITransport(client)
         lost = set()
         class LostReplies:
@@ -107,7 +107,7 @@ def test_new_observation_uploader_retries_identical_post_and_put(tmp_path):
 
 def test_swagger_nested_candidate_schema_resolves(tmp_path):
     settings = Settings(_env_file=None, database_path=tmp_path/"db.sqlite3", storage_root=tmp_path/"audio")
-    with TestClient(create_app(settings)) as client:
+    with TestClient(create_app(settings), headers={"Authorization": "Bearer backyard-test-token"}) as client:
         spec = client.get("/openapi.json").json()
         schema = spec["paths"]["/api/observations"]["post"]["requestBody"]["content"]["application/json"]["schema"]
         assert schema["properties"]["candidates"]["items"]["properties"]["domain"]["enum"] == ["bird","bat","unsupported","unknown"]

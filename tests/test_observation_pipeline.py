@@ -105,7 +105,7 @@ def test_inference_policy_clip_and_http_full_observation_flow(tmp_path):
     class Model(Analyzer):
         def analyze(self, pcm, rate):
             return [prediction(confidence=.94), prediction("Pan troglodytes", .68)]
-    with TestClient(create_app(settings)) as client:
+    with TestClient(create_app(settings), headers={"Authorization": "Bearer backyard-test-token"}) as client:
         monitor = Monitor(MonitorConfig(overlap=1.5), Model(), Capture, APITransport(client))
         monitor.anchor = StreamAnchor.now(monitor.config)
         monitor.ring.append(bytes(48000*8*2))
