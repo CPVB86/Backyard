@@ -1,4 +1,5 @@
 import json
+from app.core.species_names import localized_name
 from typing import Annotated, Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 from observations.policy import RawCandidate
@@ -51,6 +52,8 @@ def serialize(record):
     return {
         "id": record.id, "event_id": record.event_id, "source": record.source,
         "domain": record.domain, "scientific_name": record.scientific_name,
+        "common_name_de": localized_name(record.scientific_name, record.common_name, "de"),
+        "common_name_nl": localized_name(record.scientific_name, record.common_name, "nl"),
         "common_name": record.common_name, "start_at": record.start_at, "end_at": record.end_at,
         "best_confidence": record.best_confidence, "supporting_candidate_count": len(record.supports),
         "candidates": [candidate.raw for candidate in record.supports],

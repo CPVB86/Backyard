@@ -1,4 +1,5 @@
 import math
+from app.core.species_names import localized_name
 from datetime import datetime, timezone
 from typing import Annotated, Any, Literal
 
@@ -81,6 +82,8 @@ class DetectionResponse(BaseModel):
     timestamp: datetime  # Read-only compatibility alias for foundation clients.
     scientific_name: str
     common_name: str | None
+    common_name_nl: str | None
+    common_name_de: str | None
     confidence: float
     source: str
     event_id: str | None
@@ -103,6 +106,8 @@ def serialize(record):
     return DetectionResponse(
         id=record.id, detected_at=record.timestamp, timestamp=record.timestamp,
         scientific_name=record.scientific_name, common_name=record.common_name,
+        common_name_de=localized_name(record.scientific_name, record.common_name, "de"),
+        common_name_nl=localized_name(record.scientific_name, record.common_name, "nl"),
         confidence=record.confidence, source=record.source, event_id=record.event_id,
         source_version=record.source_version, model_version=record.model_version,
         raw_metadata=record.raw_metadata, verification_status=record.verification_status,

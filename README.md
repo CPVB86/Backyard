@@ -349,3 +349,7 @@ De nieuwe fase is nog niet op Linux/ARM64 uitgevoerd door Codex.
 Zie [Pi-commando's, compatibiliteitsonderzoek en continue-capture-richting](docs/DETECTOR_TEST.md).
 Installeer detector/requirements.txt uitsluitend in .venv-detector.
 De sequentiele live-test heeft opnamegaten en is niet voor 24/7 productie.
+
+Nederlandse/Duitse namen: Birds/observations-output bevat `common_name_nl` en
+`common_name_de` uit de bestaande
+[BirdNET-taxonomie](docs/SPECIES_NAMES.md), met de oorspronkelijke Engelse naam als fallback.
