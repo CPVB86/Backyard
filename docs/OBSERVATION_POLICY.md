@@ -124,9 +124,10 @@ weekgrenzen. Bron:
 De onderliggende gegevens zijn seizoensverwachtingen, geen actueel weer of
 bewijs dat een soort aanwezig/afwezig is.
 
-Geo is standaard uit: er zijn geen tuincoördinaten verzonnen. Dan is
-plausibility `unknown`, niet automatisch normal of unusual. Met
-`--geography --latitude ... --longitude ...` wordt het signaal ingeschakeld.
+Geo is verplicht voor de productiemonitor: stel BACKYARD_MONITOR_GEOGRAPHY=1
+plus geldige BACKYARD_MONITOR_LATITUDE/LONGITUDE in backyard.env in.
+Ontbrekende/uitgeschakelde config stopt voor model/capture; alleen capture-only
+hardwarediagnostiek mag zonder geo draaien. Zie [GEO_OPERATIONS.md](GEO_OPERATIONS.md).
 De eerste keer worden geo-model/labels in dezelfde BirdNET-cache gedownload.
 Een ingeschakelde maar defecte provider stopt de startup vóór capture met
 een fout; geen stille degradatie. Zonder overeenkomende geo-soortnaam wordt

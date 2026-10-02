@@ -1,3 +1,5 @@
+> Productiemonitoring vereist geo=1 en geldige latitude/longitude. Zie [geo-configuratie en verificatie](GEO_OPERATIONS.md).
+
 # Backyard 24/7 op Raspberry Pi 5
 
 Doel: Debian 13 ARM64, Python 3.13.5, user `cpvb86`, bestaande repository

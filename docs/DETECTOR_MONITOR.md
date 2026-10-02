@@ -185,7 +185,7 @@ De detector leest GEEN .env; zet deze keys niet in de strikt gevalideerde API-.e
 | --ring-seconds | 60; max 300 |
 | --inference-queue | 4; 1..64 |
 | --policy-queue | 4; 1..64 |
-| --geography | uit; optioneel geo/week-signaal |
+| --geography | verplicht bij inference; latitude/longitude vereist |
 | --latitude / --longitude | leeg; echte coordinaten verplicht bij geography |
 | --clip-queue | 32; 1..64 |
 | --outbound-queue | 16; 1..64 |
@@ -242,3 +242,5 @@ Onbeoordeelde reviewaudio wordt niet stil verwijderd; bewaak reviewvoorraad en
 schijfruimte. Native forced-stop is een noodpad, geen bewijs van normale cleanup.
 Defecte DNS-resolutie kan sockettimeout overschrijden; daemon-HTTP-thread mag
 exit niet blokkeren. Numerieke localhost vermijdt DNS in de standaardopstelling.
+
+Productie vereist nu expliciete geo-config; zie [geo-herstel](GEO_OPERATIONS.md).

@@ -9,6 +9,7 @@ import time
 import tempfile
 
 from detector.birdnet_adapter import normalize
+from detector.providers import geo_configuration
 
 
 class BirdNETSession:
@@ -81,7 +82,7 @@ def session_worker(connection, threshold, temporary, *, geography=None):
             if geography:
                 from detector.providers import GeoPlausibility
                 geo = GeoPlausibility(*geography)
-            connection.send(("ready", None))
+            connection.send(("ready", geo.status if geo is not None else geo_configuration(False, None, None)))
             while not stopping:
                 if not connection.poll(0.1):
                     continue
@@ -105,6 +106,7 @@ def session_worker(connection, threshold, temporary, *, geography=None):
 
 class PersistentBirdNET:
     def __init__(self, threshold=0.60, target=session_worker, geography=None):
+        self.geo_status = geo_configuration(bool(geography), *(geography or (None, None)))
         self.threshold = threshold
         self.temporary = None
         self.target = partial(target, geography=geography) if geography else target
@@ -128,8 +130,11 @@ class PersistentBirdNET:
                 if kind == "group_ready":
                     self.group_ready = True
                 elif kind == "ready":
+                    if value is not None:
+                        self.geo_status = value
                     return
                 else:
+                    self.geo_status.update(active=False, status="error", error=str(value))
                     raise RuntimeError(f"BirdNET startup failed: {value}")
             if not self.process.is_alive():
                 raise RuntimeError("BirdNET exited during startup")

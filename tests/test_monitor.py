@@ -392,7 +392,7 @@ def test_normal_ctrl_c_has_no_traceback_and_closes(monkeypatch, capsys, tmp_path
     instance.run.side_effect = KeyboardInterrupt()
     instance.status.return_value = {}
     monkeypatch.setattr("detector.monitor.Monitor", Mock(return_value=instance))
-    assert main([]) == 130
+    assert main(["--geography", "--latitude", "52", "--longitude", "5"]) == 130
     instance.close.assert_called_once()
     output = capsys.readouterr()
     assert "gestopt" in output.out and "Traceback" not in output.err

@@ -9,6 +9,7 @@ import subprocess
 import time
 
 from app.core.config import Settings
+from detector.providers import geo_configuration, birdnet_week
 from operations.environment import read_environment
 from operations.health import check_health
 from operations.inventory import database_inventory, audio_inventory
@@ -51,6 +52,9 @@ def system_inventory(storage_root):
 
 def warnings(report, stale_seconds=90):
     notes = []
+    geo = report.get("geo", {})
+    if not geo.get("active") or geo.get("status") != "ready" or geo.get("error"):
+        notes.append("Geo plausibility unavailable: " + str(geo.get("error") or geo.get("status", "missing status")))
     for unit in UNITS:
         state = report.get("services", {}).get(unit, {})
         if state.get("ActiveState") != "active" or state.get("SubState") != "running":
@@ -110,6 +114,28 @@ def warnings(report, stale_seconds=90):
     return notes
 
 
+def geo_report(environment, journal, services, now):
+    configured = geo_configuration(
+        environment.get("BACKYARD_MONITOR_GEOGRAPHY", "0").lower() in ("1", "true", "yes"),
+        environment.get("BACKYARD_MONITOR_LATITUDE"), environment.get("BACKYARD_MONITOR_LONGITUDE"))
+    current_week = birdnet_week(datetime.fromtimestamp(now, timezone.utc).isoformat())
+    result = configured | {"week": current_week, "week_convention": "UTC month-quarter 1..48"}
+    latest = journal.get("latest") or {}
+    runtime = latest.get("metrics", {}).get("geo")
+    if configured["error"]:
+        return result
+    if (not isinstance(runtime, dict) or now - latest.get("timestamp", 0) > 90
+            or latest.get("invocation") != services.get("backyard-detector.service", {}).get("InvocationID")):
+        return result | {"status": "unavailable", "error": "No fresh geo provider status from current detector"}
+    result.update(runtime)
+    result.update(configured_latitude=configured["latitude"], configured_longitude=configured["longitude"])
+    if (runtime.get("latitude"), runtime.get("longitude")) != (configured["latitude"], configured["longitude"]):
+        result.update(active=False, error="Runtime location differs from backyard.env; restart detector")
+    if runtime.get("week") != current_week:
+        result.update(active=False, error="Runtime seasonal period is stale; inspect detector clock/status")
+    return result
+
+
 def collect(settings, environment, hours=24, check_db=False, now=None):
     now = time.time() if now is None else now
     since = now - hours * 3600
@@ -134,6 +160,7 @@ def collect(settings, environment, hours=24, check_db=False, now=None):
         report["database"] = {"error": str(error)[:500]}
     report["audio"] = attempt(lambda: audio_inventory(settings.resolved_storage_root, since))
     report["system"] = attempt(lambda: system_inventory(settings.resolved_storage_root))
+    report["geo"] = geo_report(environment, report["journal"], report["services"], now)
     interval = float(environment.get("BACKYARD_MONITOR_STATUS_SECONDS", "30"))
     report["warnings"] = warnings(report, max(90, 3 * interval))
     report["health_summary"] = "ATTENTION" if report["warnings"] else "CURRENTLY_OK"
@@ -152,6 +179,7 @@ def print_report(report):
         if "error" in state:
             print(" ", state["error"])
     print("API health:", json.dumps(report["api_health"]))
+    print("Geo/provider:", json.dumps(report.get("geo", {})))
     journal = report["journal"]
     latest = journal.get("latest")
     print("Latest detector metrics:", latest["at"] if latest else "UNAVAILABLE")

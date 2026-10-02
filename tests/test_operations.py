@@ -33,12 +33,14 @@ def test_production_environment_uses_existing_monitor_parser(monkeypatch):
     values = read_environment(ROOT/"deploy/systemd/backyard.env.example")
     for key, value in values.items():
         monkeypatch.setenv(key, value)
+    monkeypatch.setenv("BACKYARD_MONITOR_LATITUDE", "52")
+    monkeypatch.setenv("BACKYARD_MONITOR_LONGITUDE", "5")
     config = MonitorConfig(**vars(parser().parse_args([])))
     assert (config.device, config.rate, config.channels) == ("plughw:CARD=Device,DEV=0", 48000, 1)
     assert (config.window, config.overlap, config.threshold) == (3, 1.5, .60)
     assert config.api_url == "http://127.0.0.1:" + values["UVICORN_PORT"]
     assert config.status_seconds == 30 and config.inference_timeout == 60
-    assert not config.capture_only and not config.geography
+    assert not config.capture_only and config.geography
     assert config.lock_file == "/home/cpvb86/Backyard/data/monitor.lock"
 
 
@@ -88,7 +90,7 @@ def test_monitor_sigterm_is_clean_and_restores_handlers(monkeypatch, capsys, tmp
     instance.status.return_value = {"phase":"stopped"}
     instance.run.side_effect = lambda: signal.getsignal(signal.SIGTERM)(signal.SIGTERM, None)
     monkeypatch.setattr("detector.monitor.Monitor", Mock(return_value=instance))
-    assert monitor_main([]) == 0
+    assert monitor_main(["--geography", "--latitude", "52", "--longitude", "5"]) == 0
     instance.close.assert_called_once()
     assert signal.getsignal(signal.SIGTERM) == before_term and signal.getsignal(signal.SIGINT) == before_int
     assert "SIGTERM" in capsys.readouterr().out
@@ -98,7 +100,7 @@ def test_lock_failure_never_starts_hardware(monkeypatch, capsys):
     instance = Mock()
     monkeypatch.setattr("detector.monitor.Monitor", Mock(return_value=instance))
     monkeypatch.setattr("detector.monitor.exclusive_monitor", Mock(side_effect=RuntimeError("Another Backyard monitor")))
-    assert monitor_main([]) == 1
+    assert monitor_main(["--geography", "--latitude", "52", "--longitude", "5"]) == 1
     instance.run.assert_not_called()
     assert "Another Backyard monitor" in capsys.readouterr().out
 
@@ -252,7 +254,7 @@ def healthy_report():
     summary = JournalSummary(100)
     summary.add(row(101,"active"))
     summary.add(row(130,"active",windows=10,uptime=29))
-    return {"timestamp":130, "services": {
+    return {"geo":{"active":True,"status":"ready","error":None}, "timestamp":130, "services": {
         name:{"ActiveState":"active","SubState":"running","UnitFileState":"enabled","User":"cpvb86","InvocationID":"active"}
         for name in ("backyard-api.service","backyard-detector.service")},
         "api_health":{"status":"ok","database":"ok","service":"backyard"},
@@ -316,7 +318,7 @@ class Fake:
     def close(self): print('CLOSED',flush=True)
     def status(self): return {'phase':'stopped'}
 module.Monitor=Fake
-raise SystemExit(module.main(['--lock-file',""" + repr(str(tmp_path/"monitor.lock")) + """]))
+raise SystemExit(module.main(['--geography','--latitude','52','--longitude','5','--lock-file',""" + repr(str(tmp_path/"monitor.lock")) + """]))
 """
     process=subprocess.Popen([sys.executable,"-c",code],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,cwd=ROOT)
     try:

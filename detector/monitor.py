@@ -11,6 +11,7 @@ from threading import Event, Thread
 import time
 
 from detector.instance import exclusive_monitor
+from detector.providers import geo_configuration, birdnet_week
 from detector.monitor_birdnet import PersistentBirdNET
 from detector.monitor_capture import ALSACapture
 from detector.monitor_http import Uploader
@@ -133,6 +134,15 @@ class Monitor:
         result.update(event="monitor_status", phase=self.phase, error=self.error,
                       recorded_at=datetime.now(timezone.utc).isoformat(),
                       stream_id=self.anchor.session_id if self.anchor else None)
+        geo = getattr(self.analyzer, "geo_status", None)
+        geo = dict(geo) if isinstance(geo, dict) else geo_configuration(
+            self.config.geography, self.config.latitude, self.config.longitude)
+        if self.phase == "stopped":
+            geo.update(active=False, status="stopped")
+        if self.error:
+            geo.update(active=False, status="error", error=self.error)
+        result["geo"] = geo | {"week": birdnet_week(result["recorded_at"]),
+                               "week_convention": "UTC month-quarter 1..48"}
         now = time.monotonic()
         if self.anchor:
             result["uptime_seconds"] = round(now - self.anchor.monotonic, 2)
@@ -234,6 +244,7 @@ def run_monitor(monitor):
         print("Ctrl+C: monitor wordt gestopt.", flush=True)
     except (OSError, RuntimeError, ValueError, EOFError, ImportError) as error:
         code = 1
+        monitor.error = str(error)
         print(f"Monitor fout: {error}", flush=True)
     finally:
         # A repeated stop signal must not interrupt child cleanup.
@@ -249,6 +260,8 @@ def main(argv=None):
     args = argument_parser.parse_args(argv)
     try:
         config = MonitorConfig(**vars(args))
+        if not config.capture_only and not config.geography:
+            raise ValueError("Production monitoring requires BACKYARD_MONITOR_GEOGRAPHY=1 and valid latitude/longitude")
         monitor = Monitor(config)
     except (ValueError, TypeError, OSError) as error:
         argument_parser.error(str(error))

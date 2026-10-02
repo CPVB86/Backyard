@@ -73,8 +73,10 @@ class MonitorConfig:
         if not self.lock_file.strip():
             raise ValueError("lock_file must not be empty")
         if self.geography:
-            if not (-90 <= float(self.latitude) <= 90 and -180 <= float(self.longitude) <= 180):
-                raise ValueError("Geography needs valid latitude/longitude")
+            from detector.providers import geo_configuration
+            error = geo_configuration(True, self.latitude, self.longitude)["error"]
+            if error:
+                raise ValueError(error)
         url = urlsplit(self.api_url)
         if url.port is not None and not 1 <= url.port <= 65535:
             raise ValueError("Invalid API port")
