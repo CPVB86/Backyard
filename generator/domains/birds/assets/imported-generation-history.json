@@ -1,0 +1,28 @@
+{
+  "species": {
+    "Erithacus rubecula": {
+      "common_name": "Roodborst",
+      "status": "generated",
+      "attempted_at": "2026-09-27T15:55:49+02:00",
+      "completed_at": "2026-09-27T15:56:18+02:00"
+    },
+    "Corvus corone": {
+      "common_name": "Zwarte Kraai",
+      "status": "generated",
+      "attempted_at": "2026-09-27T15:55:49+02:00",
+      "completed_at": "2026-09-27T15:56:46+02:00"
+    },
+    "Buteo buteo": {
+      "common_name": "Buizerd",
+      "status": "generated",
+      "attempted_at": "2026-09-27T15:55:49+02:00",
+      "completed_at": "2026-09-27T15:57:13+02:00"
+    },
+    "Phoca vitulina": {
+      "common_name": "Harbor Seal",
+      "status": "generated",
+      "attempted_at": "2026-09-27T15:57:43+02:00",
+      "completed_at": "2026-09-27T15:58:12+02:00"
+    }
+  }
+}

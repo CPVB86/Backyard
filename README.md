@@ -353,3 +353,8 @@ De sequentiele live-test heeft opnamegaten en is niet voor 24/7 productie.
 Nederlandse/Duitse namen: Birds/observations-output bevat `common_name_nl` en
 `common_name_de` uit de bestaande
 [BirdNET-taxonomie](docs/SPECIES_NAMES.md), met de oorspronkelijke Engelse naam als fallback.
+
+## Generator
+
+Authenticated species illustrations and existing AvianVisitors assets are available
+through the domain-neutral Generator. See [Generator setup and API](docs/GENERATOR.md).

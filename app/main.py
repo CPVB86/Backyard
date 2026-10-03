@@ -13,6 +13,8 @@ from app.core.logging import configure_logging
 from app.modules.birds.router import router as birds_router
 from app.modules.observations.router import router as observations_router
 from observations.policy import Policy
+from generator.store import AssetStore
+from app.generator.router import router as generator_router
 
 logger = logging.getLogger("backyard.api")
 
@@ -30,6 +32,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             initialize_database(engine)
             app.state.engine = engine
             app.state.settings = config
+            app.state.generator = AssetStore(config.resolved_storage_root / "generator")
             app.state.observation_policy = Policy.load(config.policy_path)
             logger.info("Backyard started")
             yield
@@ -53,6 +56,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app.include_router(birds_router)
     app.include_router(observations_router)
+    app.include_router(generator_router)
 
     @app.exception_handler(SQLAlchemyError)
     async def database_failure(request, error):

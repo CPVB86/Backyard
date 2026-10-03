@@ -2,3 +2,5 @@ fastapi==0.142.0
 uvicorn==0.54.0
 SQLAlchemy==2.0.54
 pydantic-settings==2.15.0
+# Existing AvianVisitors cutout validation and silhouette masks.
+Pillow>=10.0

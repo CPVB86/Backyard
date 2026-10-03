@@ -1,0 +1,3694 @@
+[
+  {
+    "file": "bundled/acanthis-flammea-2.png",
+    "sha256": "908058311160e34523b6c648ebd6d4f465350578360970b216237422bba1be8d"
+  },
+  {
+    "file": "bundled/acanthis-flammea.png",
+    "sha256": "b7355e94e209d5304c88a2c77dd93513b44de13dbb4cb45d44bca65037fff9e9"
+  },
+  {
+    "file": "bundled/accipiter-cooperii-2.png",
+    "sha256": "e7c5dc0b287736ddd40712f790c9c8249b63571c0848ecd8e972cc55e5c93d8c"
+  },
+  {
+    "file": "bundled/accipiter-cooperii.png",
+    "sha256": "dfe7e4b54505e794550d5b7a729975cde1f22a38290f34d1820503193bab1d18"
+  },
+  {
+    "file": "bundled/accipiter-gentilis-2.png",
+    "sha256": "6a109694ce1b7e7062190f4edfa457fc5a42d5ffcb58f81c81938190a8c8c433"
+  },
+  {
+    "file": "bundled/accipiter-gentilis.png",
+    "sha256": "ac6ed747538edb37386c510b5fb098ca068461744e4a34c41837230877a2a5c9"
+  },
+  {
+    "file": "bundled/accipiter-striatus-2.png",
+    "sha256": "a540208125ae8b6108615c3a85e232815c74c075ef1c04bde8ae050a20466f62"
+  },
+  {
+    "file": "bundled/accipiter-striatus.png",
+    "sha256": "34dc123960854713948cfed18f05b7ec35443a99bf62eeb572fcd7a7e74569ed"
+  },
+  {
+    "file": "bundled/actitis-macularius-2.png",
+    "sha256": "bc62a7ba643bb85848d94872907df68ef09d1d6477658d8b844d02e55cfca7a2"
+  },
+  {
+    "file": "bundled/actitis-macularius.png",
+    "sha256": "581cfd570a060e26ff6eeca047712a9672621c51139a9d44e5035ad292fc5807"
+  },
+  {
+    "file": "bundled/aechmophorus-occidentalis-2.png",
+    "sha256": "a80426cd502e70536c7c69e1038c303da8249ffe561bfb5c6f6e4a470c7852af"
+  },
+  {
+    "file": "bundled/aechmophorus-occidentalis.png",
+    "sha256": "353dfc43ed2a2683b587b04b8765ca4d92e0b676549b6ccf59a50245239bc577"
+  },
+  {
+    "file": "bundled/aegolius-acadicus-2.png",
+    "sha256": "c02cf30dc22586af033e5ded9a9c0280e56b9c29c8afa3a58a042b468ebbe7c1"
+  },
+  {
+    "file": "bundled/aegolius-acadicus.png",
+    "sha256": "ff14b0828a070d3092756dfcdcbae20cf3bcd48b7ca14df4d7cd112ac8cf16d8"
+  },
+  {
+    "file": "bundled/aeronautes-saxatalis-2.png",
+    "sha256": "aaf91dfbdb61a20be70286193a8c3325ccd63f248cca120dac056c796602738e"
+  },
+  {
+    "file": "bundled/aeronautes-saxatalis.png",
+    "sha256": "abc3cbcbc4ac39995760d339a86eb1aeaa9f28477460bf652fb76792aa698f5e"
+  },
+  {
+    "file": "bundled/agelaius-phoeniceus-2.png",
+    "sha256": "e1bc165c6c081237d7ba4df7ce744ddb3f074a68eedc30d59d0f7d6435b3ec7e"
+  },
+  {
+    "file": "bundled/agelaius-phoeniceus.png",
+    "sha256": "82db113ffb444a21defbdf01e1db3eb6d3a4bf26be0a24c8cdfeac0f54319812"
+  },
+  {
+    "file": "bundled/aix-sponsa-2.png",
+    "sha256": "c7978b96bb7bbe3b9db8ff0d0cb3a60d46959a745f2957a03be6234155fcf248"
+  },
+  {
+    "file": "bundled/aix-sponsa.png",
+    "sha256": "b11849640b0fa98253850a96b5f869bc691ff60087a05bb1fa210e1c6a95c4c6"
+  },
+  {
+    "file": "bundled/ammodramus-savannarum-2.png",
+    "sha256": "985b24e445c98443a8f3f7c976897d126e1c66e3fce63f61cdc8f2054fd54378"
+  },
+  {
+    "file": "bundled/ammodramus-savannarum.png",
+    "sha256": "164a463a36d39fa53fce93ced32cecb1a4f5050f6e5d7bd5a81253f2dba35eca"
+  },
+  {
+    "file": "bundled/amphispiza-bilineata-2.png",
+    "sha256": "c0836b63ad42d82e4f57ac97ba7ec3c8b9f3b87cee7c2b2764b143adaaf71e08"
+  },
+  {
+    "file": "bundled/amphispiza-bilineata.png",
+    "sha256": "eacd648f02cd0daec0dc592308a34062dfe180b307a53408a9df149fa64815ad"
+  },
+  {
+    "file": "bundled/anas-acuta-2.png",
+    "sha256": "44f48cab5d93b85fd31f15a31e0d88e749e952931f3d35cb8fe405592c68f654"
+  },
+  {
+    "file": "bundled/anas-acuta.png",
+    "sha256": "709455dfeb83eb72e3d0236dc2cfea617da7290f20754c48253392dbe3c6fbc1"
+  },
+  {
+    "file": "bundled/anas-crecca-2.png",
+    "sha256": "bd4aeee4c3b7c158a013a03f0c5a8e26b478f7c7d2975c8aa61335f11898ed70"
+  },
+  {
+    "file": "bundled/anas-crecca.png",
+    "sha256": "e4ad1ab67fc44546e651c828528f3d5de74e82164bbf4c288cf2d12fbba2fd16"
+  },
+  {
+    "file": "bundled/anas-platyrhynchos-2.png",
+    "sha256": "cbabee304c3ee2161745c0843360b07ae3707d24fb9d889c7cd2217330d269d7"
+  },
+  {
+    "file": "bundled/anas-platyrhynchos.png",
+    "sha256": "9cbdb76f4e9a49d92f0c5729d643214b5eb4fe4f2562202c115008e1c4990852"
+  },
+  {
+    "file": "bundled/anas-rubripes-2.png",
+    "sha256": "fda8f4e36f07147a0947ac97d06d316948f441477308d8c1ad0ca0214202f241"
+  },
+  {
+    "file": "bundled/anas-rubripes.png",
+    "sha256": "8dd47391b868327f6376bec52ffdf2fea2a99491c9363c4beac5450df25bddc3"
+  },
+  {
+    "file": "bundled/anser-albifrons-2.png",
+    "sha256": "1d21d5c8608eeaa51c9f2ac96f5ed82208a479bf9849eddb6e10ef28be932704"
+  },
+  {
+    "file": "bundled/anser-albifrons.png",
+    "sha256": "11805e943a4271ab9aed514b05f0dd3483c9a85c7659485f67eee28b380bfe65"
+  },
+  {
+    "file": "bundled/anthus-rubescens-2.png",
+    "sha256": "af2e0d2bcf3024038636599b70dc353dd54e5bbd0516c672878f65e9ae4bb3d0"
+  },
+  {
+    "file": "bundled/anthus-rubescens.png",
+    "sha256": "4e677c701614b4e6327f0930c2aa4addbcdd13fadbc7aeedcb1f625214cfe2c4"
+  },
+  {
+    "file": "bundled/antigone-canadensis-2.png",
+    "sha256": "3f8b37ac92025dffcadb55f9c896ff3a8c36c05e254c6d32720afdfa08f1cf16"
+  },
+  {
+    "file": "bundled/antigone-canadensis.png",
+    "sha256": "848edd5338cdf45191aed8c82be2ef2c03cdf94a4f23743e952959c01df7b0f9"
+  },
+  {
+    "file": "bundled/antrostomus-vociferus-2.png",
+    "sha256": "a642024733114df16883884d94cdff9f87c68b37e018d5d36bc2b2c6cfe69469"
+  },
+  {
+    "file": "bundled/antrostomus-vociferus.png",
+    "sha256": "f147d6f42b63bcfb7e580ddace7d6689ae3a7cccb862f48108353bb86ba2f8f3"
+  },
+  {
+    "file": "bundled/aphelocoma-californica-2.png",
+    "sha256": "9ba1e02c2c970280dfb8a9742629d1eca1f4dc766a58f309c23178400c6f9847"
+  },
+  {
+    "file": "bundled/aphelocoma-californica.png",
+    "sha256": "abed89a30677d7f23b88ec3f0fdd45d543928c2c5a00c418c3b05849863b30e9"
+  },
+  {
+    "file": "bundled/aphelocoma-woodhouseii-2.png",
+    "sha256": "bb8ded05df2acd27e72d43fa64f8f6f758d2ecfd1ef14ebe90d258b31022a4e8"
+  },
+  {
+    "file": "bundled/aphelocoma-woodhouseii.png",
+    "sha256": "c6961952f92ba7cacc242daf95392f8f0f291767a11f3306ffe1fa37ee3851fa"
+  },
+  {
+    "file": "bundled/aquila-chrysaetos-2.png",
+    "sha256": "d87317559cc8669e542a7aeac303a1e747ba54cbd2e47a12f11ade9936cc8722"
+  },
+  {
+    "file": "bundled/aquila-chrysaetos.png",
+    "sha256": "e70eb7bf2cd37c908dd23fc91db0edaa48cf2d0f915b4b47959505d6f65cdd60"
+  },
+  {
+    "file": "bundled/archilochus-alexandri-2.png",
+    "sha256": "1da76c76d9a111f870f80f43616440d1374b3a7da2741ac03e9ec9b46359dc0a"
+  },
+  {
+    "file": "bundled/archilochus-alexandri.png",
+    "sha256": "851e13263fa6d09a2d6788364b09dc02b712ea53774f25b0a30b530f6828e11e"
+  },
+  {
+    "file": "bundled/archilochus-colubris-2.png",
+    "sha256": "d82497add521d6cc82c189631488fb836e5914123d6f511e0785dc210c6f65b7"
+  },
+  {
+    "file": "bundled/archilochus-colubris.png",
+    "sha256": "116973812214a86e0fe2bdfcb61aa967f3e17540bed2349053cc7d6b7b694dd0"
+  },
+  {
+    "file": "bundled/ardea-alba-2.png",
+    "sha256": "172aa731cec5b8511c2d2f348d288262df170dd6605a8744581e9aa1059a1349"
+  },
+  {
+    "file": "bundled/ardea-alba.png",
+    "sha256": "758784fe0bea8f06e2f76eb190b9a077e41d2c13c2cf6ab95a41b382f758d0f0"
+  },
+  {
+    "file": "bundled/ardea-herodias-2.png",
+    "sha256": "77f3a667d41cb1405ccd66b9bd2186af5827451009ecbf2f8f7027fb58e3284d"
+  },
+  {
+    "file": "bundled/ardea-herodias.png",
+    "sha256": "7c53a7919a1f2064f20555fa6c7e569b64c930aaa33733f15b5acbba605895e0"
+  },
+  {
+    "file": "bundled/artemisiospiza-belli-2.png",
+    "sha256": "447decba3d60e459136b1accb85f5ce9c00ebf9d46fce890c94592d4294261e5"
+  },
+  {
+    "file": "bundled/artemisiospiza-belli.png",
+    "sha256": "76777a76819ccedadbf419eab609442ab7c38183bd6f56f07f1ebc568b7df44c"
+  },
+  {
+    "file": "bundled/asio-flammeus-2.png",
+    "sha256": "ac476f72267e5ac02e0e87525bc47df806c58b72f19250cfc171064a0895dc29"
+  },
+  {
+    "file": "bundled/asio-flammeus.png",
+    "sha256": "259641de1ebbf12d2268dbae304519c2cc2b19e1d76735e5206a402c9449e620"
+  },
+  {
+    "file": "bundled/asio-otus-2.png",
+    "sha256": "8ebc1c18847aa0cd920f2d9e84d2f37d4685d1c7348a9a8324e19cb057df4b1e"
+  },
+  {
+    "file": "bundled/asio-otus.png",
+    "sha256": "8533bbe3e0828403caf57f857f5d6b140118a8cc84cb9babe922d2c276fcafd8"
+  },
+  {
+    "file": "bundled/athene-cunicularia-2.png",
+    "sha256": "e462e698a788f3a1a3c9e009c917887302f000acf43bf0a84f58259c569c01a9"
+  },
+  {
+    "file": "bundled/athene-cunicularia.png",
+    "sha256": "22575c9a0e18534bc6ae26424430aa49bb3d481799fb086c1f8c4d43594b2c16"
+  },
+  {
+    "file": "bundled/aythya-affinis-2.png",
+    "sha256": "72f2a609c981f73d415f194de238ebf8f51f5bcd75be485a421fb82620d0ced8"
+  },
+  {
+    "file": "bundled/aythya-affinis.png",
+    "sha256": "76f222d68f9a44d7e86abf14d43c55ab5439b742a5b246f5dbbeed10736d4b84"
+  },
+  {
+    "file": "bundled/aythya-americana-2.png",
+    "sha256": "f9b63e07a35d2d497f0e68553c8196f9028d62f1507f970e76a3a19ca58c5d1c"
+  },
+  {
+    "file": "bundled/aythya-americana.png",
+    "sha256": "01b82e0292cd58f29480613ac3cc233a2cf390b7adc0077a33c8f0d8651636b9"
+  },
+  {
+    "file": "bundled/aythya-collaris-2.png",
+    "sha256": "ef3e59700631cc6ce10459f1fa28c075c003735102716585dd2c842b5ad91471"
+  },
+  {
+    "file": "bundled/aythya-collaris.png",
+    "sha256": "4d8f28c3836f4f999a0bf0325f5cb907a9d678f7d6f95dea46f9f58c1473922e"
+  },
+  {
+    "file": "bundled/aythya-valisineria-2.png",
+    "sha256": "fd75425c45b7af3d8291522725a572ad10842bc8256087135b49376ffd015164"
+  },
+  {
+    "file": "bundled/aythya-valisineria.png",
+    "sha256": "95a95ef6ec608ffe9eee8a3650751f11751096370d9205da57633de4cbf38ba4"
+  },
+  {
+    "file": "bundled/baeolophus-bicolor-2.png",
+    "sha256": "2b9e78ebc7269d8637b6073276f3ce149bd2281485cd2a4ea36754ff16cee61a"
+  },
+  {
+    "file": "bundled/baeolophus-bicolor.png",
+    "sha256": "a0a0aa34399a3ecaaada465421195d0e1b3bdaccdc97c1d3e4d2e5b251c34453"
+  },
+  {
+    "file": "bundled/baeolophus-inornatus-2.png",
+    "sha256": "318b53dfe9f8ed35a6dcc929df51acc2d59d4e508962af2a79dfe71eae5dbc39"
+  },
+  {
+    "file": "bundled/baeolophus-inornatus.png",
+    "sha256": "77c913c16f995b211d1c55044a3d929fe476cbffc78895956b7937c1a9e89d57"
+  },
+  {
+    "file": "bundled/bombycilla-cedrorum-2.png",
+    "sha256": "c8069937f766537307ed15c8fb7216a8ec6351596b28a757333eb2cd847b5a19"
+  },
+  {
+    "file": "bundled/bombycilla-cedrorum.png",
+    "sha256": "f52f25039f4622686e19d66009cb3307570978b7b0f001c2f11deee57a4578e9"
+  },
+  {
+    "file": "bundled/bombycilla-garrulus-2.png",
+    "sha256": "8a7288298dc3b7fef70efbcf6471f5186686f2a6628eb33070ceab573b41f4e6"
+  },
+  {
+    "file": "bundled/bombycilla-garrulus.png",
+    "sha256": "4803b15c9db9f03d4e366d86dc74466aa2afb8b54aa0cce0734fb46a1a18c4c8"
+  },
+  {
+    "file": "bundled/bonasa-umbellus-2.png",
+    "sha256": "2c844ec10ef15cb3830b6f7dbb7be9a01fb49062fd7bd279776455ce92ccf6b8"
+  },
+  {
+    "file": "bundled/bonasa-umbellus.png",
+    "sha256": "fbc0cf6c7e5f7e30a708243343ab8ac2ee08a13b87f0938dc2ffc6146a88c580"
+  },
+  {
+    "file": "bundled/botaurus-lentiginosus-2.png",
+    "sha256": "85a277f0279769369aa811e067b04e7d461dfc01b5edae1593f917b58e7c654d"
+  },
+  {
+    "file": "bundled/botaurus-lentiginosus.png",
+    "sha256": "6dafb747eb867b916ff164fbf56f7d1ca51df09a9f6df78ee818a48351b99cc3"
+  },
+  {
+    "file": "bundled/branta-canadensis-2.png",
+    "sha256": "a17513ddb8f4114d2f686a352cd9f46c91cd3988074c864a8566417051337f37"
+  },
+  {
+    "file": "bundled/branta-canadensis.png",
+    "sha256": "43e0f10ab2083d0e0bd58514c22e4bd0f91c8dd7765290b038092a3602ae72b3"
+  },
+  {
+    "file": "bundled/bubo-virginianus-2.png",
+    "sha256": "6c10112a58ba948d997dbb5d60ec873547c54abbb27b45c60e81feca0951d9b7"
+  },
+  {
+    "file": "bundled/bubo-virginianus.png",
+    "sha256": "c5ee83fc9dc0c36a3001b13b34e499600ec8e6991a78851befae645a1aab319c"
+  },
+  {
+    "file": "bundled/bubulcus-ibis-2.png",
+    "sha256": "cc2da31bdc926bd638d344e04f788dbac09733c95221a301dd4829af2224d0fd"
+  },
+  {
+    "file": "bundled/bubulcus-ibis.png",
+    "sha256": "9af75f44162ec086cddf2e9e669b72d53a7e20122965aff43416054dc0605977"
+  },
+  {
+    "file": "bundled/bucephala-albeola-2.png",
+    "sha256": "d3579fac9bd01dddc672b520b9e72b1e41c94e06004156b53ff3f2bf9d29670d"
+  },
+  {
+    "file": "bundled/bucephala-albeola.png",
+    "sha256": "378db560f45ee1f3b7bad2fe4ceb28220d30bf38142babd303195b8ed8450257"
+  },
+  {
+    "file": "bundled/bucephala-clangula-2.png",
+    "sha256": "7ae6ce4e82cfd517d53ee67cb07468beb5e16f7b625f6800e0d73ab8f2213b31"
+  },
+  {
+    "file": "bundled/bucephala-clangula.png",
+    "sha256": "76fce3c149deb5d02701a6732453a3bd2c6ff210dc8434b3be36819756a0e2f3"
+  },
+  {
+    "file": "bundled/buteo-jamaicensis-2.png",
+    "sha256": "bd82f5b9576c6456668cbe6bd606905b972123163ce077b90758c9dcf734196a"
+  },
+  {
+    "file": "bundled/buteo-jamaicensis.png",
+    "sha256": "586342b0052b16375f4f159bbcd18d70e46a20ebc0c5ac6db2afa84b7d20b4bf"
+  },
+  {
+    "file": "bundled/buteo-lagopus-2.png",
+    "sha256": "d24d54de31910a290a5f52190f48b48616b8826b46388b447e5b31df609075ba"
+  },
+  {
+    "file": "bundled/buteo-lagopus.png",
+    "sha256": "27d9aeeeb7273660379419255cbad1e93c7a938c5db652fa061b6f29c5d54f31"
+  },
+  {
+    "file": "bundled/buteo-lineatus-2.png",
+    "sha256": "9f0a64b01124e2d0827a7770a4a94a3d45423d6b095c683572eedbdff0915ba9"
+  },
+  {
+    "file": "bundled/buteo-lineatus.png",
+    "sha256": "cffb0223779bbc9650bbd59cbd3d67c54a3edb5e6be9bd5c3ecfac819c14f287"
+  },
+  {
+    "file": "bundled/buteo-platypterus-2.png",
+    "sha256": "4b30c7ecc9f54f2e834c699ffeb715a4e2e60bc8bf01e202434851cba1a61e1e"
+  },
+  {
+    "file": "bundled/buteo-platypterus.png",
+    "sha256": "4d37b51bcf864c11df0dab319ededa41f2864cf2f477d69cc6c252d45bf2a238"
+  },
+  {
+    "file": "bundled/buteo-regalis-2.png",
+    "sha256": "85ddd21ef4333be0e890322cc32ce2379a5e0b0d97905ee64d5e16f1c63065cf"
+  },
+  {
+    "file": "bundled/buteo-regalis.png",
+    "sha256": "8400f80d3ccde16021fecad90c0467725577f46c908e82c9d49264fb8fd06419"
+  },
+  {
+    "file": "bundled/buteo-swainsoni-2.png",
+    "sha256": "e09a962af198187acce93b8bd808a12809ddbb2feb1c41da0ce2ab7d52cd5848"
+  },
+  {
+    "file": "bundled/buteo-swainsoni.png",
+    "sha256": "b78fcff5878134806979b1d033038b132f774377d26c66bf003d053d94ce444d"
+  },
+  {
+    "file": "bundled/butorides-virescens-2.png",
+    "sha256": "0e960d14001240fae2bd6cb323a675b57c9ddde190f236ca777956d8755eca14"
+  },
+  {
+    "file": "bundled/butorides-virescens.png",
+    "sha256": "4ddef43111be95eecb189459e171ecca948173f4a91480a0ef8f46346d696718"
+  },
+  {
+    "file": "bundled/calamospiza-melanocorys-2.png",
+    "sha256": "a6ab2ed14936ebc8debbcfb74ae6fabb627dddd1b6ab81fbbb5a07d01b1205a4"
+  },
+  {
+    "file": "bundled/calamospiza-melanocorys.png",
+    "sha256": "7ec18a3de64b3e375c025e4ace32733dff150c80654e844093521d631f25359c"
+  },
+  {
+    "file": "bundled/calidris-alba-2.png",
+    "sha256": "6eb97079b323018631a3622c298316c3e02ec259e685fc6986bcc55ffb31e17e"
+  },
+  {
+    "file": "bundled/calidris-alba.png",
+    "sha256": "080e6ae2a2a897097c36074f696f2392994fe69271ef29832a938c2c936f6c45"
+  },
+  {
+    "file": "bundled/calidris-alpina-2.png",
+    "sha256": "4d8c1c55b244108c7a2dedef80bae68f69d8d300b4b16f6737ae29fb3c561a03"
+  },
+  {
+    "file": "bundled/calidris-alpina.png",
+    "sha256": "846557cfe84b37788904f3918b95907e5bc4ed7ce3dc42ba6f99a3009feb912f"
+  },
+  {
+    "file": "bundled/calidris-minutilla-2.png",
+    "sha256": "c0242f2f6c4aa576bac8320a59e36936567492c24857bad9ce23e131079c2aab"
+  },
+  {
+    "file": "bundled/calidris-minutilla.png",
+    "sha256": "b8abc83a3978f864038beea8c84545b7f8db0ce3cef99d0ab1fb4eafbb85fc0b"
+  },
+  {
+    "file": "bundled/calidris-pusilla-2.png",
+    "sha256": "2039407f68159c6db345c90469cc2aaf7b1020c5b84e62156986777bd8a991cf"
+  },
+  {
+    "file": "bundled/calidris-pusilla.png",
+    "sha256": "975aac085b070af64714d71b5df3d19fd42c5aa2098b1b8158881c5c11886b89"
+  },
+  {
+    "file": "bundled/callipepla-californica-2.png",
+    "sha256": "cc20110d661d72d59a1f832b42926091f591a7614c2dd6496d51235df95abc17"
+  },
+  {
+    "file": "bundled/callipepla-californica.png",
+    "sha256": "b53a1fbe693ec1424ee8bdb879b4b9722a4acacc3c2e198d715689e3efc9ddcf"
+  },
+  {
+    "file": "bundled/calothorax-lucifer-2.png",
+    "sha256": "42efdef7182c6b2381812bd660b00ddd96107a08840ae4059003c4a4d51580f1"
+  },
+  {
+    "file": "bundled/calothorax-lucifer.png",
+    "sha256": "e0c095d328bf3d1c074c7d21c5ae684a721c3dfe06f3d8bcf7f3ff5457febee8"
+  },
+  {
+    "file": "bundled/calypte-anna-2.png",
+    "sha256": "3b6d091c9b0224c7e5971324f7998debbcc7c46ab7c093e2d2236e7678e59c6c"
+  },
+  {
+    "file": "bundled/calypte-anna.png",
+    "sha256": "04dfbaac7613b98a087a235e8b5d0b200f19ce0aab418f53f75879a8adbc6e79"
+  },
+  {
+    "file": "bundled/calypte-costae-2.png",
+    "sha256": "5d8c2e036727f5ee1842000c9540575ec824d74c66dc65a2cb1eb0d2aa217ff0"
+  },
+  {
+    "file": "bundled/calypte-costae.png",
+    "sha256": "255931ea7c6f4bec0fe6a0738e0f9ec0ace91cf99f83007690f697fa9787d44e"
+  },
+  {
+    "file": "bundled/cardellina-canadensis-2.png",
+    "sha256": "731a7a6e639e0978292d533be33e71e495b6619976e6b270fa676414b0540c51"
+  },
+  {
+    "file": "bundled/cardellina-canadensis.png",
+    "sha256": "6696e865f35ac49c721bc6a7e59f8acdf47cd11751298f13aacfde3da7221816"
+  },
+  {
+    "file": "bundled/cardellina-pusilla-2.png",
+    "sha256": "f8bac2ea0200cea092984a83268372722e6bc737b72ba807ca3b5f4f011eacb7"
+  },
+  {
+    "file": "bundled/cardellina-pusilla.png",
+    "sha256": "d3ed1b33f453ea0631c05cd5b4362d194fec37ad03e65822a989be42571d9021"
+  },
+  {
+    "file": "bundled/cardellina-rubrifrons-2.png",
+    "sha256": "161a19f66e88d2ed53337749ead4d4e34d664dd9acdb39afcebc8281ccb9a0b6"
+  },
+  {
+    "file": "bundled/cardellina-rubrifrons.png",
+    "sha256": "9bc6830b27fef847365e9a59e11c447e046968257227aefe5fac04d71a506238"
+  },
+  {
+    "file": "bundled/cardinalis-cardinalis-2.png",
+    "sha256": "e5caf5b618a390efbae36fb935ce62eee42633dd4913da0ae7507b2b246497d7"
+  },
+  {
+    "file": "bundled/cardinalis-cardinalis.png",
+    "sha256": "8767d43ce5c3d57c36c8d450942a2eec75310f3da86f7148200eff1070440b67"
+  },
+  {
+    "file": "bundled/cathartes-aura-2.png",
+    "sha256": "342c5d86f5f5bc9d89ee94c8570bb7b695390b4f5de232046306f76dd499bacd"
+  },
+  {
+    "file": "bundled/cathartes-aura.png",
+    "sha256": "7fa664c0cdff14a7ddd3d29cc0bd8ff6df58105dcdf7f9fa95f6650ccb05299d"
+  },
+  {
+    "file": "bundled/catharus-fuscescens-2.png",
+    "sha256": "23db88d4c169dd889563bc9ab66f0bfa5e2541aac7dcefd82a6b160be23a4506"
+  },
+  {
+    "file": "bundled/catharus-fuscescens.png",
+    "sha256": "d10f77c133c53faed6238c8cb5714cd2fafb557e4d0f85720e9581972cd31811"
+  },
+  {
+    "file": "bundled/catharus-guttatus-2.png",
+    "sha256": "64535778fe1d6aea3b97cda6802c8f2c81c73436a8bb65c0db3d53f864d734b5"
+  },
+  {
+    "file": "bundled/catharus-guttatus.png",
+    "sha256": "5792233895642fa26df25c82152f322fb4493b0a497eea60729e0da1fd030ddb"
+  },
+  {
+    "file": "bundled/catharus-ustulatus-2.png",
+    "sha256": "1920a6358a20c9d6767e704bd0cd1aeb70ef9c1cf6b7ed17b1d8e36fe6f3ac60"
+  },
+  {
+    "file": "bundled/catharus-ustulatus.png",
+    "sha256": "4ab64ddc07f5bb5922239137437817451f890bfc11df5c575771e1f65276e78c"
+  },
+  {
+    "file": "bundled/catherpes-mexicanus-2.png",
+    "sha256": "ebded0dfccf79fb19a04a584f81aa3c14b2c97900bf9a3774f528e87786914df"
+  },
+  {
+    "file": "bundled/catherpes-mexicanus.png",
+    "sha256": "5c3c5fac39390fc18bff75e41c3d5a5e93a115f26ce731212d4015253d71d471"
+  },
+  {
+    "file": "bundled/certhia-americana-2.png",
+    "sha256": "195a0a4ca415b5582a3082d36c86feaa159ccd429c4ee1f162205f6da037cc22"
+  },
+  {
+    "file": "bundled/certhia-americana.png",
+    "sha256": "09a2f9d94ba9547d0b301f8656320809a8d78b1392e142208eafc831e864dd5f"
+  },
+  {
+    "file": "bundled/chaetura-pelagica-2.png",
+    "sha256": "ecac43b5e3642cf6f114eac262cd5000f1c80fbdf837d5e96d5a9c8ad568e41a"
+  },
+  {
+    "file": "bundled/chaetura-pelagica.png",
+    "sha256": "2fc1b9dc3d3f3f63ec3f59d9b309406dd3fb6c9642e4a77d53d1bedea8d6bac0"
+  },
+  {
+    "file": "bundled/chaetura-vauxi-2.png",
+    "sha256": "f8ed929e5a6d93f1c5e53ac539b201490391e871e65d8c5f315203cc6f7502c4"
+  },
+  {
+    "file": "bundled/chaetura-vauxi.png",
+    "sha256": "bf8fa43775d9a7c4925253c1147f7ca5f130a2e3b5c4a5a6f3f463d8d81206fb"
+  },
+  {
+    "file": "bundled/charadrius-melodus-2.png",
+    "sha256": "d178003317313b8e2e80b1498d0b9d0cce068790acbb8edee44ed7f984fd78a7"
+  },
+  {
+    "file": "bundled/charadrius-melodus.png",
+    "sha256": "5920f595ebc0fadd364645572494a8e2a90d0c30b97030069b0ff9425a3aff6a"
+  },
+  {
+    "file": "bundled/charadrius-semipalmatus-2.png",
+    "sha256": "10cd12dde87450fe529b9f640503e0b83b30d0e1729d0f22ec3da737a4e8f03e"
+  },
+  {
+    "file": "bundled/charadrius-semipalmatus.png",
+    "sha256": "80870d7f94e9afadab5938451533598065883a15493572a3d819a611f40e53e2"
+  },
+  {
+    "file": "bundled/charadrius-vociferus-2.png",
+    "sha256": "3de7a7b75230472c0b206f4fe432efa623be3829aabe0235d53dc6047510abcd"
+  },
+  {
+    "file": "bundled/charadrius-vociferus.png",
+    "sha256": "0063031da4389872aed4e5799133c051bb2802b52470c56550555abe8b527bd7"
+  },
+  {
+    "file": "bundled/chlidonias-niger-2.png",
+    "sha256": "0225c3b407db4f14d7df562c9a833ac9b25d6fc362b6779a329b3a68b8198635"
+  },
+  {
+    "file": "bundled/chlidonias-niger.png",
+    "sha256": "02dc0778f5e3a5d293472f5067768ecdffe5f049d631642b48b0d1537c3c6673"
+  },
+  {
+    "file": "bundled/chondestes-grammacus-2.png",
+    "sha256": "f451d0e96d855c13ed5b8975d45bddbbc9cc43dac9e239eead23c7842c94f54f"
+  },
+  {
+    "file": "bundled/chondestes-grammacus.png",
+    "sha256": "c338c08ca94ae344c05d60ae6a5cf1955e7a1360f1901c2e65bfcd14452f45d4"
+  },
+  {
+    "file": "bundled/chordeiles-minor-2.png",
+    "sha256": "048e30e877af114c193041d997cc0ee92e69fb8be772d6058ce8a649bd8e57b3"
+  },
+  {
+    "file": "bundled/chordeiles-minor.png",
+    "sha256": "90b515a3a095c7bf1c15236f870804b9e194cf240debabb1ac2dc534b05e4a3a"
+  },
+  {
+    "file": "bundled/chroicocephalus-philadelphia-2.png",
+    "sha256": "17465ec9cbe60dbf97154a6a583d8ead495e556abf14f80f7d97e36355075e3f"
+  },
+  {
+    "file": "bundled/chroicocephalus-philadelphia.png",
+    "sha256": "9421fda69d1f258166b0b4933bb124778868ec224721d45897436b313118517b"
+  },
+  {
+    "file": "bundled/cinclus-mexicanus-2.png",
+    "sha256": "569b20834807c3a9f57ebaf8d679ca729b3f9050cb9bd0c5abb75514d063ff84"
+  },
+  {
+    "file": "bundled/cinclus-mexicanus.png",
+    "sha256": "8b6153d5efcd6944d1d17e05acfb8de9d57be77a58161964df5490a94808db5f"
+  },
+  {
+    "file": "bundled/circus-hudsonius-2.png",
+    "sha256": "8a63b93b5912f666c7b720e1173483fe461df1ea2bdff1769e2d3029b07165f2"
+  },
+  {
+    "file": "bundled/circus-hudsonius.png",
+    "sha256": "7136d7e381cd41bcbb05521dc68792339655d401781bf3123d5877db0988b6cf"
+  },
+  {
+    "file": "bundled/cistothorus-palustris-2.png",
+    "sha256": "96c77bb98d12668e54922af4583be4741cc4157032e16d90e1e40819eb01b1ca"
+  },
+  {
+    "file": "bundled/cistothorus-palustris.png",
+    "sha256": "72abaffa456e32db8fb86afcd3403caea193720cbd7e9af44b23d8dad6573d40"
+  },
+  {
+    "file": "bundled/coccothraustes-vespertinus-2.png",
+    "sha256": "a684e42b50dbd235bc271aa50b2fb2c46b9969786a4b94ac0c31464a71dae7fe"
+  },
+  {
+    "file": "bundled/coccothraustes-vespertinus.png",
+    "sha256": "9b20fb587ffbd124b2fdda1e8320889c2d25f1af7c6df1e3bb65b49c0f1e2df9"
+  },
+  {
+    "file": "bundled/coccyzus-americanus-2.png",
+    "sha256": "479b6a36d87414c7fcfa1efd34f0208847bfa40e9ffba4449473630106d5dac9"
+  },
+  {
+    "file": "bundled/coccyzus-americanus.png",
+    "sha256": "8077a099b69302d4de28b4cb4b4b1146f013e5bae2576eb14d54cb9fe21ac0a7"
+  },
+  {
+    "file": "bundled/coccyzus-erythropthalmus-2.png",
+    "sha256": "449e06973a197faa9540e8f068197d2066d2a172e00b485de104ad6a2061c9b6"
+  },
+  {
+    "file": "bundled/coccyzus-erythropthalmus.png",
+    "sha256": "e3d5d0d68fdb0b8b0f1b82ecd8bcf5011355c9cb7ce56277ad75d82d0e52620a"
+  },
+  {
+    "file": "bundled/colaptes-auratus-2.png",
+    "sha256": "3b41efff4c4732320d5a9a4cde067bb5898a7ad27f45c2c920e138f0a710a4c3"
+  },
+  {
+    "file": "bundled/colaptes-auratus.png",
+    "sha256": "12ab6846dd5cf137d8946b84b5ce55db6f45f19df2eddc142c0ad7a4af6564a5"
+  },
+  {
+    "file": "bundled/columba-livia-2.png",
+    "sha256": "498cdb97235153c52c7085eb5539eb12dff4f105a25dae37f6b81eadc41f06fb"
+  },
+  {
+    "file": "bundled/columba-livia.png",
+    "sha256": "0dc41243b30f7a9e88c58e472e6f8a6937c38b5ab3bfaba9b9588aa54e42b1e8"
+  },
+  {
+    "file": "bundled/columbina-passerina-2.png",
+    "sha256": "f28cf69bbacca09dbac5ba957635058c290a51108bb5566a2c540c61ba318e13"
+  },
+  {
+    "file": "bundled/columbina-passerina.png",
+    "sha256": "967832fe783016f28fb1409f769008ef117d405df151485a22fc907333455fe6"
+  },
+  {
+    "file": "bundled/contopus-cooperi-2.png",
+    "sha256": "1fbc5e69769e0a8158e58d0214780b6e607c550acb63ad2a4a3b0e8b97ed8a34"
+  },
+  {
+    "file": "bundled/contopus-cooperi.png",
+    "sha256": "a67f3892b9c26d9e173e18cd36f91d5f4cd5661fef1a144776ba67b499d29583"
+  },
+  {
+    "file": "bundled/contopus-sordidulus-2.png",
+    "sha256": "0ee1cc797159f43a21bcb92a3cca0925286405973ad787953a865f9dcf1b15a2"
+  },
+  {
+    "file": "bundled/contopus-sordidulus.png",
+    "sha256": "83cc93d91a9bc63dd2e856c5ed5b3502ea71a5b3739981ed7725cee5593c6f38"
+  },
+  {
+    "file": "bundled/contopus-virens-2.png",
+    "sha256": "17b4f7db7d8635f413a6f777460732cb5e6bbd8e50c44ad5dd5e36e316e49e32"
+  },
+  {
+    "file": "bundled/contopus-virens.png",
+    "sha256": "4980de043ed7565f48b1a59cb4ea65f2fdf436ca9e32adc3a7abdd0c97b7d960"
+  },
+  {
+    "file": "bundled/coragyps-atratus-2.png",
+    "sha256": "53ccb19b3cc26cdb15c19abff2bed4da381f0431127f8d0664177b784da899b6"
+  },
+  {
+    "file": "bundled/coragyps-atratus.png",
+    "sha256": "d0b87b03b77df36759107e1bf478426049b7fcf06dd074a3ef3d44b551f86070"
+  },
+  {
+    "file": "bundled/corthylio-calendula-2.png",
+    "sha256": "cd3db6bc43c6544a7c42991ea90aed063c32b7ec148f509af16d53b7e09569ad"
+  },
+  {
+    "file": "bundled/corthylio-calendula.png",
+    "sha256": "da4d4ac0b8f4e85f07bf9ae65649441d3eed5afb9e10eb3aea1578194a7e7591"
+  },
+  {
+    "file": "bundled/corvus-brachyrhynchos-2.png",
+    "sha256": "556b9c33f863a0de29f49f293fba1058ebd95c78b216b3d17c1225f29233ef9c"
+  },
+  {
+    "file": "bundled/corvus-brachyrhynchos.png",
+    "sha256": "ffe3a1586e011d52175b7e4e285bcf64187722217090216f9dd3a4fc4faa9e46"
+  },
+  {
+    "file": "bundled/corvus-corax-2.png",
+    "sha256": "2da3952cb8977820b87e968f817171803dfef705f4f884ea83da85ef72137ada"
+  },
+  {
+    "file": "bundled/corvus-corax.png",
+    "sha256": "35d235b1091f66a4dd6f5c29c32721205e76d471c0a194446ef7f7931eeaf6ff"
+  },
+  {
+    "file": "bundled/cyanocitta-cristata-2.png",
+    "sha256": "2e5fc3727009ad52138a732fa588bc22470cf02b1f400c98f8c57e930058f2aa"
+  },
+  {
+    "file": "bundled/cyanocitta-cristata.png",
+    "sha256": "6bf26eed57e8d8ba922a5b44636f843d8313ac2b4c3f2159b22fc80d64862fea"
+  },
+  {
+    "file": "bundled/cyanocitta-stelleri-2.png",
+    "sha256": "612a76b40653701a48294f630a0bf4dcc1cc96aaa2861d2b3fe2200c1850746a"
+  },
+  {
+    "file": "bundled/cyanocitta-stelleri.png",
+    "sha256": "b4a98d44ae07c08f3ed86415d90b539ede419010682e97bd9a2b0ac80f1451e2"
+  },
+  {
+    "file": "bundled/cygnus-buccinator-2.png",
+    "sha256": "97bb178002d79e2b173bbbaf00dc9657b6f29e257dbf7369f3fc19a9daf87c1b"
+  },
+  {
+    "file": "bundled/cygnus-buccinator.png",
+    "sha256": "fcd0762c9b525056c2b0d271a997a98476eb711c0099bd0f97aef4fe38b026fb"
+  },
+  {
+    "file": "bundled/cygnus-olor-2.png",
+    "sha256": "92d47647a76aa71eec72307e931b792eace8ee39e61467114da36c98a8c25245"
+  },
+  {
+    "file": "bundled/cygnus-olor.png",
+    "sha256": "ee3f15ee92580d5e075541ed03b09081e6e6ed26b34f3121867a32085a32f9c0"
+  },
+  {
+    "file": "bundled/cypseloides-niger-2.png",
+    "sha256": "fa02df840b047e79ac2fcc09f897a159059114d029f9a4b5df2c4760f1a65858"
+  },
+  {
+    "file": "bundled/cypseloides-niger.png",
+    "sha256": "67342ef34d0644e6da86037e197c5003bb366af61494ecc15c73f1f0909dd0b5"
+  },
+  {
+    "file": "bundled/dolichonyx-oryzivorus-2.png",
+    "sha256": "47ed96f1e995c156819ada2b4e4451fb50f11cd6879a56b1d076bbd4dd0229b7"
+  },
+  {
+    "file": "bundled/dolichonyx-oryzivorus.png",
+    "sha256": "d2f847964d36c16996e301d40dc58df6c43485fc0fc5a7df24993db593ff6f5e"
+  },
+  {
+    "file": "bundled/dryobates-nuttallii-2.png",
+    "sha256": "10826929b1868654dbc5b354067ff440850879a5328ef85a25fdde8f901f4739"
+  },
+  {
+    "file": "bundled/dryobates-nuttallii.png",
+    "sha256": "54a7b7bc0487cc4844f0d8b895ded73eab02b411f18fded94ab32b4550fb61cb"
+  },
+  {
+    "file": "bundled/dryobates-pubescens-2.png",
+    "sha256": "ed2b6ad8131053b82f94f05d654e1211f0f3e474e218c5684528df4d47df0d92"
+  },
+  {
+    "file": "bundled/dryobates-pubescens.png",
+    "sha256": "efd19e09e12bf477e46afe5d889f62adf3d0ba003d1b5f94bcde7717317ff11f"
+  },
+  {
+    "file": "bundled/dryobates-villosus-2.png",
+    "sha256": "c8f5d7c6ef1abda2607ee82d81e7d15b242c364a337fd391e28684341b38b883"
+  },
+  {
+    "file": "bundled/dryobates-villosus.png",
+    "sha256": "c6a01d9fdaa20afb99c371f0c79fac88d2e715c858f5abac74e50b1cd8b2d0d5"
+  },
+  {
+    "file": "bundled/dryocopus-pileatus-2.png",
+    "sha256": "2cc71686fa70ce24dd7a8f71ae94df2fc5013a839be7f2a19a2a68143ac67bc4"
+  },
+  {
+    "file": "bundled/dryocopus-pileatus.png",
+    "sha256": "67eb0f827b55eba8070a7dd89222afabfeb09ac4c6477a7fd77845cca4b8a4b2"
+  },
+  {
+    "file": "bundled/dumetella-carolinensis-2.png",
+    "sha256": "2f241b49fe8e4f5a2ce21e03aac20ed6657d6db93ecbff134e5233d26df1424b"
+  },
+  {
+    "file": "bundled/dumetella-carolinensis.png",
+    "sha256": "ef590c88301f6b69d7283da49d7cf3514b4536731ed31455f7fdc677311eb7cf"
+  },
+  {
+    "file": "bundled/egretta-caerulea-2.png",
+    "sha256": "231b509299b9257302a2d666859c05ebf124ed82e70d5d594775730065c32eaf"
+  },
+  {
+    "file": "bundled/egretta-caerulea.png",
+    "sha256": "519da035c719571f04c56bfb880563d405361d020b22f73f0c20add5e6883c2d"
+  },
+  {
+    "file": "bundled/egretta-thula-2.png",
+    "sha256": "d179bc620925529f872334b259d0bba87c2f1edc14f989b293ff179be2503569"
+  },
+  {
+    "file": "bundled/egretta-thula.png",
+    "sha256": "c3a839b2b59f4aaf8efb43c0f1b8bd8d3c81e5dc412fd4b7216549adedebcbcf"
+  },
+  {
+    "file": "bundled/elanus-leucurus-2.png",
+    "sha256": "02dc63bf4f6db90d41af10de9359d4cfeb50971a43b5f14d96ab5fa2dc9a63bb"
+  },
+  {
+    "file": "bundled/elanus-leucurus.png",
+    "sha256": "c54a118dd5f2f50e9a641e5f7868bdc4f37860d763773f1884fd43cba3d7665c"
+  },
+  {
+    "file": "bundled/empidonax-alnorum-2.png",
+    "sha256": "c5b494742c414c8ea829ff7d704df9f52294f44d876053b10be633cdcd24d921"
+  },
+  {
+    "file": "bundled/empidonax-alnorum.png",
+    "sha256": "4aff72e102b0d29e17ac325c985d9c2e5f15828b8b5bc87e85c7e962d1dee07a"
+  },
+  {
+    "file": "bundled/empidonax-difficilis-2.png",
+    "sha256": "ccbbd2cc23809670b03b5cb060785bbc915e54edd69d84c1a6a42d70df040a53"
+  },
+  {
+    "file": "bundled/empidonax-difficilis.png",
+    "sha256": "ba9ddfa011ce9740ef6f033eb00f6f0d4e49fae6d676a4c198c5ce513dc3fc77"
+  },
+  {
+    "file": "bundled/empidonax-flaviventris-2.png",
+    "sha256": "6b83a14d859df815630a50a1dfe133633dd96825146f44d7461ed2d924a065fa"
+  },
+  {
+    "file": "bundled/empidonax-flaviventris.png",
+    "sha256": "12bfa029f179870844c6194c32835c988041606430923f11746e7244f64fc514"
+  },
+  {
+    "file": "bundled/empidonax-hammondii-2.png",
+    "sha256": "36bb10ee04f226a5ffbf729864ec3781eb8f2ad3a5bab00a70f86736e76ae55c"
+  },
+  {
+    "file": "bundled/empidonax-hammondii.png",
+    "sha256": "e96c6164dc43414bc6d1d1a4802496e18faa9e2a72fb682d590d43bb973d9151"
+  },
+  {
+    "file": "bundled/empidonax-minimus-2.png",
+    "sha256": "ffd16c6776c2f6d561c17abbda09692d6baf277e37f2a2ac734fa1a82fb6141d"
+  },
+  {
+    "file": "bundled/empidonax-minimus.png",
+    "sha256": "19da51cc7f4d4502e62ef65f49521f02ad80fc505641d424bbbc71d86e6928b9"
+  },
+  {
+    "file": "bundled/empidonax-oberholseri-2.png",
+    "sha256": "6d6ec85e9022f37301a68f4bb014783a6ce1a73e15a0aa17a614f37c7aa8935a"
+  },
+  {
+    "file": "bundled/empidonax-oberholseri.png",
+    "sha256": "d83b6c937f9c52acdba8e358b92bf57e9a70073694aaa22a3d7d5557c940aa1c"
+  },
+  {
+    "file": "bundled/empidonax-traillii-2.png",
+    "sha256": "756a812fab61b58e3c1569cb6992e9c1afb44fd2fb4419421dda42924e7d9531"
+  },
+  {
+    "file": "bundled/empidonax-traillii.png",
+    "sha256": "55528a6735a70f809b0e664d75b8334507e7f15c530c70f7164e7a8e994cf1c9"
+  },
+  {
+    "file": "bundled/empidonax-wrightii-2.png",
+    "sha256": "b53097674270cbd1f641677a6ee3bcdec781f2496676bd505533e5856d10ca23"
+  },
+  {
+    "file": "bundled/empidonax-wrightii.png",
+    "sha256": "7bd3a90c87a00e50f7cb52eb0bfe6ad300bd6c67835999a2fe704f7e1c1e091c"
+  },
+  {
+    "file": "bundled/eremophila-alpestris-2.png",
+    "sha256": "5e717b0ea558f81e362bc26af4a2b47ca585accbc1e6218415fc043e7bd61982"
+  },
+  {
+    "file": "bundled/eremophila-alpestris.png",
+    "sha256": "8f760653f06b41f9f186da4be51282b6f538468e1e766f6ad9c46aa008305fc1"
+  },
+  {
+    "file": "bundled/euphagus-cyanocephalus-2.png",
+    "sha256": "9851895077404991b6811e5e576ddebd84609519eadd0199f4e2ae869568adb4"
+  },
+  {
+    "file": "bundled/euphagus-cyanocephalus.png",
+    "sha256": "c2e5e1e53318a01189f6f022a71b37f681fb09b3cd3a63be53ee017d0391015a"
+  },
+  {
+    "file": "bundled/falco-columbarius-2.png",
+    "sha256": "487e1e851c41f609dcd20c7b90a0f15e4925919fd0083621b0bad29a31a4e1cc"
+  },
+  {
+    "file": "bundled/falco-columbarius.png",
+    "sha256": "dbe576060de7bc8f37aed11da2140aad76382332285ecc379cd521ec844c6b80"
+  },
+  {
+    "file": "bundled/falco-mexicanus-2.png",
+    "sha256": "d2b9919e3b502355bc43477630227bcb0d8f69b3a69f9eea29b94747082efa50"
+  },
+  {
+    "file": "bundled/falco-mexicanus.png",
+    "sha256": "b0a3b5a5b1ab7c93746c7fc5658cf68c20bdd8e3c2452976fe1ecd5423331b4a"
+  },
+  {
+    "file": "bundled/falco-peregrinus-2.png",
+    "sha256": "b82a15e62588fd7118ba38c5a89f5e580b42e0294535ed40fedfce05bf6bcfab"
+  },
+  {
+    "file": "bundled/falco-peregrinus.png",
+    "sha256": "fa8a940b8661b9ea07c5ba2fdc6cb4d6c671621e93db09b94d3d489f6488e090"
+  },
+  {
+    "file": "bundled/falco-sparverius-2.png",
+    "sha256": "daa586a89bb141867f7ade4073f8204af82e583c040c43c9a8a108ca1da922dd"
+  },
+  {
+    "file": "bundled/falco-sparverius.png",
+    "sha256": "93f0452c1f72c20fbb96c5fb457721967d2f57d286f9f97e00542f56cea1c335"
+  },
+  {
+    "file": "bundled/fulica-americana-2.png",
+    "sha256": "3c91fa38de8232477a78d4e41f9e5affcaeab200645c61116968c56b33f67e49"
+  },
+  {
+    "file": "bundled/fulica-americana.png",
+    "sha256": "2e5646b7171427221f3bba634f382a894f538cca221b25a9aebb25b4a19b4dbb"
+  },
+  {
+    "file": "bundled/gavia-immer-2.png",
+    "sha256": "0bca1a9186a5da3980fadad37b2870da294ea287d299bc753e6e19dd02d2756b"
+  },
+  {
+    "file": "bundled/gavia-immer.png",
+    "sha256": "2a01d78af82f5452bce4b94bb31201b90e232716b4221390348a1bd31cc576ae"
+  },
+  {
+    "file": "bundled/geothlypis-philadelphia-2.png",
+    "sha256": "bc1286e3c37a566eeacbe7e21251a264aa7f2931807336ef8af08eb5567b55d4"
+  },
+  {
+    "file": "bundled/geothlypis-philadelphia.png",
+    "sha256": "564f32b0e76c9136e2573e046645446ebb1127aaa8044b0e78b2bf248c205fbd"
+  },
+  {
+    "file": "bundled/geothlypis-tolmiei-2.png",
+    "sha256": "f4c3bfc12fbcde9f5b62d88632f5ee2b2b06f24188431f2343180ae7e6a72324"
+  },
+  {
+    "file": "bundled/geothlypis-tolmiei.png",
+    "sha256": "166d53349abf1fc592f2d664bb767af1d20888d0a575071028b3cc128064d418"
+  },
+  {
+    "file": "bundled/geothlypis-trichas-2.png",
+    "sha256": "af319c76f195bd9a982e08bc94894c8f0d9bc661a03a34807745886dcba753d7"
+  },
+  {
+    "file": "bundled/geothlypis-trichas.png",
+    "sha256": "f3da4b4043bd33b506bdad64c650fe5543301b22fdeaa436186db8a79b813c0b"
+  },
+  {
+    "file": "bundled/glaucidium-gnoma-2.png",
+    "sha256": "58307567823bafeb369f139013a123d391d1d28a99e39bf75835995425855a73"
+  },
+  {
+    "file": "bundled/glaucidium-gnoma.png",
+    "sha256": "30a1808a981714cdc4381af605c883da29672c983204a3eb8aa061e60f1ace5f"
+  },
+  {
+    "file": "bundled/gymnogyps-californianus-2.png",
+    "sha256": "71b2fbd287d3e272362a77591166b35541eeff28026244a8bc560327877d54fc"
+  },
+  {
+    "file": "bundled/gymnogyps-californianus.png",
+    "sha256": "12a1a9de12399306743e7046c10a3a9273fe7d4c7f3c3c82c711ff2bd3482dcd"
+  },
+  {
+    "file": "bundled/haemorhous-mexicanus-2.png",
+    "sha256": "3a8f07f7edde5c3426ca6c099b144abed00c30c9e6389c272f594e37756d6f48"
+  },
+  {
+    "file": "bundled/haemorhous-mexicanus.png",
+    "sha256": "e96c57bf4588fff6a90029c2e05ee10c957bf2e7dc4038c97b180bb6b8f968c1"
+  },
+  {
+    "file": "bundled/haemorhous-purpureus-2.png",
+    "sha256": "a4c495acbb4871b56402d344e5452e3c89e0439d3bc6ae336e8c7c0de15361bc"
+  },
+  {
+    "file": "bundled/haemorhous-purpureus.png",
+    "sha256": "3f74822adf3bbe14cda078197be035b3af5e842cc0e46a2b171e1e8691ad8193"
+  },
+  {
+    "file": "bundled/haliaeetus-leucocephalus-2.png",
+    "sha256": "331d9c632ec2798f81030063fabaed3f6ebffb56939273f91c1593150606aa2b"
+  },
+  {
+    "file": "bundled/haliaeetus-leucocephalus.png",
+    "sha256": "1a1ede26483aeba3ca8c881a57e522422a3cb2803e9933ac97e91fcc53c1251b"
+  },
+  {
+    "file": "bundled/himantopus-mexicanus-2.png",
+    "sha256": "3e5c6b42f4bcf69cb7f81bf4db113f5107ae39c39ed9ca0c59ea8534182fc6e1"
+  },
+  {
+    "file": "bundled/himantopus-mexicanus.png",
+    "sha256": "fed0121aad303440c80596cffad111ac7dca19677e697ae8a21140b64d4f4401"
+  },
+  {
+    "file": "bundled/hirundo-rustica-2.png",
+    "sha256": "f98f3a81f42bc5d030967c5111286030531166f23bccaeca3e36c971a1ac1a6e"
+  },
+  {
+    "file": "bundled/hirundo-rustica.png",
+    "sha256": "b5d3031681a8aae8856ccb601fb3e5dd73872145e73b159d21f9bea8e28fa15d"
+  },
+  {
+    "file": "bundled/hydroprogne-caspia-2.png",
+    "sha256": "36aaf13600ad09813b928ef2be659d4a863748efefe3c85e4adc56a37c90f2fa"
+  },
+  {
+    "file": "bundled/hydroprogne-caspia.png",
+    "sha256": "c1aa59677a9735c2c15651b93b49c61785a3c337d4503b63b80dbdef33287bbb"
+  },
+  {
+    "file": "bundled/hylocichla-mustelina-2.png",
+    "sha256": "e7ed1c999e8f895c9062939a55cfa1f96bb4b690c50daffcc1fb07243cb8e4e8"
+  },
+  {
+    "file": "bundled/hylocichla-mustelina.png",
+    "sha256": "8811f3e57095cc91fea24d70a891b924ec55ebc498ad58ba33a920a8ce498694"
+  },
+  {
+    "file": "bundled/icteria-virens-2.png",
+    "sha256": "4f6a45bd9a839dc01207a3262bb856c464b718177c7fff5a46b65e4cb09dd528"
+  },
+  {
+    "file": "bundled/icteria-virens.png",
+    "sha256": "7b2651cfa54daaad782e1d3417300233f2b2c4ad14cc58ae93d2bf696be37514"
+  },
+  {
+    "file": "bundled/icterus-bullockii-2.png",
+    "sha256": "dbd5be8468dc077de7564e404c2f79cebb6190f4275af2c28a62829585bae725"
+  },
+  {
+    "file": "bundled/icterus-bullockii.png",
+    "sha256": "1c15838b6770a738dff7200b616cf0bc1cb8a076c0f4037515999061725d4f4b"
+  },
+  {
+    "file": "bundled/icterus-cucullatus-2.png",
+    "sha256": "75e4e2d8862dedc23a61ec7895d1f257bface1ec3cc0e2d1591a3823641373ed"
+  },
+  {
+    "file": "bundled/icterus-cucullatus.png",
+    "sha256": "9ab896c98ac11719902542c5aefab788794629e27808d5bd4a98deeedd7b0fc1"
+  },
+  {
+    "file": "bundled/icterus-galbula-2.png",
+    "sha256": "e7543116f66edc888198ddf34842665fcc1ad1f852fec2e74abc786e72a63973"
+  },
+  {
+    "file": "bundled/icterus-galbula.png",
+    "sha256": "2c6ca2ec9fb4d7e612cc79ebf0268a86cb512940eefafd237cef766518371c5a"
+  },
+  {
+    "file": "bundled/icterus-parisorum-2.png",
+    "sha256": "7d66ab6649d5a176c8de106a3a8ec7b73c79565da9e21a332117cb49d339be37"
+  },
+  {
+    "file": "bundled/icterus-parisorum.png",
+    "sha256": "06c2553801e26bf990507e50a52357b54cc01a04491eb589b4d9f3775f217837"
+  },
+  {
+    "file": "bundled/icterus-spurius-2.png",
+    "sha256": "351600c3bdd16ba26fe13f95b100d2c69a6ece90ce32eb74397a3fd2275e006e"
+  },
+  {
+    "file": "bundled/icterus-spurius.png",
+    "sha256": "69e9bccc8f591b009a2b2d058d7311a77ef19d5d9b6d50e5758ba87ca5859abe"
+  },
+  {
+    "file": "bundled/ixobrychus-exilis-2.png",
+    "sha256": "3cb1b5da6cc5cba0ce226827fc2076d28eb5b61ea1120747cf59976c4b54bb40"
+  },
+  {
+    "file": "bundled/ixobrychus-exilis.png",
+    "sha256": "aa6a09bb59f7590300fa90255b0aea35d95a5189ee3b615d10821885bd165b9a"
+  },
+  {
+    "file": "bundled/ixoreus-naevius-2.png",
+    "sha256": "9e37710fcb2235155cacc4a270c4385f288aba5da711f6314d039b78e0d7c549"
+  },
+  {
+    "file": "bundled/ixoreus-naevius.png",
+    "sha256": "1cec4c98d8083096ba5b584bed5007bc0d9b1737d65271a77e9d33764249093c"
+  },
+  {
+    "file": "bundled/junco-hyemalis-2.png",
+    "sha256": "966f733e4e47371ff1a9734e55441baced3c64fd59b6b278b505e685a4985e18"
+  },
+  {
+    "file": "bundled/junco-hyemalis.png",
+    "sha256": "5671d8a53940d0d57e97a300fa255d18957931298556a5066b82d0091b55c6f5"
+  },
+  {
+    "file": "bundled/lanius-ludovicianus-2.png",
+    "sha256": "8b32aa49491f56b0fa3475529de262fd3c3503488cac8158765b1a1357c9ec84"
+  },
+  {
+    "file": "bundled/lanius-ludovicianus.png",
+    "sha256": "1ecb1a8711e3e3eeff4663beffbd29b30c199880fa74cf164403baec381c2d4c"
+  },
+  {
+    "file": "bundled/larus-argentatus-2.png",
+    "sha256": "81c2f6d78d45bcaacf18586766b79b5e75d6ea9e75394c31de806604bf8cc909"
+  },
+  {
+    "file": "bundled/larus-argentatus.png",
+    "sha256": "7095fc77f580873ec90d987de47a8a43bc2fb6bc5711f0982e3a12d71288c8fd"
+  },
+  {
+    "file": "bundled/larus-californicus-2.png",
+    "sha256": "5a0530236f20860d52d9f600050ef7214621b9c386e0a30856d146d545417d72"
+  },
+  {
+    "file": "bundled/larus-californicus.png",
+    "sha256": "3c08f4440425d78580a1c60bbcf92aa7e3f85fd663d11484d048055e87a7de89"
+  },
+  {
+    "file": "bundled/larus-delawarensis-2.png",
+    "sha256": "b09f50213ba6289ff154a7e0480ccaa3462860f0f447ed0ddd792e8eb1eb9cac"
+  },
+  {
+    "file": "bundled/larus-delawarensis.png",
+    "sha256": "fb50bbbd114d98b8bae1cf845945ae7d648a23d93f0bdb152a3a3aaf5deeca5c"
+  },
+  {
+    "file": "bundled/larus-glaucescens-2.png",
+    "sha256": "5a4d5a9c0e979988c7d670eceaa6bddaeb19a4cbb37d02e4c981061618c86839"
+  },
+  {
+    "file": "bundled/larus-glaucescens.png",
+    "sha256": "57675923b0a02b504c0a35174d51911dcd1e320d76ff24b0d23488122281d118"
+  },
+  {
+    "file": "bundled/larus-heermanni-2.png",
+    "sha256": "54a50e3134ab0aa2eb1fac72e15da121f514e807f67234ea5057a19c03c2654b"
+  },
+  {
+    "file": "bundled/larus-heermanni.png",
+    "sha256": "158d54c886926a5804b3f3faa67726d6af2501352872fe5f7e24ac321c08e7bf"
+  },
+  {
+    "file": "bundled/larus-marinus-2.png",
+    "sha256": "8f5e2eead65c94cd6d61cd710a0ed132565d03622be4a10b49749e21188e04ca"
+  },
+  {
+    "file": "bundled/larus-marinus.png",
+    "sha256": "3263f336c2d2c503588afc51f99ca4e259a0fdb454790e93ffb70961c5741afe"
+  },
+  {
+    "file": "bundled/larus-occidentalis-2.png",
+    "sha256": "7ecb5fb0dbdaffa754708a2b1c94c6e187c172e9ab319ca1fc7627af0509a851"
+  },
+  {
+    "file": "bundled/larus-occidentalis.png",
+    "sha256": "95b02c04f2fcf1c74b677556104441db3f9fbe1d0ff6a455489fc32111920487"
+  },
+  {
+    "file": "bundled/leiothlypis-celata-2.png",
+    "sha256": "e117a5b1375f7e683e78c5d9b59449cc533640deb4329438523653a809c2fad1"
+  },
+  {
+    "file": "bundled/leiothlypis-celata.png",
+    "sha256": "3896111e7815b9cb5f1280883f443a392583ca342c3d810db4bfe9c642a84d50"
+  },
+  {
+    "file": "bundled/leiothlypis-lucidae-2.png",
+    "sha256": "bf9b052078cb4f8a5955500733c6b670c40a423024e19736d6a57a31f89d1109"
+  },
+  {
+    "file": "bundled/leiothlypis-lucidae.png",
+    "sha256": "687a6e059ba0e6083329bea2238db000eebe2dce5c273768f3779e513fafe843"
+  },
+  {
+    "file": "bundled/leiothlypis-peregrina-2.png",
+    "sha256": "c433b5e7b531c0e9d2f89e99a114030304b998014d264764a0aa832760d34ea9"
+  },
+  {
+    "file": "bundled/leiothlypis-peregrina.png",
+    "sha256": "417fc06caec0a0b753e9ce5c6eb45f16589754fa4d529e3baa98c9b9709c69d1"
+  },
+  {
+    "file": "bundled/leiothlypis-ruficapilla-2.png",
+    "sha256": "2c66219f2a6a98d30ac2aa34ca84be21ba6932fc0f8831b768b627ee5b8d963d"
+  },
+  {
+    "file": "bundled/leiothlypis-ruficapilla.png",
+    "sha256": "56b3bea91bc914ce6bd4c12107a997fb53486aadd92cb1dac1979094623365e2"
+  },
+  {
+    "file": "bundled/leucophaeus-atricilla-2.png",
+    "sha256": "6f1e13a640dcc67d6f66f50fc17b227798f7377ba51e3c9961953f0bf0822801"
+  },
+  {
+    "file": "bundled/leucophaeus-atricilla.png",
+    "sha256": "4c122639d83c5be2ea7fe076c14bf7a0e126d7221dbce94050a0e2b4b303c20b"
+  },
+  {
+    "file": "bundled/leucophaeus-pipixcan-2.png",
+    "sha256": "9717e3d7c565897f2d8f770b1c79528c3fc4b7da55a754bd9fe8e68f121ac895"
+  },
+  {
+    "file": "bundled/leucophaeus-pipixcan.png",
+    "sha256": "86b9816d24686ec3f00e8a65bc6a837767531157bddc322a5d207e28e31c7dfd"
+  },
+  {
+    "file": "bundled/leucosticte-tephrocotis-2.png",
+    "sha256": "5ff97e1495ef072bbf1eb57097ce102486059adf1296eb15dc96b94e2a959200"
+  },
+  {
+    "file": "bundled/leucosticte-tephrocotis.png",
+    "sha256": "0fabcef2693928df780a7c8e24553c1b1f1d3ff18eab6e44d1d29835d10e693d"
+  },
+  {
+    "file": "bundled/limosa-fedoa-2.png",
+    "sha256": "65b2583bb5b72b55332099077c380b649ae43607a53a93d2ef12a6cccbc32546"
+  },
+  {
+    "file": "bundled/limosa-fedoa.png",
+    "sha256": "3773c0739ec409a2f33baa838cb2eb26ac497987fa912b05936f031b8f5de612"
+  },
+  {
+    "file": "bundled/lophodytes-cucullatus-2.png",
+    "sha256": "03926ef18db43a055ccfb692f4419aa11898434abd67d4431a82903bf5aa0d42"
+  },
+  {
+    "file": "bundled/lophodytes-cucullatus.png",
+    "sha256": "328da9e9d42f6922723a769028e6f7a4eef4ab8de3ecdd1c405c7cb1adbf9969"
+  },
+  {
+    "file": "bundled/loxia-curvirostra-2.png",
+    "sha256": "9727799d0d7688d6dbea7f62140022f27730a7a6230936508c0258dac8c67c41"
+  },
+  {
+    "file": "bundled/loxia-curvirostra.png",
+    "sha256": "daf9fd7ba6fa8a242d2f893b57aafa1dbe95dfffbc41e48e3809e4159959e861"
+  },
+  {
+    "file": "bundled/mareca-americana-2.png",
+    "sha256": "99ada9b869db4d304eec023973516182908bc34171ce9cf08a0eaa2b1362f7e3"
+  },
+  {
+    "file": "bundled/mareca-americana.png",
+    "sha256": "bfde0c5902a124ed818f17d34e982c1c21c1b989776fcbb999c9d8a899409f71"
+  },
+  {
+    "file": "bundled/mareca-strepera-2.png",
+    "sha256": "27caea1511b94cd04f88f26dcfc9499128267ad59097f6c63e39d74a1c794dc3"
+  },
+  {
+    "file": "bundled/mareca-strepera.png",
+    "sha256": "8b25dc5b5936bca68e34b3cd29e8870bccf83beb487457348fa7a7416b7a43de"
+  },
+  {
+    "file": "bundled/megaceryle-alcyon-2.png",
+    "sha256": "e547f1cfeae33772526c44f79feb95521fece325930e01b5bf48b381446928b7"
+  },
+  {
+    "file": "bundled/megaceryle-alcyon.png",
+    "sha256": "30f5edebaba7bffda0df68149dc3d463e388af0abe6c34882358fcf936e058d9"
+  },
+  {
+    "file": "bundled/megascops-asio-2.png",
+    "sha256": "bd98e4dab21c15f9b7ae89e3efd0b981bc8543c3a415b1c06969db684a784570"
+  },
+  {
+    "file": "bundled/megascops-asio.png",
+    "sha256": "e79fbdd02474ac8a7fcf5dd6c6141f2b921763efb7e2b82f52f22dd9337b1286"
+  },
+  {
+    "file": "bundled/megascops-kennicottii-2.png",
+    "sha256": "49caa3070c6658798291501927b767650901e3fbc7efe61cb82adf57de2fcb15"
+  },
+  {
+    "file": "bundled/megascops-kennicottii.png",
+    "sha256": "7b33944c661b01a67d02be7661ff5bd0ccec80f6b03d098ab150f0d3bdaf11d9"
+  },
+  {
+    "file": "bundled/melanerpes-carolinus-2.png",
+    "sha256": "0a3f495609cd5890aaaa6b768fc462462da0d0d71ede06cf972529b0465d561a"
+  },
+  {
+    "file": "bundled/melanerpes-carolinus.png",
+    "sha256": "f1e44593742fb42e053c6d29b39b0543b316bbf75e32b30a5c2be9f043cf995f"
+  },
+  {
+    "file": "bundled/melanerpes-erythrocephalus-2.png",
+    "sha256": "7f0055decceae31f03888a25108afbf0dd5625fcf2604d1e726ef16505d9b648"
+  },
+  {
+    "file": "bundled/melanerpes-erythrocephalus.png",
+    "sha256": "c2032f40ed0c5c2a231ff51182336918db5f2a349f75de5b2b198f55f0638c1d"
+  },
+  {
+    "file": "bundled/melanerpes-formicivorus-2.png",
+    "sha256": "131f655272419f9948cd00704dd44dd2217cc90f7f185c84a493bbb187a513ee"
+  },
+  {
+    "file": "bundled/melanerpes-formicivorus.png",
+    "sha256": "ef377d667d09c4860331733bc3d58aab810aa074c97c0f6c7f096457fc50c471"
+  },
+  {
+    "file": "bundled/melanerpes-lewis-2.png",
+    "sha256": "7eca477b838bad170bfb2985fe9ee15b79f877f3d7b9ca5a4c1a82c54dc81260"
+  },
+  {
+    "file": "bundled/melanerpes-lewis.png",
+    "sha256": "13f8e3aeed470ed87b5d2468172a58030b8e842e88d6681fb014babe56489a3e"
+  },
+  {
+    "file": "bundled/meleagris-gallopavo-2.png",
+    "sha256": "ab674f69d688a9068cdc54e03b00522f281ca9fd10aaa17310c6e908a9e32331"
+  },
+  {
+    "file": "bundled/meleagris-gallopavo.png",
+    "sha256": "5039a1f21ab8f35977ec097ce866ecab792326ba3652b415e22d5613e1bab3a4"
+  },
+  {
+    "file": "bundled/melospiza-georgiana-2.png",
+    "sha256": "0b2a2b7638e55f7a1418b93d5bc322f55d91eeae1a75281e6aebf9910b8f06d2"
+  },
+  {
+    "file": "bundled/melospiza-georgiana.png",
+    "sha256": "40c94c91d3916119332365786f5029bb9947c18a8109df6b736a139059dccc6b"
+  },
+  {
+    "file": "bundled/melospiza-lincolnii-2.png",
+    "sha256": "50b81eb0944515cfb5f8c4a6a1dac40fb495775d0175dc5521b9bbb8a0ba5fd8"
+  },
+  {
+    "file": "bundled/melospiza-lincolnii.png",
+    "sha256": "8db0dec91397014ae7803c54e97a5903efebe27856ed84c8a6d0c42388f6cb68"
+  },
+  {
+    "file": "bundled/melospiza-melodia-2.png",
+    "sha256": "cca76bcf259c64e1acc0e95a708f1875abd1605f765e0d44263acb11c4c14eb8"
+  },
+  {
+    "file": "bundled/melospiza-melodia.png",
+    "sha256": "4908164e2eb91439622d46877ad90d8db4bb06740bbe366a8795e5da6a593d39"
+  },
+  {
+    "file": "bundled/melozone-aberti-2.png",
+    "sha256": "f9ce377bca51fcc263a32c1ce267c29bd07f21c09101090e1d0f92d387e097a1"
+  },
+  {
+    "file": "bundled/melozone-aberti.png",
+    "sha256": "743cf39b7a00e77a9b5355e5c64d2f11976c5b0d578ceaa06087540f2c513ca3"
+  },
+  {
+    "file": "bundled/melozone-crissalis-2.png",
+    "sha256": "69898a45d57bd6b2d652ad1cd8c0cd64c0161a11328e965773922dde86dd4553"
+  },
+  {
+    "file": "bundled/melozone-crissalis.png",
+    "sha256": "4998772df7c9cf2190d138acf6b8e7171fd3cab321053695d5d8561c538ed70e"
+  },
+  {
+    "file": "bundled/melozone-fusca-2.png",
+    "sha256": "554ce2bee7bb84093111843a0ecec67704e2c87eca57c83578fa18524f5c50a9"
+  },
+  {
+    "file": "bundled/melozone-fusca.png",
+    "sha256": "a4185734cde89064d6eb69dbd409fcead2b3aba4fbdb21095924ad9aae478b12"
+  },
+  {
+    "file": "bundled/mergus-merganser-2.png",
+    "sha256": "06640779e1a202c7e45bf19d086eb6322d406300ac65c776da74e97788ff3135"
+  },
+  {
+    "file": "bundled/mergus-merganser.png",
+    "sha256": "784ee081fcdbfba4d66d7ec0d7ea2bb306b40008d1dee9e1385bababbfd6b8e0"
+  },
+  {
+    "file": "bundled/mimus-polyglottos-2.png",
+    "sha256": "02232fd32d00d4d6256f8f03d5a0ffd5618075f84de22c122a4c15378995b57d"
+  },
+  {
+    "file": "bundled/mimus-polyglottos.png",
+    "sha256": "a6a81fe78a28b0015de10e1bc0caaf1f522bd08cde31a44d5c75ccf078915dda"
+  },
+  {
+    "file": "bundled/mniotilta-varia-2.png",
+    "sha256": "b6fda87466551bc07707e324ec83cf9dd5f9b5b166f5659cc44c3f7a2bfc038f"
+  },
+  {
+    "file": "bundled/mniotilta-varia.png",
+    "sha256": "23c77ceb0624bd6b10e5122417d66a814752e00d8664b30f899fb06c4d10838e"
+  },
+  {
+    "file": "bundled/molothrus-ater-2.png",
+    "sha256": "88a964da83824495513140406e1c6f465ae49eb8fb913397e910437de3a99e2d"
+  },
+  {
+    "file": "bundled/molothrus-ater.png",
+    "sha256": "84e575a61155d91ff6c2a7f2c06636934fb06cd6998007370b690194510bedc3"
+  },
+  {
+    "file": "bundled/myadestes-townsendi-2.png",
+    "sha256": "a8f0b78368edd96737b36c4e448391071cd65944e7222b553b79d9b4392fe51f"
+  },
+  {
+    "file": "bundled/myadestes-townsendi.png",
+    "sha256": "d05c865882722c23f60f8d2be0f26d612e4b6870f248f3a81a36c791af109313"
+  },
+  {
+    "file": "bundled/myiarchus-cinerascens-2.png",
+    "sha256": "96a7ba5ab80f3af74a75069b01378dcc5d018f44663bb33fc3dd194ec764c2bd"
+  },
+  {
+    "file": "bundled/myiarchus-cinerascens.png",
+    "sha256": "4f4ad86d5e134a444c8ae11edeb94281de9f91a6bbdfa5a0c3430041cec7a535"
+  },
+  {
+    "file": "bundled/myiarchus-crinitus-2.png",
+    "sha256": "d8afbe85aadedd7d29711b54ae97f40db0648dce9872d685cd7f6bf221859a3a"
+  },
+  {
+    "file": "bundled/myiarchus-crinitus.png",
+    "sha256": "fa377ba14899bbd0fb6376d3888aadbd9ecc2f12a9736652fd2d109e7f0ae44f"
+  },
+  {
+    "file": "bundled/nannopterum-auritum-2.png",
+    "sha256": "40e7bf029275eaa9d0a96e8badf691dc74642c2b59b6821fd2ff9679878553cb"
+  },
+  {
+    "file": "bundled/nannopterum-auritum.png",
+    "sha256": "de9cf8a65205a64a37b4cba177f71da5bc42cda12664f10045c2cfee2b50e2ee"
+  },
+  {
+    "file": "bundled/nucifraga-columbiana-2.png",
+    "sha256": "51968a1552972de582ced0660bfb08679f466961ea959887a378dc786fa0a0a7"
+  },
+  {
+    "file": "bundled/nucifraga-columbiana.png",
+    "sha256": "92c0d0ece609c90be6600621b4157c1f5a2a759e4c0d1ba4e80948bc9e57f57f"
+  },
+  {
+    "file": "bundled/numenius-americanus-2.png",
+    "sha256": "7a0a416a9f2b9df4573acc0632dca45dffe623bfda0f11a6f96e73c6c8a90c7e"
+  },
+  {
+    "file": "bundled/numenius-americanus.png",
+    "sha256": "1eeab2a4b96c0a38394bee71ae3a5bb5ec72427a407df88818e9a3a621eed907"
+  },
+  {
+    "file": "bundled/nycticorax-nycticorax-2.png",
+    "sha256": "b295445035f9084a62d052f744279fdc6de10133a2d4acd2b3d234a72242b275"
+  },
+  {
+    "file": "bundled/nycticorax-nycticorax.png",
+    "sha256": "015e3edde0dd0cb1f83e6c1fcfccf5bdbb44fda83ee9cf5d7905ac7f1af55d47"
+  },
+  {
+    "file": "bundled/oreothlypis-ruficapilla-2.png",
+    "sha256": "ccef85d9033f6d304b42e57b83ffeb7e0d3839bd2d8ab1d4f06b825ab3ca74f7"
+  },
+  {
+    "file": "bundled/oreothlypis-ruficapilla.png",
+    "sha256": "1e5d1f329ebb0782553f3507bc361aa55e9ccee9e01152bc4892d7b4dfb38ece"
+  },
+  {
+    "file": "bundled/pandion-haliaetus-2.png",
+    "sha256": "c46c95ac95566045077f9422319476a97e09ebec0854505ac69ccac142a050f4"
+  },
+  {
+    "file": "bundled/pandion-haliaetus.png",
+    "sha256": "29b9faebf4dc0c3ad590f5e2b5decd5063b817f6014fd2abffe84271ca91ad43"
+  },
+  {
+    "file": "bundled/parkesia-noveboracensis-2.png",
+    "sha256": "7dd64b6b2b22021991ac943bbcc158d43f3eb8ea73cf2e461178d31407199942"
+  },
+  {
+    "file": "bundled/parkesia-noveboracensis.png",
+    "sha256": "2a9f4107986a7171665fdc5f830d7e2cec56336438b7b44d753198ab4edfb3eb"
+  },
+  {
+    "file": "bundled/passer-domesticus-2.png",
+    "sha256": "e93e563101bc9c0e4c72b7551d3916afa79a13eebbc1c2802eda83afd11e1d11"
+  },
+  {
+    "file": "bundled/passer-domesticus.png",
+    "sha256": "715edb1824d2f0fd5d9d9725b682902f965e2c54e2845741b721737a24aa3a17"
+  },
+  {
+    "file": "bundled/passerculus-sandwichensis-2.png",
+    "sha256": "80af0344633f633b469e9625302245c735e64eb343ec9014800fd2f0c5ff3b22"
+  },
+  {
+    "file": "bundled/passerculus-sandwichensis.png",
+    "sha256": "5efcd3b2e2ab0ce0d214b302e75e718f4dbc254ebc0e327495f7f3d8a7368b83"
+  },
+  {
+    "file": "bundled/passerella-iliaca-2.png",
+    "sha256": "23c2260eeb8c9a600225a276de694db2e57518c557dcd4ee322d27136b674d74"
+  },
+  {
+    "file": "bundled/passerella-iliaca.png",
+    "sha256": "3c112d0fe70358f7d7f77fcf5eedc17caa4d92b4b9ad990622a2d9196942f622"
+  },
+  {
+    "file": "bundled/passerina-amoena-2.png",
+    "sha256": "1f8f17540fc1e0e1123c16b9822c93fcbb327b67008d35ae87bf038a2d87e321"
+  },
+  {
+    "file": "bundled/passerina-amoena.png",
+    "sha256": "9f9ee69801a9b514b18ad7ba8ef279de4c7a3fd0bc97ca10390a8340f916dfeb"
+  },
+  {
+    "file": "bundled/passerina-cyanea-2.png",
+    "sha256": "4063c555d52c8d9cca33b14fab386c0c4405fa4a02c01142b07ba1534576a395"
+  },
+  {
+    "file": "bundled/passerina-cyanea.png",
+    "sha256": "dee957f0793b81db9ebabd6ac872c352bbd5b895b88e284b8f937cb72dbfe233"
+  },
+  {
+    "file": "bundled/patagioenas-fasciata-2.png",
+    "sha256": "325ce63997ea1f721840c381551b7cd09948fab7d8090cd195b1644bda2f7d12"
+  },
+  {
+    "file": "bundled/patagioenas-fasciata.png",
+    "sha256": "073df1274132a43117ffe4c58262eb022ce064f61889af4c98a3f387a158b59d"
+  },
+  {
+    "file": "bundled/pelecanus-erythrorhynchos-2.png",
+    "sha256": "adfdc7bf45b9cb032a44882670b2f322dc36789f4a76bdcab7a88bbcde6deef7"
+  },
+  {
+    "file": "bundled/pelecanus-erythrorhynchos.png",
+    "sha256": "53fd39b73d688ed0ca1d4ce283a51f0e687eed9836e6823477d330e4e3e42302"
+  },
+  {
+    "file": "bundled/pelecanus-occidentalis-2.png",
+    "sha256": "b02aef896ad7c955245419b08226ea8eb6f8c89dcd363dffc1989215f4b96d56"
+  },
+  {
+    "file": "bundled/pelecanus-occidentalis.png",
+    "sha256": "1b57780433cad1bb154bd4bceb0c3c32153a78272c93bbbbcf0690805f16c25c"
+  },
+  {
+    "file": "bundled/perisoreus-canadensis-2.png",
+    "sha256": "45abc8b8448ec757c7fb8ed7bf7b75eea08f9704e9f63960b3b3c7fcf1b6ea46"
+  },
+  {
+    "file": "bundled/perisoreus-canadensis.png",
+    "sha256": "bbadc7888887bb9c79f236b575d5628be8b8228cc9bd38c5113d776368aebbd6"
+  },
+  {
+    "file": "bundled/petrochelidon-pyrrhonota-2.png",
+    "sha256": "21fae3a8d141c51f7f4565a4220c1017f78c4c432edc4a679a316507aac254b6"
+  },
+  {
+    "file": "bundled/petrochelidon-pyrrhonota.png",
+    "sha256": "9dbe62d8556a4c4ca976f02fdcc74a0099eb03ded309bbea4ae3b115a81774ea"
+  },
+  {
+    "file": "bundled/phainopepla-nitens-2.png",
+    "sha256": "052c6fc0cc550f82cb13ab99a290dfa209d42d2e4a5a4395debb7367bf187d29"
+  },
+  {
+    "file": "bundled/phainopepla-nitens.png",
+    "sha256": "24116a64c6b3bc4ae4542ccc26153fe4e794cf9d46074bd4db1856cd52f09e4a"
+  },
+  {
+    "file": "bundled/phalacrocorax-auritus-2.png",
+    "sha256": "e07ac479592aad449b8955cdf9c2cb855c331b9d1a94969ffe49ba69173dfb04"
+  },
+  {
+    "file": "bundled/phalacrocorax-auritus.png",
+    "sha256": "0ca414bf4487157679577f605e903e596fdbf17786771b59261023cfddb52e2c"
+  },
+  {
+    "file": "bundled/phalaenoptilus-nuttallii-2.png",
+    "sha256": "629007d458f7e059123b169e562203179e3a1f4ec9443e511d190dbba5f20460"
+  },
+  {
+    "file": "bundled/phalaenoptilus-nuttallii.png",
+    "sha256": "4a5e87e9bd83996e8ff0bbd839b3ea07b30d62cc0d5ff76f98e7a9da34205c89"
+  },
+  {
+    "file": "bundled/phasianus-colchicus-2.png",
+    "sha256": "c495aafc6a119babd143b07ea2d670ddc69b9786bfbcb087ecee1725238f5ddc"
+  },
+  {
+    "file": "bundled/phasianus-colchicus.png",
+    "sha256": "108cbefa383a160011cc83736b83f0244c2ec0c515d33929d34022da67573b82"
+  },
+  {
+    "file": "bundled/pheucticus-ludovicianus-2.png",
+    "sha256": "26c5feba535a3a00af5ae9ea82f7df420c81a6a0959eb7ea0296a104df4e5102"
+  },
+  {
+    "file": "bundled/pheucticus-ludovicianus.png",
+    "sha256": "edae31af0cd876c2c36cbd70341238060ad313bd1ba05dd996eeae65c1cf625e"
+  },
+  {
+    "file": "bundled/pheucticus-melanocephalus-2.png",
+    "sha256": "b5293d8f4b5348396ff4d670e533469b6810eb1c595e4411d21653c5a0934ae2"
+  },
+  {
+    "file": "bundled/pheucticus-melanocephalus.png",
+    "sha256": "c82f4ebee8c155430f9374f5a7c6b613fe845f8427f89c53a048450214138193"
+  },
+  {
+    "file": "bundled/pica-nuttalli-2.png",
+    "sha256": "c9619b81cddca959126b9f80c1f3a3ab1e09a5b595007d56f0540399923bfd57"
+  },
+  {
+    "file": "bundled/pica-nuttalli.png",
+    "sha256": "3497d6f345f6d811e3af18bb9c70a659f1cf0318b20a12669ea42fe422555017"
+  },
+  {
+    "file": "bundled/picoides-arcticus-2.png",
+    "sha256": "f87b37ecff2e00d9d1128c078039a05275ba549b5e212515192ba3218c7ed27e"
+  },
+  {
+    "file": "bundled/picoides-arcticus.png",
+    "sha256": "0e8e9257a7137488a8d04e7ff41bdcf1b55781df9d640a16cb34446c0b7b5223"
+  },
+  {
+    "file": "bundled/pinicola-enucleator-2.png",
+    "sha256": "c0c792e03d8c9f7f05685fbd0d48fabfe9c22b631d360c53341adf2cb55bcdca"
+  },
+  {
+    "file": "bundled/pinicola-enucleator.png",
+    "sha256": "9a83f4756ef133822d82a48d23515c6747a23e7442a249044c3948e67256906e"
+  },
+  {
+    "file": "bundled/pipilo-chlorurus-2.png",
+    "sha256": "a600c39eb1f3cadb7047ad7105f18f0ff2e798ab4fe94b141f44a34071c2a90c"
+  },
+  {
+    "file": "bundled/pipilo-chlorurus.png",
+    "sha256": "3434de6c103b1af64142b3b02bd00e0cc3f6605b1e137eb6705b663a77b9edfa"
+  },
+  {
+    "file": "bundled/pipilo-erythrophthalmus-2.png",
+    "sha256": "c8d9126edb5b1e5602291f54348273920151746552e3a20bdb6ccf950197b70e"
+  },
+  {
+    "file": "bundled/pipilo-erythrophthalmus.png",
+    "sha256": "538ce4dd9bfb8226e03f9b73f3b32071c7f725b200d035336c48874d79a15c9b"
+  },
+  {
+    "file": "bundled/pipilo-maculatus-2.png",
+    "sha256": "ec256c24c79ba02ad627fc0bc861b304b9f29c94ebae5bde4757f343ef2fc448"
+  },
+  {
+    "file": "bundled/pipilo-maculatus.png",
+    "sha256": "c88433a6b799788d58c42f8fbc19c197854115612b4d89b37cfc11c72230fc89"
+  },
+  {
+    "file": "bundled/piranga-ludoviciana-2.png",
+    "sha256": "b1c1cb8c3c7b586e4f026de93d675be1a0ff2dad4f32efce521b80c4aa00cf59"
+  },
+  {
+    "file": "bundled/piranga-ludoviciana.png",
+    "sha256": "76bfacac8ad4a02ba1e2678c64b1982ca1d0704a33e4886620052d681a977747"
+  },
+  {
+    "file": "bundled/piranga-olivacea-2.png",
+    "sha256": "1825189f6a0a74f89df3f7440bf37a70f1d5afa0819192238765bd8778fbe565"
+  },
+  {
+    "file": "bundled/piranga-olivacea.png",
+    "sha256": "65140564cd9b78d9464c61b74f40a69880c8ca7181589f4c1ceec0bfe467f080"
+  },
+  {
+    "file": "bundled/piranga-rubra-2.png",
+    "sha256": "538f6cfd05cdc0b0b0569a39b1f14a4a08abd5c8b60bb0bb11c0fe0c57d19c06"
+  },
+  {
+    "file": "bundled/piranga-rubra.png",
+    "sha256": "e559d4ed6ee03cc66edea73e09b1dc77fa9ade5c9a60663aa4e90eaabba932fa"
+  },
+  {
+    "file": "bundled/plegadis-chihi-2.png",
+    "sha256": "8f36aaa2131bcdf5f5169acbd8dfff8a9b0b52d139977f93df9a56f500d1a4c7"
+  },
+  {
+    "file": "bundled/plegadis-chihi.png",
+    "sha256": "eba7926bc33e93658a44b214a5a3d702878d66a5cda61848608b681f9f416443"
+  },
+  {
+    "file": "bundled/pluvialis-squatarola-2.png",
+    "sha256": "ad71d2af16f0262708e80a2fda14b6dfc24df236125fba730aa53fc58de16294"
+  },
+  {
+    "file": "bundled/pluvialis-squatarola.png",
+    "sha256": "cc17bacdad654ca3a8d24f0458f0be69b19e51d87b47e9cfc8202572faa3be5e"
+  },
+  {
+    "file": "bundled/podiceps-nigricollis-2.png",
+    "sha256": "4f7df3765bb19ee941712f0da8f48a5c674faa6b8e57cff6ebc6280c2f326faa"
+  },
+  {
+    "file": "bundled/podiceps-nigricollis.png",
+    "sha256": "3c5781e9d92d0fb801172c3fd7bc027e77db4f0638b42a0be3d0c8d757ff2b1b"
+  },
+  {
+    "file": "bundled/podilymbus-podiceps-2.png",
+    "sha256": "bff6704a0366e74dcc90f3d01cf1b4fde25c926e758834d6041985646ee5eb53"
+  },
+  {
+    "file": "bundled/podilymbus-podiceps.png",
+    "sha256": "3c3ba1262a7cc7ac30836e46e0ff43c77c0a34847353d6baf689f1c62f5d1647"
+  },
+  {
+    "file": "bundled/poecile-atricapillus-2.png",
+    "sha256": "d5853fb62705f7819b39d2ad9e76b0ecf7589a52e2d6b6707dfb088360df9782"
+  },
+  {
+    "file": "bundled/poecile-atricapillus.png",
+    "sha256": "de5e765e42f7a1021b9ebda9e2a3d42426d85718efbad32bc6d3c9f104551401"
+  },
+  {
+    "file": "bundled/poecile-gambeli-2.png",
+    "sha256": "579937cc1eccdc954d4b350cd25cd1248b6df85e55a2b13fb6fc567492d14d5d"
+  },
+  {
+    "file": "bundled/poecile-gambeli.png",
+    "sha256": "5754476140e62efdbb3710278babbf5a69578e648efa17747daf0db2361821e1"
+  },
+  {
+    "file": "bundled/poecile-rufescens-2.png",
+    "sha256": "79d3f96a0d5a9ec3f620d487e4abf4b11c0698a88221ba915c9b1c87784388e1"
+  },
+  {
+    "file": "bundled/poecile-rufescens.png",
+    "sha256": "015f77ec4b35efbfc7f7694773533b0b5b74d6beff28e7e4b307e2bd850810c4"
+  },
+  {
+    "file": "bundled/polioptila-caerulea-2.png",
+    "sha256": "e9edca56498853301b61abd7384f16cc5ae86d15308b34c5461e2d2cc81261e2"
+  },
+  {
+    "file": "bundled/polioptila-caerulea.png",
+    "sha256": "f4d5a05bada8f600595c15b3ba14fcfba8a7f63e88e4d700394fd09d6199be9c"
+  },
+  {
+    "file": "bundled/pooecetes-gramineus-2.png",
+    "sha256": "026d1cc3a1955ca802cb719fcdd39c8dec463f6779cd3705739528cf65c9cdb6"
+  },
+  {
+    "file": "bundled/pooecetes-gramineus.png",
+    "sha256": "319450ca0b81bac4756348d0ee6757be82d5b6929acacefb03db6608293d2094"
+  },
+  {
+    "file": "bundled/porzana-carolina-2.png",
+    "sha256": "805f6434436094e556172e8a5c989dfc7714941470ba92719f09f2cc28c2df61"
+  },
+  {
+    "file": "bundled/porzana-carolina.png",
+    "sha256": "0fc3c4a9c22e6391cd9f9a35fc34a17c7b445606b6ec7ab2a72bfcd5ac32ffb7"
+  },
+  {
+    "file": "bundled/progne-subis-2.png",
+    "sha256": "0057d846e354e7cdcb53a4ad3f2e01bc3e21b56cdb1f6203f65129869668719a"
+  },
+  {
+    "file": "bundled/progne-subis.png",
+    "sha256": "6eccf886bcec9fb42d4d18298c1cfd79b538003daa905e1fe51fbab4e24efc53"
+  },
+  {
+    "file": "bundled/psaltriparus-minimus-2.png",
+    "sha256": "95404bb26e05aabbb7560f0c01463ecc17d734dcf2c87b68bc3fd1c5a36169b0"
+  },
+  {
+    "file": "bundled/psaltriparus-minimus.png",
+    "sha256": "552d28846c64868f8752918fe78a992aeae339ba33022d383bdfa8a4df22713e"
+  },
+  {
+    "file": "bundled/quiscalus-mexicanus-2.png",
+    "sha256": "db6ecd9a7ecd7eb4f2dc89b0152d99f83798f75ba81fc1f65aa0ed8fdaa7252c"
+  },
+  {
+    "file": "bundled/quiscalus-mexicanus.png",
+    "sha256": "f39c7c6c90272a8f20981c2416c3af3ade78a49e97341a4f4e0ec315bbb64b9c"
+  },
+  {
+    "file": "bundled/quiscalus-quiscula-2.png",
+    "sha256": "e088bb2348e696bb4928354beddb0ec2047b0ed8516d5268a4476eeac04d2ccb"
+  },
+  {
+    "file": "bundled/quiscalus-quiscula.png",
+    "sha256": "63264a011587e5edba703106b1bf59b76c811a69f2b06ee8a2ad186de6351a67"
+  },
+  {
+    "file": "bundled/rallus-limicola-2.png",
+    "sha256": "987a2c4602c3c601581a4885d7a97a64e7d0097377ef2e075b118dc00de03e01"
+  },
+  {
+    "file": "bundled/rallus-limicola.png",
+    "sha256": "722a842430e12cda43b4bf50c76542adcbbfa810496297510060291f9a835e16"
+  },
+  {
+    "file": "bundled/recurvirostra-americana-2.png",
+    "sha256": "769d999eea38bd2300c59ae45a7a701f445b38114709e2848c96908e44d7f585"
+  },
+  {
+    "file": "bundled/recurvirostra-americana.png",
+    "sha256": "3dbe30e948ba8c971222e603f3da8708ef80a4de9d570de0ed837e829fd3f0c5"
+  },
+  {
+    "file": "bundled/regulus-calendula-2.png",
+    "sha256": "924614aeaaefca24810437c1d575f51cd8a2cadc33b8d050073b84f5a2a7ca34"
+  },
+  {
+    "file": "bundled/regulus-calendula.png",
+    "sha256": "a8873df28db5ba83043c9e62cbcbfba322c34d4440f542225f2cc7a24c1c998c"
+  },
+  {
+    "file": "bundled/regulus-satrapa-2.png",
+    "sha256": "319e7983cba25a532605323f397ea0cf649f69f03573414abee61b5a1c03a711"
+  },
+  {
+    "file": "bundled/regulus-satrapa.png",
+    "sha256": "51d007c088b996749778872b2b4e946186a29b147369741fdf53488c9df8eac5"
+  },
+  {
+    "file": "bundled/riparia-riparia-2.png",
+    "sha256": "e507fa97bbcf44c9f9078a4b682d0d13917ea872b2592dd6f706f6385f0abca5"
+  },
+  {
+    "file": "bundled/riparia-riparia.png",
+    "sha256": "de32e12433881065319fd616c0081ea5a221f87b404d5aafe994e8be720c9ce6"
+  },
+  {
+    "file": "bundled/rynchops-niger-2.png",
+    "sha256": "b7575a1a06021e3c9944308cd143a50e0943b851f0a7f081ea90cebfc7c53360"
+  },
+  {
+    "file": "bundled/rynchops-niger.png",
+    "sha256": "e9cf62e887928378d70a09a9fb33d84203fae8a4c2117d03a98caaf667e05607"
+  },
+  {
+    "file": "bundled/salpinctes-obsoletus-2.png",
+    "sha256": "07ff8715d18f6f6e6cccb52e3297010042f8931094affec397b858f23bfed77a"
+  },
+  {
+    "file": "bundled/salpinctes-obsoletus.png",
+    "sha256": "6ed29d1a896ca8f529aaa61e1aefb1bcf9eaebd7c58ad9551d40434e2c8877c9"
+  },
+  {
+    "file": "bundled/sayornis-nigricans-2.png",
+    "sha256": "3b510d8d22551ecf1ce11ea144cba2a2a5a3defea21a5862872309de5915df4f"
+  },
+  {
+    "file": "bundled/sayornis-nigricans.png",
+    "sha256": "c4a35b84f71f2e54157eab5d8622572f94ff5976ed8497b34527285e5f536937"
+  },
+  {
+    "file": "bundled/sayornis-phoebe-2.png",
+    "sha256": "ef9cad17c0cd4c14119c5e9abda20630832f03e0096b0423d98679b2cc24fa4f"
+  },
+  {
+    "file": "bundled/sayornis-phoebe.png",
+    "sha256": "073bff705398af7e6ca6f4d58ef89ebca91bbefb87227e60a6827d99d06304d6"
+  },
+  {
+    "file": "bundled/sayornis-saya-2.png",
+    "sha256": "db939ebfa16a6df0ce16baf208ff91fe00776c972919f592be1abfe84d86345d"
+  },
+  {
+    "file": "bundled/sayornis-saya.png",
+    "sha256": "94915d9b69a499e2cd975d6bf4329735c6740e5563150ae451c5667ff0f6683b"
+  },
+  {
+    "file": "bundled/seiurus-aurocapilla-2.png",
+    "sha256": "5543b231d63b4b4a3ddfa170d074a9c2ac9abf96a45e530283fe834d251fa673"
+  },
+  {
+    "file": "bundled/seiurus-aurocapilla.png",
+    "sha256": "41eeda600b0fcff147ef099a04b2238c3489f94cdf26f4d3459a2fe821fbb42c"
+  },
+  {
+    "file": "bundled/selasphorus-platycercus-2.png",
+    "sha256": "07226c4a532fa5f3e765e65733f8dd3f057e925b566ddcdbdb77be2f9320a1e0"
+  },
+  {
+    "file": "bundled/selasphorus-platycercus.png",
+    "sha256": "4272bb047267dce83271a5a270160fab383097d1ed80d1e9b73d5fe888746dc8"
+  },
+  {
+    "file": "bundled/selasphorus-rufus-2.png",
+    "sha256": "8ac6b94763b3f4d0b464dec546dd714a9b92d1d4c9dcb67689aa8a2053725f8e"
+  },
+  {
+    "file": "bundled/selasphorus-rufus.png",
+    "sha256": "c0351101c9e02ff22498840c82f5793cf34bb82c3f560823e8fe74fd765f3ec6"
+  },
+  {
+    "file": "bundled/selasphorus-sasin-2.png",
+    "sha256": "ca380dda8d866525b3b85ca9ba8b376273f0f5e16254f184886d52a3fee3ed10"
+  },
+  {
+    "file": "bundled/selasphorus-sasin.png",
+    "sha256": "75c59047d152eec2432d42cb5945cba3e2c7856786cdd19b33511571a96134f6"
+  },
+  {
+    "file": "bundled/setophaga-americana-2.png",
+    "sha256": "f776eb50bde17c3747061034275d2d0135989d74deb8fd0c0781880d0a50a00b"
+  },
+  {
+    "file": "bundled/setophaga-americana.png",
+    "sha256": "4f07d7107bdd83960651d50553c757dcc799e44b749186c1f8395300de4b15d5"
+  },
+  {
+    "file": "bundled/setophaga-caerulescens-2.png",
+    "sha256": "4e8b6a5a7ced1653dd8ebea18374d7404430b6961888fba1ab1b47231307064e"
+  },
+  {
+    "file": "bundled/setophaga-caerulescens.png",
+    "sha256": "3deecdea235e4c5b24611def7699fe5918d00b6b2af511c27e44dc7c2865facb"
+  },
+  {
+    "file": "bundled/setophaga-castanea-2.png",
+    "sha256": "24e9136ddd686d1f2f77ecb8da9308160d25e193e1c4aec792911fdcb029bb82"
+  },
+  {
+    "file": "bundled/setophaga-castanea.png",
+    "sha256": "f904ccebfdb39cdf8f78ffaa71f6506bd9134a01386f4e71ba70cb1289e5eb7f"
+  },
+  {
+    "file": "bundled/setophaga-cerulea-2.png",
+    "sha256": "194061ddc1271d5278df951b39ba3c4f663fc0a5bc26661c60822cc137307165"
+  },
+  {
+    "file": "bundled/setophaga-cerulea.png",
+    "sha256": "55fd65c25c46b5eac05f0f4b81cdb63586cb1c7d061238ca5595dc9958b55440"
+  },
+  {
+    "file": "bundled/setophaga-coronata-2.png",
+    "sha256": "9fd0f8f2c252a7c3e0da3cda0c47d0275a0c19076fdeae27be90cb21d6d19971"
+  },
+  {
+    "file": "bundled/setophaga-coronata.png",
+    "sha256": "e2abf9ab66ef5cb287a3ee6c29e34b1ed47358e2ba4d63a6e9183317957577d3"
+  },
+  {
+    "file": "bundled/setophaga-fusca-2.png",
+    "sha256": "4915828ae5e15d58a020f3a1ae6235050b815c77eb8b149f1c9e08557171f7c9"
+  },
+  {
+    "file": "bundled/setophaga-fusca.png",
+    "sha256": "271c4edb8a5bd3d1c0a64d675e8ebe2702437699ad43972eb6b74606c3c683e5"
+  },
+  {
+    "file": "bundled/setophaga-magnolia-2.png",
+    "sha256": "2d7aa7f02f6cd621b5f8f35277f72d9a9a4db5580cac4f141a90bbe1461634a9"
+  },
+  {
+    "file": "bundled/setophaga-magnolia.png",
+    "sha256": "a16ccd98bfd3db7dd8eae697f2077ce5a7ed4426993016dca12e9dac3de778d0"
+  },
+  {
+    "file": "bundled/setophaga-nigrescens-2.png",
+    "sha256": "b3d74e363e208e7ca5cf7b33ab495393fab443af84a3b035a56b6b17ed7dabbf"
+  },
+  {
+    "file": "bundled/setophaga-nigrescens.png",
+    "sha256": "22ec0655d123dc507def7c7e462173c04ddb26c00230025b1cfe3a180d14f0d0"
+  },
+  {
+    "file": "bundled/setophaga-occidentalis-2.png",
+    "sha256": "69f1380c0e71deb8b2fd24d8424144d50ebe2948c312ec2863469960484f714c"
+  },
+  {
+    "file": "bundled/setophaga-occidentalis.png",
+    "sha256": "7d6f4ee8c822e2231ba35b358afb1d6f002a32fcc3f4d1836994f57f3e8e7971"
+  },
+  {
+    "file": "bundled/setophaga-palmarum-2.png",
+    "sha256": "54c2de93624169a59bbc971273040e125f9cb95de8def3552586b7665898eae7"
+  },
+  {
+    "file": "bundled/setophaga-palmarum.png",
+    "sha256": "7d21dfdc73d8b792176981295a4db746005002ddbe9a1f8d16e3d062ff5c0ff0"
+  },
+  {
+    "file": "bundled/setophaga-pensylvanica-2.png",
+    "sha256": "c9b4fd5a450bbd86531a4d9afbe2917fbc338991a4a6c2c6f3a5be38e3a87609"
+  },
+  {
+    "file": "bundled/setophaga-pensylvanica.png",
+    "sha256": "b6bfcec15ff577fd19d164504a1321b4ea5018059dc23fcae9f44b54376e2ccf"
+  },
+  {
+    "file": "bundled/setophaga-petechia-2.png",
+    "sha256": "d56c1fffdf61395694fec6f6666946a9d4ea34c8ae0fa315349b7a4612193946"
+  },
+  {
+    "file": "bundled/setophaga-petechia.png",
+    "sha256": "14ed2470f16228e80f03c9fd4921e34545921d165a8cc0bb4a7411d1e79aa73e"
+  },
+  {
+    "file": "bundled/setophaga-pinus-2.png",
+    "sha256": "b17ad8bf9a6e9e193cabafabd2e4e882910ab2f165e628f94bcd24f6ad47323c"
+  },
+  {
+    "file": "bundled/setophaga-pinus.png",
+    "sha256": "4b0713e1cf4fdd27f662359010775793304b42c0e7ea7a100cd0cb9db0db002f"
+  },
+  {
+    "file": "bundled/setophaga-ruticilla-2.png",
+    "sha256": "a92b0e0b1bbcf9b716ac618fd0df671c270f0f2ea4b710d5930688e6def16d7c"
+  },
+  {
+    "file": "bundled/setophaga-ruticilla.png",
+    "sha256": "83c15c3a225f632057a354f26580c961364819949dcf4ad0ba00a5ae653c9742"
+  },
+  {
+    "file": "bundled/setophaga-striata-2.png",
+    "sha256": "6b1e76de1506c712944a111251b8454cb9e6349fe0aa653ddeef99af1186fa98"
+  },
+  {
+    "file": "bundled/setophaga-striata.png",
+    "sha256": "b782903e522d19fa87c2c8be0132f9167372fa6fef7512c2e69dedd695636ea7"
+  },
+  {
+    "file": "bundled/setophaga-tigrina-2.png",
+    "sha256": "4b3dcaab6e8464378bada0907be8173b35ea12fe7e2ed3bc7d0a79ce5c00f268"
+  },
+  {
+    "file": "bundled/setophaga-tigrina.png",
+    "sha256": "acd6b2ef68001c67a6c38bb47ca1496d1c468364664f3e931dc792fdd42c4c7c"
+  },
+  {
+    "file": "bundled/setophaga-townsendi-2.png",
+    "sha256": "76678b07b055253bc4e9c8a7ad9634b011bb7ba000c9104628a47e8ecba200d4"
+  },
+  {
+    "file": "bundled/setophaga-townsendi.png",
+    "sha256": "4545991a336bff816eb6b410893afb1b1aebdb4ca1b7e8b21b1a863270df0b77"
+  },
+  {
+    "file": "bundled/setophaga-virens-2.png",
+    "sha256": "55e16f94cae46397c19ba16712a66adf0d92a42454df4fefce31d19cf7988030"
+  },
+  {
+    "file": "bundled/setophaga-virens.png",
+    "sha256": "d3c8dff13e3b7aaba38b44f7c19af37dfb13ae9a61b7e6016658932c64e27b6b"
+  },
+  {
+    "file": "bundled/sialia-currucoides-2.png",
+    "sha256": "e290fa51f799dd3d882c0a8026e5179d50b56c655a814d4ba00c11a8fd0060e1"
+  },
+  {
+    "file": "bundled/sialia-currucoides.png",
+    "sha256": "5182dd9e9b0aadae741719211a012a1ae4c21e835ed25bf98c5c98e92b859692"
+  },
+  {
+    "file": "bundled/sialia-mexicana-2.png",
+    "sha256": "d158b64feff0e2b8909f4c4938b8e1224058576f297b788e8790c33ee7717e41"
+  },
+  {
+    "file": "bundled/sialia-mexicana.png",
+    "sha256": "f53d7cc3024abc0d58a0b3ec91298128e06465223e6e32bb7d04dc5ec2aa7527"
+  },
+  {
+    "file": "bundled/sialia-sialis-2.png",
+    "sha256": "2cb39fed0000aec94cb5f78f8a8376d2dfec03a83ae6f3f9f1da3d6a7b603e7d"
+  },
+  {
+    "file": "bundled/sialia-sialis.png",
+    "sha256": "919dbe3cec67afc57df85d45209860f5a2c4f99dd5d1ec161a55d9681f31d179"
+  },
+  {
+    "file": "bundled/sitta-canadensis-2.png",
+    "sha256": "9870e1314545b85298446f17c51015db11568c05c2cafa9ec47282ec3abb1815"
+  },
+  {
+    "file": "bundled/sitta-canadensis.png",
+    "sha256": "ffb7f2d00788afa07f10027b9ef5c8fcde19109cbfea93dd250d4034f2101c5e"
+  },
+  {
+    "file": "bundled/sitta-carolinensis-2.png",
+    "sha256": "1dc71d1742f20057ac5a2689f389ff4944e6c3ebdcf5bc3f1b098f96557b7dc9"
+  },
+  {
+    "file": "bundled/sitta-carolinensis.png",
+    "sha256": "38706465cb19f7c17d43f1c013302a8b7f27a89ff1d4c57d85198aeef7ddea68"
+  },
+  {
+    "file": "bundled/sitta-pygmaea-2.png",
+    "sha256": "bb807e3041759296c0449565ceea3a712c6f0b2446fdb36c6ca9c3db945b742b"
+  },
+  {
+    "file": "bundled/sitta-pygmaea.png",
+    "sha256": "b6418a09716168f30345156142f65abd5455887e4ed167b43404f520cee32e8f"
+  },
+  {
+    "file": "bundled/spatula-clypeata-2.png",
+    "sha256": "e61b45fb785b84ad42134782f5bf5fdebf0cba7b4db430d098bc0f64acadc7be"
+  },
+  {
+    "file": "bundled/spatula-clypeata.png",
+    "sha256": "ba01ecf604a2a07b2aa9785dc8d3b74d5365563b2749cb00302cadcc749e7309"
+  },
+  {
+    "file": "bundled/spatula-discors-2.png",
+    "sha256": "392d901b80cc17eb57c5c5dfb5dc974afe8b57227fe7a63af99c6fa8a39a72cf"
+  },
+  {
+    "file": "bundled/spatula-discors.png",
+    "sha256": "70114a64b0576fc2c456a9ea02616ce95d9c127df3fc05524b4909f22165fd8f"
+  },
+  {
+    "file": "bundled/sphyrapicus-ruber-2.png",
+    "sha256": "6ff27236fb3350793b26e465d94e68ce0a79bf91e681d507fea77a626eaf475d"
+  },
+  {
+    "file": "bundled/sphyrapicus-ruber.png",
+    "sha256": "af0976d1cca893f1163cb4315ef028f97c86c3a36294e762673739f5b303fc4b"
+  },
+  {
+    "file": "bundled/sphyrapicus-thyroideus-2.png",
+    "sha256": "667cda1dfa8c5931a4a690d7e2dede3a5226fbcca1796dc8c2348aaf5edfe0bb"
+  },
+  {
+    "file": "bundled/sphyrapicus-thyroideus.png",
+    "sha256": "b9cbee2d09ee04d86844a1eb9d1018ef56f6b419efd10f3012c5551d03a6b482"
+  },
+  {
+    "file": "bundled/sphyrapicus-varius-2.png",
+    "sha256": "3b6364bba3bb1523f61191b23ea81af15d5ef9dfa98ab3fed626f1c9e73cfffc"
+  },
+  {
+    "file": "bundled/sphyrapicus-varius.png",
+    "sha256": "6ade0d402294bde84b0c3838ae1b3564295fa688fb06fbf7e00f3d1ef8c559bb"
+  },
+  {
+    "file": "bundled/spinus-lawrencei-2.png",
+    "sha256": "e4f258cdae0661bdaeeab802422a29bd3134cf7e4a5ba1b6574dfbb6c001d198"
+  },
+  {
+    "file": "bundled/spinus-lawrencei.png",
+    "sha256": "1230e3ba76866cc79eb55596451f5740907cb87ee64079e1540f6d4e81234dd4"
+  },
+  {
+    "file": "bundled/spinus-pinus-2.png",
+    "sha256": "b55281cca456878315815b011fdc28bce785678f187f339fa5bc44acd4906c64"
+  },
+  {
+    "file": "bundled/spinus-pinus.png",
+    "sha256": "f510eb25356535b28d7ab980a78a97aeab12f6b812fc7c1e1b1c4942a4472fae"
+  },
+  {
+    "file": "bundled/spinus-psaltria-2.png",
+    "sha256": "8e4f4a089f059f309a6f01de520f9212e6a7a6d67215510ff62d7ce7267b82a0"
+  },
+  {
+    "file": "bundled/spinus-psaltria.png",
+    "sha256": "8655215018f857ed270cc70cff824acb355e7d58ab1496ac4d5a0bfe06a8f72f"
+  },
+  {
+    "file": "bundled/spinus-tristis-2.png",
+    "sha256": "f6797188dd69ae152162c7c8d99d60cd8daa2392051adca372037697c9884ed2"
+  },
+  {
+    "file": "bundled/spinus-tristis.png",
+    "sha256": "6d4c336c2f111d129918c7431b293bef8f3b5278f3fbe7b6fbb6759130251c6d"
+  },
+  {
+    "file": "bundled/spiza-americana-2.png",
+    "sha256": "d64a7dc6fe5246a4cea7db08f92b082d8b68c7217647939044b1428de0712b3e"
+  },
+  {
+    "file": "bundled/spiza-americana.png",
+    "sha256": "7a64c5e61d7baf01d3f0b52ea723166a1521e34a1bdfa6239977530301c70fa7"
+  },
+  {
+    "file": "bundled/spizella-atrogularis-2.png",
+    "sha256": "d0b37b325f460456e60ff9757b7136650a71f5f26b401da7d302ad3bac27773c"
+  },
+  {
+    "file": "bundled/spizella-atrogularis.png",
+    "sha256": "435fd28a20a63ba93d934987f88cbc3963e46dea38cbb5a12b0b50d0b2848d62"
+  },
+  {
+    "file": "bundled/spizella-breweri-2.png",
+    "sha256": "b3d949ac5d39a911ab74c8a287e300dde80182403f2b8b7cfef9df923983f8df"
+  },
+  {
+    "file": "bundled/spizella-breweri.png",
+    "sha256": "871045e41b3f29d10c7c1f3cb1309aad101554f4e4375c4d73671d2fe9aae50c"
+  },
+  {
+    "file": "bundled/spizella-pallida-2.png",
+    "sha256": "10f527aea0fcedeba6853cf62a9273105c3cb969a4a1cbdc394a498538b9305c"
+  },
+  {
+    "file": "bundled/spizella-pallida.png",
+    "sha256": "e25f71417d599f6e2c4696743474646b0880a2fbd00a19bc376acfa36a57ae4e"
+  },
+  {
+    "file": "bundled/spizella-passerina-2.png",
+    "sha256": "5bac07e59a35672fdd0bafde1ef001a74c25c321fac68d42118bf7453d3f53ba"
+  },
+  {
+    "file": "bundled/spizella-passerina.png",
+    "sha256": "ab47a458a767be8174961726f72fb982eacdc004c0409a9c1557cbb0ddc14175"
+  },
+  {
+    "file": "bundled/spizella-pusilla-2.png",
+    "sha256": "c74c643d9814c84a3c413b6294e5ea448f538f6b2f64b5aff2284bf6a25f327d"
+  },
+  {
+    "file": "bundled/spizella-pusilla.png",
+    "sha256": "fc1d3edfdb5b3313a9c1276d457ac3519d111d7cde6940156126fbcc6299e882"
+  },
+  {
+    "file": "bundled/spizelloides-arborea-2.png",
+    "sha256": "aa91f823d571b8567af9620f2d397bb7c3526406bdbbd1bf95f66663bd43fc87"
+  },
+  {
+    "file": "bundled/spizelloides-arborea.png",
+    "sha256": "383e15dc0711ee77e9196f242ec0886f9aa37727af93e752cdbc2d89e9ba7bdc"
+  },
+  {
+    "file": "bundled/stelgidopteryx-serripennis-2.png",
+    "sha256": "eb64c56d69466a4f60b7c71570e8d985b4b3bbe26d0fac947c0d0b56fe45542d"
+  },
+  {
+    "file": "bundled/stelgidopteryx-serripennis.png",
+    "sha256": "dd90c015ba5a0c3537cea267680cf08d352321d6b75b2e831566f3318e94b95d"
+  },
+  {
+    "file": "bundled/sterna-forsteri-2.png",
+    "sha256": "05f4fbe584cf68542951b8d76377e0935dd7a9d17477d133805ccaa5368cdfe7"
+  },
+  {
+    "file": "bundled/sterna-forsteri.png",
+    "sha256": "cf0939fe3533668ec51c085bacc7c10b902d584478160fe2183e70d7871abf7a"
+  },
+  {
+    "file": "bundled/sterna-hirundo-2.png",
+    "sha256": "b14669eaf8f38830a3e214d601e924a0fed76ca2b43c44ac9dd5c49408340468"
+  },
+  {
+    "file": "bundled/sterna-hirundo.png",
+    "sha256": "71a029ef95167e5b30343a4097f3b1896d56169cd4498e6b0ec88e933bada26f"
+  },
+  {
+    "file": "bundled/streptopelia-decaocto-2.png",
+    "sha256": "c79cd54902badb5fc4e8742fe84f469a39ab473050ad841f6082141b88fabe3d"
+  },
+  {
+    "file": "bundled/streptopelia-decaocto.png",
+    "sha256": "ef5788142a9d78ba197a3c8a5e07e4436269fe815cea2cebbad2962074b763a3"
+  },
+  {
+    "file": "bundled/strix-occidentalis-2.png",
+    "sha256": "4b7a5dad0642ff9bf59a0573cd6f237d77f86c09408ee16559574ea5e1d3f2e1"
+  },
+  {
+    "file": "bundled/strix-occidentalis.png",
+    "sha256": "f031fe76f1805577c3e02526309a287508eecdba57f4d7fca0ab8f6ef1b6672e"
+  },
+  {
+    "file": "bundled/strix-varia-2.png",
+    "sha256": "ebda87ac3ac3fc9616bf2d7c9d3dadc8771ffa8361a1560b2f11600ceb57069d"
+  },
+  {
+    "file": "bundled/strix-varia.png",
+    "sha256": "e79c613c0aed02d3fe9a3ad49e904a4fe180a1b8c64c072ef6a0aa8c00475b31"
+  },
+  {
+    "file": "bundled/sturnella-magna-2.png",
+    "sha256": "fa4517372ab868aca9930d2ed3eff02649ecf73ff344679ac442fd0981c70ce4"
+  },
+  {
+    "file": "bundled/sturnella-magna.png",
+    "sha256": "008d5597da42d70a22816a8c9a121e7d78ea39cb56c456a6415ca8de94288917"
+  },
+  {
+    "file": "bundled/sturnella-neglecta-2.png",
+    "sha256": "a8260a97904488709bb09300ced0dbb3d6b7334136bb112508ae15b0088c4805"
+  },
+  {
+    "file": "bundled/sturnella-neglecta.png",
+    "sha256": "6b07b5489ac1506f5fd10c42f3dcb63af35d233ba362f12d9b5a6190c51177ca"
+  },
+  {
+    "file": "bundled/sturnus-vulgaris-2.png",
+    "sha256": "9d6e0d4bbe773800420a7860f3c40a66488dfabca4a30f8650833dc0f1e50360"
+  },
+  {
+    "file": "bundled/sturnus-vulgaris.png",
+    "sha256": "77f68ebb6cd6806c09d5b812b1d6c6ac63ade83199bf35ef61cc4cbaa9c028f8"
+  },
+  {
+    "file": "bundled/tachycineta-bicolor-2.png",
+    "sha256": "c1b845b12c45b002b5c6ab6ed163bee27a7a618a40d87fe153a044b7723cda01"
+  },
+  {
+    "file": "bundled/tachycineta-bicolor.png",
+    "sha256": "7417c4adbe3a8483a07cf74148cc884149d4d4eb98578faee16f9a850016282c"
+  },
+  {
+    "file": "bundled/tachycineta-thalassina-2.png",
+    "sha256": "f7e9967625e707034c62d4161813e59a5a0e1b3e7596e4e48635f4cd6fed23fd"
+  },
+  {
+    "file": "bundled/tachycineta-thalassina.png",
+    "sha256": "40d29ced2dde30c097f404e4d3c19bdc92f25986430a267bb694351e3536255d"
+  },
+  {
+    "file": "bundled/thalasseus-elegans-2.png",
+    "sha256": "9f6e416c9b66d54e05accfe6b1d45d15c2f31a27cbfb8da01c87fce045a3ae00"
+  },
+  {
+    "file": "bundled/thalasseus-elegans.png",
+    "sha256": "013498df2cbebdaeed464082188a054d5ce6e70a790a227ffa842ddcd9167d54"
+  },
+  {
+    "file": "bundled/thryomanes-bewickii-2.png",
+    "sha256": "c28f25a7e7a677be5d8d3d449c451467e234074f9085323b245055d6d313cf58"
+  },
+  {
+    "file": "bundled/thryomanes-bewickii.png",
+    "sha256": "2c22baf9e6f7ad1c55f284c9ddcd0016a86bbdabdba185666181bcb000ddc78f"
+  },
+  {
+    "file": "bundled/thryothorus-ludovicianus-2.png",
+    "sha256": "8fbba6cdeeba2e5ea4df89d03392588e2d5bc8c942d22415f95d99f7fbbf83ca"
+  },
+  {
+    "file": "bundled/thryothorus-ludovicianus.png",
+    "sha256": "e71ccb309b696f930b3e33d333b4ebcf1922f9263d376dc45b9c20d197a5fd9d"
+  },
+  {
+    "file": "bundled/toxostoma-redivivum-2.png",
+    "sha256": "cef8386d0198ccb2f9a520f01273b92132735c407fc4c826b377e7bfb74dd23d"
+  },
+  {
+    "file": "bundled/toxostoma-redivivum.png",
+    "sha256": "9ae06c2b577c4a421be37bbbd5f122a6a61cd66d808ffb2da560e8381b84eba3"
+  },
+  {
+    "file": "bundled/toxostoma-rufum-2.png",
+    "sha256": "babee292f2b1ab64d1c1eb0269786c9f4fded46eac04377fff53dfc96bd7ef09"
+  },
+  {
+    "file": "bundled/toxostoma-rufum.png",
+    "sha256": "c894394eaa3e35edc1c7f4b5fefb1186977a58af28efa40ddf5edb30eebf3896"
+  },
+  {
+    "file": "bundled/tringa-flavipes-2.png",
+    "sha256": "df8cc28f516e722dae6d87b47f30f9bd5adbf3e0dc6801867bcf77b4b4497b54"
+  },
+  {
+    "file": "bundled/tringa-flavipes.png",
+    "sha256": "f5274fa44f48045b278a79d16712ab38cdfded821e6ff3bf352261a85af89cd3"
+  },
+  {
+    "file": "bundled/tringa-melanoleuca-2.png",
+    "sha256": "3fa601b43230e3b7d81568af396b1b6920cf234694671b275471b9c6696592b7"
+  },
+  {
+    "file": "bundled/tringa-melanoleuca.png",
+    "sha256": "3c79088d4f1c928de96cfff0988c30e58c63e08cdf9e631304d1f46df04b571d"
+  },
+  {
+    "file": "bundled/tringa-semipalmata-2.png",
+    "sha256": "6c8356ef2e7e1230c0194414a7943b13ec79952fc6fe82e98c266cf66492afcc"
+  },
+  {
+    "file": "bundled/tringa-semipalmata.png",
+    "sha256": "6ecd14e59d7ff3e0da771a34b19b3d6f341fae0e58bcb4a2d89e771f64c04410"
+  },
+  {
+    "file": "bundled/tringa-solitaria-2.png",
+    "sha256": "724a06255f083c1bcf456e1d0b85d8196a8d17650668c74a4589cc08bbdbfcd7"
+  },
+  {
+    "file": "bundled/tringa-solitaria.png",
+    "sha256": "a2cbc88f2556454f65d5f502b4537a7179d9abf7c8d724ad3789a919544fab30"
+  },
+  {
+    "file": "bundled/troglodytes-aedon-2.png",
+    "sha256": "288daf31b1738690fa4ae0371b2b71e9c58a50d149e20c286f5e75d105314b81"
+  },
+  {
+    "file": "bundled/troglodytes-aedon.png",
+    "sha256": "60db6c2fbcb11df5e129e59a0cfd109df5d61b6b995a4df41b1295d279c6de98"
+  },
+  {
+    "file": "bundled/troglodytes-hiemalis-2.png",
+    "sha256": "523d6db4958921ec642be0509a1d07009113dde8f4b7fff3a643049f61c36ea4"
+  },
+  {
+    "file": "bundled/troglodytes-hiemalis.png",
+    "sha256": "bac62edcafef8d2cc3a24b46754d1674749fa860f671706794dcdf07654d9bd0"
+  },
+  {
+    "file": "bundled/troglodytes-pacificus-2.png",
+    "sha256": "6cd4af85beda68828b600007b6516408d8bf3ae971821673c7419d50d32e3ab1"
+  },
+  {
+    "file": "bundled/troglodytes-pacificus.png",
+    "sha256": "3cb6a413b303e6af42f2500847f3f4a44562156fac4b2322deed63eb92a60532"
+  },
+  {
+    "file": "bundled/turdus-migratorius-2.png",
+    "sha256": "6f74873189c27be422a2f363138181aae113cf316f45cd74c309daed7c12c095"
+  },
+  {
+    "file": "bundled/turdus-migratorius.png",
+    "sha256": "069235e107c1cada5b1d214dee77700678e197838998b414aef57ed988242a70"
+  },
+  {
+    "file": "bundled/tyrannus-tyrannus-2.png",
+    "sha256": "b2e80e5b13cede6e60640894a1944e19b3b11f4ba0636cf09eaf4cbd6c5e6c59"
+  },
+  {
+    "file": "bundled/tyrannus-tyrannus.png",
+    "sha256": "a45de26880cbdfc154797d154202936fcebb5551bd3a0650c13fb7d4d20bfd4c"
+  },
+  {
+    "file": "bundled/tyrannus-verticalis-2.png",
+    "sha256": "423fb2b567fd76aa5076c9177e17fe56b4b2e0cb03ade6ee016de939664dcffd"
+  },
+  {
+    "file": "bundled/tyrannus-verticalis.png",
+    "sha256": "7a3c20b15e9eb7160b93c56d7aa0e4978048af8e4c206b10850b9345bfb39124"
+  },
+  {
+    "file": "bundled/tyrannus-vociferans-2.png",
+    "sha256": "ca5e203bd9e3130674a58f45d5dabb4bfc3cf551478409d942bb7d6cedfc5246"
+  },
+  {
+    "file": "bundled/tyrannus-vociferans.png",
+    "sha256": "216c8e27bda210b13d40cdc188e9852ca54076abb3447484452ae041757adf57"
+  },
+  {
+    "file": "bundled/tyto-alba-2.png",
+    "sha256": "34d45b9c79dd4a944562a88b2b984d056e8283cde89ad2294df8550512176b2a"
+  },
+  {
+    "file": "bundled/tyto-alba.png",
+    "sha256": "3db9edc3d4016ba24f833f1165f264a5f847daf8c882e2c420226587efab2718"
+  },
+  {
+    "file": "bundled/urile-penicillatus-2.png",
+    "sha256": "e034c0981f5b9d91ad909c44862423b12a61fe656dd569a49ac22240d1a72fca"
+  },
+  {
+    "file": "bundled/urile-penicillatus.png",
+    "sha256": "7f1848d658f7a0a2dae5fde1b288b495974cdac097bb6b88dd44523d54dd4337"
+  },
+  {
+    "file": "bundled/vireo-bellii-2.png",
+    "sha256": "b9ec8beeca9c3556d92cf197132292a9d7ce6c526aa6d6526eb562a6cd27193f"
+  },
+  {
+    "file": "bundled/vireo-bellii.png",
+    "sha256": "833a480ec705ea958b29a2a0a1bb957b3120d43f3b86a5525655a7c00dce1367"
+  },
+  {
+    "file": "bundled/vireo-cassinii-2.png",
+    "sha256": "c41b516d37bdd497184007cbc1f0b7ce96959bc885637c61348c3be209d25931"
+  },
+  {
+    "file": "bundled/vireo-cassinii.png",
+    "sha256": "2c1ca0a40fc7c1fb0d68099a087f06243af6f85cddc672c9e41fa052c84655c3"
+  },
+  {
+    "file": "bundled/vireo-flavifrons-2.png",
+    "sha256": "9c7e6941f8c7489f4b6a1fd0c64907a70ba86ff47870f7b99b69eb9388b1e4cd"
+  },
+  {
+    "file": "bundled/vireo-flavifrons.png",
+    "sha256": "97f1d8e0e981de01ec96a92d13cba58aeee129393089028cd5289d20bc497847"
+  },
+  {
+    "file": "bundled/vireo-gilvus-2.png",
+    "sha256": "88561e35c7dd76977e9da2695bc1dfaa9b9401865df232455cb5c342cebbbd24"
+  },
+  {
+    "file": "bundled/vireo-gilvus.png",
+    "sha256": "541f75433d922018e966da80ce0ec96eda80f9a59a6fe2c617465589371e37f0"
+  },
+  {
+    "file": "bundled/vireo-huttoni-2.png",
+    "sha256": "f6c925fd71bc54fdd27e251b62eab13a93e852d33cde1bb79c00bff16405934c"
+  },
+  {
+    "file": "bundled/vireo-huttoni.png",
+    "sha256": "c819106189b80eb7b7252de953f728c48c32025b066547ecd8aa648ca4449ae9"
+  },
+  {
+    "file": "bundled/vireo-olivaceus-2.png",
+    "sha256": "8ec6fecfe9fa62e02fc89e2b67db352a1483343fcb2c4252dd982a3629d8a939"
+  },
+  {
+    "file": "bundled/vireo-olivaceus.png",
+    "sha256": "a0937fefcba0e35fb040bcc2ee0865455e9416f163650326cd634543fcb9a7c7"
+  },
+  {
+    "file": "bundled/vireo-philadelphicus-2.png",
+    "sha256": "15fcf8388e1e8f72c04bdb9300ed2348292e5381f82981e462c3e038c0095b50"
+  },
+  {
+    "file": "bundled/vireo-philadelphicus.png",
+    "sha256": "cb3c3dec0757296e9798f325fdeb1a880a2408a9829ecf136c105b7d76ed229b"
+  },
+  {
+    "file": "bundled/vireo-solitarius-2.png",
+    "sha256": "fc07e9fccefd7ab0b7a2246802afd12c4450d56f8ed40bc01ee993a6c94f317d"
+  },
+  {
+    "file": "bundled/vireo-solitarius.png",
+    "sha256": "9ba84f11f38e4ba696ad40dd22c7fd06d953e8853d1c824bc5d0ff20649dea4a"
+  },
+  {
+    "file": "bundled/xanthocephalus-xanthocephalus-2.png",
+    "sha256": "159427ef48e6ccbad7caf9e26e28d689bc25b6378b209b8f64ebca100e3630a6"
+  },
+  {
+    "file": "bundled/xanthocephalus-xanthocephalus.png",
+    "sha256": "7af95015993b4f374342783af6fe1f1c98dfecb51219e0b6bec16d7fe201217a"
+  },
+  {
+    "file": "bundled/zenaida-asiatica-2.png",
+    "sha256": "6f77f61dae0f2fc681827e1f522d682c16e25b8b204b24ea131a150cfcc17841"
+  },
+  {
+    "file": "bundled/zenaida-asiatica.png",
+    "sha256": "e0a86e018cd7ea3ae3f471ec9c28bd000e1a2b6f719fa8cf2c834198a26ac501"
+  },
+  {
+    "file": "bundled/zenaida-macroura-2.png",
+    "sha256": "0e1bdba5fba3c3963780382f3658026edfab07dc4667e89fc5091805b7363859"
+  },
+  {
+    "file": "bundled/zenaida-macroura.png",
+    "sha256": "35f3b0c8908eb4ef92dab1574d569dd1eb133a31663c68819aa08a48ac8e2074"
+  },
+  {
+    "file": "bundled/zonotrichia-albicollis-2.png",
+    "sha256": "266a6b23b65a3c31507841a092e63ffa84966aefa1dcc2c01949f9b1336934f8"
+  },
+  {
+    "file": "bundled/zonotrichia-albicollis.png",
+    "sha256": "90501061d6078a7d09e94b5819059acd193e8e495675886d045a1d1911c6e41c"
+  },
+  {
+    "file": "bundled/zonotrichia-atricapilla-2.png",
+    "sha256": "0313b886fb218230b6e5839f773ce15b4843414fcf74633610812fa04d261058"
+  },
+  {
+    "file": "bundled/zonotrichia-atricapilla.png",
+    "sha256": "7de70a4d2893df4232947383679df9a654ee95bf01d29f9083faa23c017a7488"
+  },
+  {
+    "file": "bundled/zonotrichia-leucophrys-2.png",
+    "sha256": "5445f9ed7a754fe15a8aaf364762c3fa0718d1381735fae532dd4298824bb9ca"
+  },
+  {
+    "file": "bundled/zonotrichia-leucophrys.png",
+    "sha256": "cc3c1b2fe1a47bdfaddcb4ef5f5f596c4655402d8fdbbc2a54bc75ddc7c0e2c0"
+  },
+  {
+    "file": "bundled/zonotrichia-querula-2.png",
+    "sha256": "5615c54501a5404b7b27f0885fe510029dbc29bd69a47ae41ea5d5b2309a93ba"
+  },
+  {
+    "file": "bundled/zonotrichia-querula.png",
+    "sha256": "10802367cfc8b90d719ff05bd879bf6561eb93568b5ad164c0a39bd5afc169cf"
+  },
+  {
+    "file": "local/anthus-richardi-2.png",
+    "sha256": "5753b5d6f258e9332aaf77726066cca4912dfe3537fd39415491c459b2321132"
+  },
+  {
+    "file": "local/anthus-richardi.png",
+    "sha256": "66f88cd232a8b52360c29cdebe8d40c682b1dc6a0a7051d4a5fb345dd1c7ed0f"
+  },
+  {
+    "file": "local/buteo-buteo-2.png",
+    "sha256": "69d75a8f042953487078bb135cbeb95cfebf01eba41e6a3ceae70ebc18a2b135"
+  },
+  {
+    "file": "local/buteo-buteo.png",
+    "sha256": "c9523b3f97532f6df71e0504939327dad5ab268223392bbc4e2a2162defe51a8"
+  },
+  {
+    "file": "local/coloeus-monedula-2.png",
+    "sha256": "b179581e02c0e03dc29c0036e48a81877c20ac78817aa6501ac8cdcc5c16ac8c"
+  },
+  {
+    "file": "local/coloeus-monedula.png",
+    "sha256": "80d516090695decdc30f80f6f2f3c4780d0e7ddd908e209a878a8ef0e1201239"
+  },
+  {
+    "file": "local/corvus-cornix-2.png",
+    "sha256": "584645ae0a7f1664155c4d6b12a6c2a77b892428c84b8104658522dba8c9e4e4"
+  },
+  {
+    "file": "local/corvus-cornix.png",
+    "sha256": "27fe7f973ced7184418c6a546530f3bc5d324fde09eb1df7d8f6d8961d9f3f00"
+  },
+  {
+    "file": "local/corvus-corone-2.png",
+    "sha256": "30f86748522ef37cc7c3497df5d0cd5f45b593a84f33c4f8d3ec5b642a38cd11"
+  },
+  {
+    "file": "local/corvus-corone.png",
+    "sha256": "07b2723300b7d5cda9dcbafc0bc8f8ae0b975808a02434e1db23084402567eb8"
+  },
+  {
+    "file": "local/cyanistes-caeruleus-2.png",
+    "sha256": "19a4235cdc2da400f59e4043688cc75dc20b8182d4e566f0e8e460e64c36e5b4"
+  },
+  {
+    "file": "local/cyanistes-caeruleus.png",
+    "sha256": "f8f5afa101d9af5b056cb2b92eccf775469a64bf18ef77d5aaccdd7c3a5a46e3"
+  },
+  {
+    "file": "local/dryocopus-martius-2.png",
+    "sha256": "df760a494153e1e47f8b7bc1b44ae830b9b6ad6728e2b6077c77364e1e2d299f"
+  },
+  {
+    "file": "local/dryocopus-martius.png",
+    "sha256": "9a97445d9441b992e280fb6a69ee5185b35e16f3b7417c20a18e4867de96fd30"
+  },
+  {
+    "file": "local/erithacus-rubecula-2.png",
+    "sha256": "7306f86ef96b5d8d6d6a29dbdc24905a012d17551740b5d8b382cdcc2d57af9c"
+  },
+  {
+    "file": "local/erithacus-rubecula.png",
+    "sha256": "fac54e95edf4c5901b2b84b283ae66a74f6d65149f96c73978da7abb784ab87d"
+  },
+  {
+    "file": "local/parus-major-2.png",
+    "sha256": "5de84c0befe7bc663bac98fd7b722ab9021070bec8ea9723405b2af6904fa590"
+  },
+  {
+    "file": "local/parus-major.png",
+    "sha256": "c2cb035d6c6e8f475b66ca01f4c903126d2f2f518b16122cde7bef48cefbf32c"
+  },
+  {
+    "file": "local/phoca-vitulina-2.png",
+    "sha256": "95347c216a0c9037cb91c241c067191152f7a9592c08a3577e435d8abe6da6fd"
+  },
+  {
+    "file": "local/phoca-vitulina.png",
+    "sha256": "06c2fe74a0ea6fff69effb42d9c1d7f73a3e32418186249d44626e76327f2928"
+  },
+  {
+    "file": "local/turdus-iliacus-2.png",
+    "sha256": "693895de3ccc0b2ba940b3a221bba0936e5785af0e9238923a04683a896b6e31"
+  },
+  {
+    "file": "local/turdus-iliacus.png",
+    "sha256": "adef602ab720f062c0d17d5140c15e108c61859fe804b5e34b7823298bfef692"
+  },
+  {
+    "file": "local/turdus-merula-2.png",
+    "sha256": "e82dd99e3c44bf3576a6a2059259e9fa1f616f685e66774100e81e1ea4271db4"
+  },
+  {
+    "file": "local/turdus-merula.png",
+    "sha256": "f1c109305dfd7172d8573950f0aef2866be87ae15eaa9ff5a45334938fb5d5e2"
+  },
+  {
+    "file": "cutouts/aechmophorus-occidentalis.png",
+    "sha256": "832dddcd67249cfd77ac36046384bae2e9c6b82062e5833a1ff6e36d93eb2fa9"
+  },
+  {
+    "file": "cutouts/agelaius-phoeniceus.png",
+    "sha256": "267435a17251950cd48ea578dff53ce68946385dfe44f6bfb2e0a1cc0f70c71f"
+  },
+  {
+    "file": "cutouts/ammodramus-savannarum.png",
+    "sha256": "922dae0625ad58bb9f9d5dd7c50e028874f7e2170bbb7868b9d537ae836726e9"
+  },
+  {
+    "file": "cutouts/amphispiza-bilineata.png",
+    "sha256": "b00eaff2f3f32f0539440f70ec19144247e6047cba47d997278f01cad7592210"
+  },
+  {
+    "file": "cutouts/anas-crecca.png",
+    "sha256": "4cce88afa4d85e98b1628c349a270994ba94369d9f6a5f5b564c9d7840d9b22f"
+  },
+  {
+    "file": "cutouts/anthus-rubescens.png",
+    "sha256": "fb6c1893a2b77b2bfbb9b9e3a53d6ae62f61ce418302c6154956a0439601183d"
+  },
+  {
+    "file": "cutouts/aphelocoma-californica.png",
+    "sha256": "010ec690577b7185ea0c5e82d9171aed99e06a1e7801088cecab02a1e8869f62"
+  },
+  {
+    "file": "cutouts/aphelocoma-woodhouseii.png",
+    "sha256": "cf103c8489f093fb32d4b4e54ac09def44e9be3c6e8d9b16b82fe3e9297f9f81"
+  },
+  {
+    "file": "cutouts/archilochus-alexandri.png",
+    "sha256": "ab87e06a2775aa0e8bacb5f1de8e70e833ba904d677d71985964f8792c885468"
+  },
+  {
+    "file": "cutouts/artemisiospiza-belli.png",
+    "sha256": "aa781c8745cc2df95df733bc4a96556690c9f0d1a09a099147a325c1a34b6bb6"
+  },
+  {
+    "file": "cutouts/asio-otus.png",
+    "sha256": "4a83b94ae434b5fae37201d0ffe68c2f0920fa098758ac865512f8a7f9cfe5c6"
+  },
+  {
+    "file": "cutouts/baeolophus-inornatus.png",
+    "sha256": "89a92ea203e12e0c07be4a7871c4ab74f3684e5d7fe0edb6903f4b2038b20d12"
+  },
+  {
+    "file": "cutouts/bombycilla-cedrorum.png",
+    "sha256": "a228067541829e2f51d44443315b403d5f0cf4a0a9e8be4043e0334b1ae09e66"
+  },
+  {
+    "file": "cutouts/bombycilla-garrulus.png",
+    "sha256": "ec40a71f2eb629051db0679a4aefae9db2e0386d4bc6d4d73179ac7ce5af7af1"
+  },
+  {
+    "file": "cutouts/branta-canadensis.png",
+    "sha256": "1a7e2a73d2f10f8eaaf76a506d3e0c6149d0b37e3297fad616a947e2233326ea"
+  },
+  {
+    "file": "cutouts/bubo-virginianus.png",
+    "sha256": "c79aba903ec8c02699f18289629f06e78d73d013b2684d36cd4c33987696d70d"
+  },
+  {
+    "file": "cutouts/bubulcus-ibis.png",
+    "sha256": "8d3bc58e9618673f29076995ae5e7035bb9bfb4dda4766826f0e1de8fc96a621"
+  },
+  {
+    "file": "cutouts/bucephala-clangula.png",
+    "sha256": "e5d23eb7e3a6876a153ba3f0494e6d81cae193b45399219ab1406ae2812a8b53"
+  },
+  {
+    "file": "cutouts/buteo-lagopus.png",
+    "sha256": "5658f758c664ca78b22b3e7cae992465b6cc6f18f4a197cf128bec9e12e959fa"
+  },
+  {
+    "file": "cutouts/calamospiza-melanocorys.png",
+    "sha256": "5e8f725cd5651ad0efe8d52a34334e8249e27fd5458e303fa0953033c1ee3431"
+  },
+  {
+    "file": "cutouts/calothorax-lucifer.png",
+    "sha256": "840824ecc47ef085833cca74e8000e959cb2ca1651b88ba01c82c36a3d90e038"
+  },
+  {
+    "file": "cutouts/calypte-anna.png",
+    "sha256": "a60586e240d8ec9304050d6b1a08d46425ceb5ffcdb98a3f46abccfa522cd4c4"
+  },
+  {
+    "file": "cutouts/cardellina-pusilla.png",
+    "sha256": "a48cfca6dc294e401edcc7af4cb661b99478e03dafba5b0953b7d73dccd4169c"
+  },
+  {
+    "file": "cutouts/cardellina-rubrifrons.png",
+    "sha256": "c0155b984106d14641b259c52d974dca159c54d2fb08f5a853c73ff275dd667d"
+  },
+  {
+    "file": "cutouts/catharus-guttatus.png",
+    "sha256": "0d88385abe3035c7cbeea840c429c9ee69f6e5f3a3038f89adf819c770a411a0"
+  },
+  {
+    "file": "cutouts/catharus-ustulatus.png",
+    "sha256": "2c0882030aed6f6c9e360f6bec0399f4e63f371a0a990fd74285a3123ff66df6"
+  },
+  {
+    "file": "cutouts/catherpes-mexicanus.png",
+    "sha256": "95365127d8a9afdfdf013bf3839c738bfcd7f7c9475423097b3fcab616f17ebf"
+  },
+  {
+    "file": "cutouts/certhia-americana.png",
+    "sha256": "e8e8656c80bc826ab4d7e56191f3eb6be3f91616bed7e8856035ec04d73b84b6"
+  },
+  {
+    "file": "cutouts/chondestes-grammacus.png",
+    "sha256": "4f1e287d5a2cfb6b0cb18186895fc76d0bdb7f21a2710e4e9c72f5bda6942eb7"
+  },
+  {
+    "file": "cutouts/cinclus-mexicanus.png",
+    "sha256": "956cda01e0ca2e476ef6ba3e8ccadbb33921c4c4255a6dd081538c7bb6abb4d6"
+  },
+  {
+    "file": "cutouts/cistothorus-palustris.png",
+    "sha256": "24018ac8c431ae447b3a8de8ef843830570c80fd318759446fe0666918b1a3c4"
+  },
+  {
+    "file": "cutouts/coccothraustes-vespertinus.png",
+    "sha256": "19d57b3dc39c645a072e2ea103d5a56dd29e5ea107e547ec3017cae29e782521"
+  },
+  {
+    "file": "cutouts/columba-livia.png",
+    "sha256": "491ad72d2c0a6efe4693a9296a727c0fe4115b3c9dd7288ddbb96b4ad7e61bd2"
+  },
+  {
+    "file": "cutouts/contopus-sordidulus.png",
+    "sha256": "034e9cd3487d38283604d424566053b3d3b94aaa13d36438a4942915657ec8d4"
+  },
+  {
+    "file": "cutouts/corvus-brachyrhynchos.png",
+    "sha256": "baeaa31939b9be0b6bec3e57c5c38849eb8a77f990a0d1b7c4b2319c708a1a8f"
+  },
+  {
+    "file": "cutouts/corvus-corax.png",
+    "sha256": "b836cd0f81cf92c7dcbaec336e7bb5689f5ad16891861ec040cb45248a09ccfc"
+  },
+  {
+    "file": "cutouts/cyanocitta-stelleri.png",
+    "sha256": "d404ee65bb37c5cf42b406141086a2d7c37a236a78f307f19a82e79851c4facf"
+  },
+  {
+    "file": "cutouts/dryobates-villosus.png",
+    "sha256": "de45c13da1ab0654ec3a160939b9bc3f1e868bb37b092f626af75f086794e415"
+  },
+  {
+    "file": "cutouts/empidonax-difficilis.png",
+    "sha256": "f2128e118de4effba8b4ebfe53d04874691a837e2b17d1b9c45c89909ad8e65f"
+  },
+  {
+    "file": "cutouts/empidonax-hammondii.png",
+    "sha256": "74544c49424bb3ca2944acf0b7925eddbb8d07f20547a0ea0f2c9913700edac5"
+  },
+  {
+    "file": "cutouts/empidonax-oberholseri.png",
+    "sha256": "1481b966cb7ad36df51b1655a33c34e49519834cde7f5c68e7f14125fe5fe858"
+  },
+  {
+    "file": "cutouts/empidonax-traillii.png",
+    "sha256": "9358ca6f08aef3e24a699c61389f90082bf0ce9c320cf91ce4472d9a97e8ab50"
+  },
+  {
+    "file": "cutouts/empidonax-wrightii.png",
+    "sha256": "163a461d62ef7d213940beeccf022ddd4d0fe6b0f823e8284d351ccf222f653d"
+  },
+  {
+    "file": "cutouts/eremophila-alpestris.png",
+    "sha256": "d48c269637990c0aabba89d945e336d525bf4d9b6d5a66007bb660ba809527d1"
+  },
+  {
+    "file": "cutouts/euphagus-cyanocephalus.png",
+    "sha256": "47bfd44a254a13e0f28e28424eabac78587887116496833d8ddfa23387455631"
+  },
+  {
+    "file": "cutouts/falco-mexicanus.png",
+    "sha256": "cf6f039ffb7e7abb4556990a713053d032cb04a54643f1e58a4f7e4672c7054d"
+  },
+  {
+    "file": "cutouts/geothlypis-tolmiei.png",
+    "sha256": "f42b0e2f64ef56790affa83f2a60a64d0f1a2f6d530f8b968d0cf978ff11f82c"
+  },
+  {
+    "file": "cutouts/geothlypis-trichas.png",
+    "sha256": "9c7b6a42d2d6532d0c28f554c2c5eb491076b9fd7d06afe8fcb6a68702c8df54"
+  },
+  {
+    "file": "cutouts/gymnogyps-californianus.png",
+    "sha256": "50eb520f4f69d6890d64decd382dbf0a630de051d21b3e4357715fb30f97953d"
+  },
+  {
+    "file": "cutouts/haemorhous-mexicanus.png",
+    "sha256": "de2d9065e1103a665d7922323f02440fefb4b66e0273b726a8502d0c7a42f763"
+  },
+  {
+    "file": "cutouts/haemorhous-purpureus.png",
+    "sha256": "c554aa6e7cfdfc11317850444562628643d58b0add0c0cf136c4f6c8c8045527"
+  },
+  {
+    "file": "cutouts/hirundo-rustica.png",
+    "sha256": "76df9cee892a2e47908eea31fd1f9411d6da00dd32d22320941f03bd14b98e2f"
+  },
+  {
+    "file": "cutouts/icteria-virens.png",
+    "sha256": "fe2ffbd33a682b1d7c912e68c537bd43d41b883bef869f567d530749588d3f12"
+  },
+  {
+    "file": "cutouts/icterus-bullockii.png",
+    "sha256": "0c3726cc3844d2dc5a26032d931d4a005c845f123099c58ce97c90f1fbc20c27"
+  },
+  {
+    "file": "cutouts/icterus-cucullatus.png",
+    "sha256": "68626a94cc21c6b5b14448dc0b335cd46acb93434b40d32ab0ee141457e38a66"
+  },
+  {
+    "file": "cutouts/icterus-galbula.png",
+    "sha256": "0005b03d1d133dcecad88026f075c3eaf0aebc773e7453b4bf3b657dd9d4ac14"
+  },
+  {
+    "file": "cutouts/icterus-parisorum.png",
+    "sha256": "69e17480c5d52c39de0b373b8707695183f07117b5370e831db19f9a84472f83"
+  },
+  {
+    "file": "cutouts/ixoreus-naevius.png",
+    "sha256": "395db79d59a535577f6a97c335fd73707b3a831ff610edc2bdd1848700281a1e"
+  },
+  {
+    "file": "cutouts/junco-hyemalis.png",
+    "sha256": "babe56a0d6f458fd1be6c75479c115a030d29cf75e567ac99f3cfb3ed9a341e9"
+  },
+  {
+    "file": "cutouts/lanius-ludovicianus.png",
+    "sha256": "f9e888952bd67cf90698581d154415ab6fa7809442eed41ebad4b7ccb9e27d9b"
+  },
+  {
+    "file": "cutouts/larus-occidentalis.png",
+    "sha256": "1693d98851f74371052272f622fe27bbc4d6f9fd66752b2e5e14660eccefe5a3"
+  },
+  {
+    "file": "cutouts/leiothlypis-celata.png",
+    "sha256": "7dad70bcdc5f6e9932fbca3d30054402dd1b20bdf9c7d808231a3a56bf5c06d1"
+  },
+  {
+    "file": "cutouts/leiothlypis-lucidae.png",
+    "sha256": "140d00cc03d1d92e92166eabf8c627050b181305bd47ce812a3b0ea3a2c78b6a"
+  },
+  {
+    "file": "cutouts/leucophaeus-pipixcan.png",
+    "sha256": "6d10e97fee39276188e6ccefab8e1e2b37b35d3a203407be4b55b26dc41a483e"
+  },
+  {
+    "file": "cutouts/loxia-curvirostra.png",
+    "sha256": "4efb213cad91640a3adc12a9afc774212d957108ee077b523cfff21202f4dd40"
+  },
+  {
+    "file": "cutouts/melanerpes-formicivorus.png",
+    "sha256": "ad44bb15dfbe0387e11b9f3917a81a70bf0c87fca41ad08f7641e8f0414a9603"
+  },
+  {
+    "file": "cutouts/melospiza-georgiana.png",
+    "sha256": "1a61f014cff206e5905136ab9e6336b020e104e3eecbc8cf06a37513fa46bcec"
+  },
+  {
+    "file": "cutouts/melospiza-lincolnii.png",
+    "sha256": "19aaa7ba0f1894fdabf8f8680c540a8161149a3979b9e5ed2232220b8239f4bb"
+  },
+  {
+    "file": "cutouts/melospiza-melodia.png",
+    "sha256": "921157ad1c294f6ce54f9dc995602eee9e43901ce926ce5fc0b1b314575d770a"
+  },
+  {
+    "file": "cutouts/melozone-aberti.png",
+    "sha256": "1e4fe905e986f922fbf10c5e7d6f512e50c56c3d6837c9017ced2a00b503ddd9"
+  },
+  {
+    "file": "cutouts/melozone-crissalis.png",
+    "sha256": "315c274b9ab0e074158a66af3ab5f2df4e517c1c127b192635987fd6dfbda753"
+  },
+  {
+    "file": "cutouts/melozone-fusca.png",
+    "sha256": "9205cf6e167cc8c110fc1d367aea5e630b343e383d46ce8dbac9aea68a8db0b2"
+  },
+  {
+    "file": "cutouts/mimus-polyglottos.png",
+    "sha256": "c72fa18591da4ce40437b1e5e78a48714e58d447f1e00e36afb1c98d4d04f2ca"
+  },
+  {
+    "file": "cutouts/mniotilta-varia.png",
+    "sha256": "2c39bcafe93a60cce6b331250558e1635f2f5ced22f1d5075db3fab22d1599d0"
+  },
+  {
+    "file": "cutouts/molothrus-ater.png",
+    "sha256": "0243a5f3e164dfc6be081012eba69198755d1fd126e85332fe63857c99c40b7a"
+  },
+  {
+    "file": "cutouts/myadestes-townsendi.png",
+    "sha256": "45dd9fdf79e099d4a5b76d3cb36451f3af58ad1a9083d2bd8ecbfa1e1fb2a4b5"
+  },
+  {
+    "file": "cutouts/myiarchus-cinerascens.png",
+    "sha256": "b4003d9bc2b6f13a6fc9c010cb6fc89a2d2dc150a05610fd17806c8de4584e43"
+  },
+  {
+    "file": "cutouts/nucifraga-columbiana.png",
+    "sha256": "af263bd65b91e0e885fea1d86b6f7dc909ae9f0ce0328f9e9aef65eea6b1849a"
+  },
+  {
+    "file": "cutouts/oreothlypis-ruficapilla.png",
+    "sha256": "aa0014d769f31dfd88ebd9c72744caf3c920db7084c1aabffdc0300ad3ac15b9"
+  },
+  {
+    "file": "cutouts/passer-domesticus.png",
+    "sha256": "02c681458791d216d8e0ebe4315c26f485d4abbcc82f348b1aea234c5ad1651b"
+  },
+  {
+    "file": "cutouts/passerculus-sandwichensis.png",
+    "sha256": "0bff22814b2ec000b2bf9c80ed40a682234a8c2405ef561b490a6d1cecca191a"
+  },
+  {
+    "file": "cutouts/passerella-iliaca.png",
+    "sha256": "b599dae0b4a0b40620ba4d750367e93a50a5d1958f75ae975f6d64e80facf056"
+  },
+  {
+    "file": "cutouts/passerina-amoena.png",
+    "sha256": "68bdc92e10d433206919e76d3b0459295610f58d78614c3bd72241192fdc4e35"
+  },
+  {
+    "file": "cutouts/passerina-cyanea.png",
+    "sha256": "1ec7c44fb3f56d7582649a7656a2bb0b3c8c36d3bb315c6b33d39ed395dba85e"
+  },
+  {
+    "file": "cutouts/pelecanus-erythrorhynchos.png",
+    "sha256": "e3448fda3f96d697a7ab13d7de9075d355c7ab91fdbb1af25532b462731fd053"
+  },
+  {
+    "file": "cutouts/perisoreus-canadensis.png",
+    "sha256": "635f6f352ad64a105c7d8f67f8daa17050de1aaab0831df8aef0f6cdf603e8ed"
+  },
+  {
+    "file": "cutouts/petrochelidon-pyrrhonota.png",
+    "sha256": "7c8a0a04ad00354ac1e4a41b03031ac412d55735dded9030d686715d19176a7d"
+  },
+  {
+    "file": "cutouts/phainopepla-nitens.png",
+    "sha256": "c0fda72a4e434d2c806c386e4069cf26a9652930006562db6d5817659317c83c"
+  },
+  {
+    "file": "cutouts/phalacrocorax-auritus.png",
+    "sha256": "7b04430027677034dc07fecaa57f38d2e7fa0d728fb231669df8ee0f7484a2af"
+  },
+  {
+    "file": "cutouts/pheucticus-melanocephalus.png",
+    "sha256": "812d93870ebe72113d17b1cace6dd98ac89b7e92e159159e18afe15df20fafda"
+  },
+  {
+    "file": "cutouts/pica-nuttalli.png",
+    "sha256": "d1dbc6126b4ec2d1e4ed0c4a2a7de14e582d81182d376a1225c75cae51c98e8d"
+  },
+  {
+    "file": "cutouts/pipilo-chlorurus.png",
+    "sha256": "729d5f1f6aabdf4be8c108f65cbc5430361505897f1cf608a5b6148689d2b40a"
+  },
+  {
+    "file": "cutouts/pipilo-erythrophthalmus.png",
+    "sha256": "9f61345ba2f849c9f52aa4032ca689d6f8171f5a805efeac2a4cb78b5a2f391d"
+  },
+  {
+    "file": "cutouts/pipilo-maculatus.png",
+    "sha256": "ddcaedf12c0e7a1bca2db6bbc1ce32acbca707fb344910c87c5bf57fe7eac7c2"
+  },
+  {
+    "file": "cutouts/piranga-ludoviciana.png",
+    "sha256": "9bfe168abf39d8abc7c64bf938aafe7b75f36937820fe82aa5712c747eb14ea1"
+  },
+  {
+    "file": "cutouts/piranga-rubra.png",
+    "sha256": "b6bd78cbc987f70f45e61bb1ef953d801f66ca6b5f04b31e21b61f8315867bf9"
+  },
+  {
+    "file": "cutouts/poecile-gambeli.png",
+    "sha256": "440fcccc7d4e8674ef520d0b9601264eabe3688467d9c4f563cadb270d272c14"
+  },
+  {
+    "file": "cutouts/poecile-rufescens.png",
+    "sha256": "c17e1c5c67b99d60a45d176faa54f6c413a02df4bb8cd7949354fef570020282"
+  },
+  {
+    "file": "cutouts/polioptila-caerulea.png",
+    "sha256": "2e7ef06e128c8347fc4c508ff03da249e3a3d4e98fe734824867a29137e47b4f"
+  },
+  {
+    "file": "cutouts/pooecetes-gramineus.png",
+    "sha256": "280508c6a1007fc1841e329c15cbc0457620e459984333db5810929100b0e238"
+  },
+  {
+    "file": "cutouts/progne-subis.png",
+    "sha256": "1a5dac7eb16ed7c349c5082b1615732bb491a95fdf467d97421fab0eca2620fc"
+  },
+  {
+    "file": "cutouts/psaltriparus-minimus.png",
+    "sha256": "11c7b6f212777011176c08a45341df7900a50a08b4a8572992a9dab8805704e8"
+  },
+  {
+    "file": "cutouts/quiscalus-mexicanus.png",
+    "sha256": "7438436e8a1e2f65db1793f17c89471832b2c04e7055a5cddc7e8c959408fb7f"
+  },
+  {
+    "file": "cutouts/recurvirostra-americana.png",
+    "sha256": "9de48fa085a7ed91266bf688a1a7d63711e3cc64bcdd67b70f22d3afd30b540e"
+  },
+  {
+    "file": "cutouts/regulus-calendula.png",
+    "sha256": "49a7902ae1ebfb54d5ce24b46b9a8a6826eb7c0bc4c75214e61c0ab4e7f6b384"
+  },
+  {
+    "file": "cutouts/regulus-satrapa.png",
+    "sha256": "2c94f269db793de50b48bf8c53023b7b64ec4427b3e9a193c6dfba28df46e193"
+  },
+  {
+    "file": "cutouts/riparia-riparia.png",
+    "sha256": "4e73f37c79c84e5e3e48340add8170e6359eef064ab6545fa8f26b834f7bb4ca"
+  },
+  {
+    "file": "cutouts/salpinctes-obsoletus.png",
+    "sha256": "97e3e44643fad0f1f0346867a3a73d0435b29e16369fe8226d5bd8f0241b03c5"
+  },
+  {
+    "file": "cutouts/sayornis-nigricans.png",
+    "sha256": "a47dd2105fa96440b05d9e4ab8e3549d827f0695a8c083704ca7039598c8f940"
+  },
+  {
+    "file": "cutouts/sayornis-saya.png",
+    "sha256": "25a003d4a2bdb264cba287aa7eff6b4463a7d9c3c351e1b8abcba6c00c44824a"
+  },
+  {
+    "file": "cutouts/selasphorus-sasin.png",
+    "sha256": "b0f125c4ddb4c8ec8525261a78db588bee9805f09dc31e80b0e2f3c37fe84371"
+  },
+  {
+    "file": "cutouts/setophaga-coronata.png",
+    "sha256": "d5a8b7104bcb9f2d81e4e40a7455686a528074e8449335dcedf887dbc33d2e12"
+  },
+  {
+    "file": "cutouts/setophaga-magnolia.png",
+    "sha256": "c503bbf641d6f4222827b47d24802d36f57969058afcba38fb7d5788d1cf1755"
+  },
+  {
+    "file": "cutouts/setophaga-nigrescens.png",
+    "sha256": "a2f777f2a329f50a2e2c2fd71e57feba230faf380455561ffe362c50ca220195"
+  },
+  {
+    "file": "cutouts/setophaga-occidentalis.png",
+    "sha256": "176b9ef0c9b728f207c4c4e1ff8f7edba863ff1a19f8b5da8de5e4aacdb96663"
+  },
+  {
+    "file": "cutouts/setophaga-palmarum.png",
+    "sha256": "b4696000757f519cefe1232317a7a7ab88c7208d6732f910275b9da359188e83"
+  },
+  {
+    "file": "cutouts/setophaga-petechia.png",
+    "sha256": "16afc194156a7be2ff728a646b342b130f408e23a0353c2fc9f5802bb5bb4db3"
+  },
+  {
+    "file": "cutouts/setophaga-ruticilla.png",
+    "sha256": "a4e795ef6e249bdf1d850cab144aa3c4025fc81cb94cdb12c79502ac7b801d2e"
+  },
+  {
+    "file": "cutouts/setophaga-townsendi.png",
+    "sha256": "9281757ca845f2dda91335fff665c96eedbbfb26e50dccc07bc248d6b0925cd5"
+  },
+  {
+    "file": "cutouts/sialia-currucoides.png",
+    "sha256": "7d923f5ed813bdb9da08b03b0778b6154a0acd9f9dcccb9d957b337cf9e68d5a"
+  },
+  {
+    "file": "cutouts/sialia-mexicana.png",
+    "sha256": "3ca36a7c9aa60bc5165a1cae928d27bcc2a7c5fff00fd630507781d3b593b2f3"
+  },
+  {
+    "file": "cutouts/sitta-canadensis.png",
+    "sha256": "265239318d9e335cd2962158bc7c65bf9fc2130d57f6242fa6a696619a0e3515"
+  },
+  {
+    "file": "cutouts/sitta-carolinensis.png",
+    "sha256": "bf119f3e080468f35f0b07fd42f08b034025e0b01b91e696da976afab08e9694"
+  },
+  {
+    "file": "cutouts/sitta-pygmaea.png",
+    "sha256": "9ab65461adb82b0aac1a0b07b8e7e6189ef1991521a4b6bac47dec5228dba19c"
+  },
+  {
+    "file": "cutouts/spatula-discors.png",
+    "sha256": "b465bd40860c86e20838af8b4ff8c29442443db2a9d619f95fd92f8234aeaf7b"
+  },
+  {
+    "file": "cutouts/spinus-pinus.png",
+    "sha256": "fd008b92493335931ba07eba582a2519a95dc0b900ec25c3b66097e1a0e23dd0"
+  },
+  {
+    "file": "cutouts/spinus-psaltria.png",
+    "sha256": "7e73a976b3bf49f5586cce76800d8864dd95d77c32243321bb93a44750cc836b"
+  },
+  {
+    "file": "cutouts/spinus-tristis.png",
+    "sha256": "68c769e166d020a762c8ae62f443241247ec373cb17375b90e8fa290a3fa8b8e"
+  },
+  {
+    "file": "cutouts/spizella-atrogularis.png",
+    "sha256": "0371bd005c5d147e14dfa3694234222f4345f3d2a5a7b8a736462d6279fd8af6"
+  },
+  {
+    "file": "cutouts/spizella-breweri.png",
+    "sha256": "5ff337d50b360e3560783d36bcce273ba1e174ce47e0251cbff9e5c68f19258d"
+  },
+  {
+    "file": "cutouts/spizella-passerina.png",
+    "sha256": "99dc5ed01c496f13ed9c595f1aab3221b1ab31db105d17ec9c6575b83b9b8a6a"
+  },
+  {
+    "file": "cutouts/spizelloides-arborea.png",
+    "sha256": "07419401c0b032f19b9a982598b1d7523d775336dd93415bc8a5556d3f8a0b45"
+  },
+  {
+    "file": "cutouts/stelgidopteryx-serripennis.png",
+    "sha256": "b7e512a28d1fecfa1936820980fb1546ddbdaae45204ee8ee27772bd92432a08"
+  },
+  {
+    "file": "cutouts/streptopelia-decaocto.png",
+    "sha256": "ef1cd8bd098d1cb85bf849fce8708b1f7e15f367c3c9fa699e7663fcaeadbb87"
+  },
+  {
+    "file": "cutouts/sturnella-neglecta.png",
+    "sha256": "f9d80f784e335c22cb4937817b1eaf926ddbcca39b1d94daa953b883e0f6308a"
+  },
+  {
+    "file": "cutouts/sturnus-vulgaris.png",
+    "sha256": "49c49beab63084c0e5aa1a9811e718b0195e72f6e3e41a5db168d5270f6eb100"
+  },
+  {
+    "file": "cutouts/tachycineta-bicolor.png",
+    "sha256": "5928566f67b9676074760efa15bc11a48cb001a6bc6721836cfd1e1226a39e80"
+  },
+  {
+    "file": "cutouts/tachycineta-thalassina.png",
+    "sha256": "63964edc5eb77c34a20bde02bee87ec678ae982f93d29b9ecfd9f75f6f9ecd78"
+  },
+  {
+    "file": "cutouts/thryomanes-bewickii.png",
+    "sha256": "a27c27a167dad80a0ebc899af8c2ad13db3e87a3529b995b3293656abc903e40"
+  },
+  {
+    "file": "cutouts/toxostoma-redivivum.png",
+    "sha256": "12d56386a73839c1020ced6e06192d08820b296dd7ef05c14a0d2da3e6debcf6"
+  },
+  {
+    "file": "cutouts/troglodytes-aedon.png",
+    "sha256": "fba40b95172ef69547b80683c2b0363d6303ced5ee1e9ccb94048a3b8b09b792"
+  },
+  {
+    "file": "cutouts/troglodytes-pacificus.png",
+    "sha256": "e908b77d77f1dc9d9b8b3c3d70515815e135c4b3448eb0d4e8ed9fbaba0310b3"
+  },
+  {
+    "file": "cutouts/turdus-migratorius.png",
+    "sha256": "25de3d5daf4bce61461d5dc7e8a93e9e9c0cdb7c33bcf2dac7e7842191daa2fa"
+  },
+  {
+    "file": "cutouts/tyrannus-verticalis.png",
+    "sha256": "243655c540ed4ecad26b11a13709dc042ccc8cd52e8bcf2073641378b659d81d"
+  },
+  {
+    "file": "cutouts/tyrannus-vociferans.png",
+    "sha256": "e454972e748d9188664a5260f6bd555de9452a23f200cb07dac430183ef688dc"
+  },
+  {
+    "file": "cutouts/tyto-alba.png",
+    "sha256": "015b402bacc0a85c71bf8e80495a03a54c499d9f095dd6812814f2141725e076"
+  },
+  {
+    "file": "cutouts/urile-penicillatus.png",
+    "sha256": "2b6d713579038c428b8bcce69ce46687215d24b8385467d6f75bb10c32fb5e49"
+  },
+  {
+    "file": "cutouts/vireo-bellii.png",
+    "sha256": "a506b60f8c5e5388c79f2a829c2c7ac609eab493c274ea4e713fb1c420781a64"
+  },
+  {
+    "file": "cutouts/vireo-cassinii.png",
+    "sha256": "59f985ce51a0a786c98456e1dc4aab039757617866b28975896b6b89c661fac2"
+  },
+  {
+    "file": "cutouts/vireo-gilvus.png",
+    "sha256": "385cf56e7eb3b4dda279cb2598f6199fa040bbea0cdb1373fffb58339ab8985f"
+  },
+  {
+    "file": "cutouts/vireo-huttoni.png",
+    "sha256": "6d47bd92ac43bcc67e72be3258c13a2f2d42a565bc2ed462116708a3f5f1f2dc"
+  },
+  {
+    "file": "cutouts/xanthocephalus-xanthocephalus.png",
+    "sha256": "6410df5454fab776ebb90c201b5be8323b136a1f674446dd245aacb3c92f23ef"
+  },
+  {
+    "file": "cutouts/zenaida-asiatica.png",
+    "sha256": "c98274908fe5c56872e542742c9d205ae9568d66c91c12ef541a2e2ecbe2abea"
+  },
+  {
+    "file": "cutouts/zenaida-macroura.png",
+    "sha256": "e1269b613041b342f9aa4a0e4464c3a8fa5f82e0194556d8860df0fdc8e9dd03"
+  },
+  {
+    "file": "cutouts/zonotrichia-atricapilla.png",
+    "sha256": "2293a3dce6ac9e2823577f0481bec6eba7b03ba28d1cfa048b5167ef2218af4b"
+  },
+  {
+    "file": "cutouts/zonotrichia-leucophrys.png",
+    "sha256": "c2a338c95f64bc1cf4902d19da12a23c8c1647fd880acb44932837f9365295ad"
+  },
+  {
+    "file": "cutouts/zonotrichia-querula.png",
+    "sha256": "6bc535c51c8794ea64ce74a4b6b39404f58df710cd15e879e8112454205737bb"
+  },
+  {
+    "file": "sketches/agelaius-phoeniceus-2.png",
+    "sha256": "3f58f5199f16b1d74cef8c7db46ab318f4802254802892b6f950e59d01fd9bc0"
+  },
+  {
+    "file": "sketches/agelaius-phoeniceus.png",
+    "sha256": "06ba74132cf5887135561074f2b863e47772bd9ec4d37c1cd33ad61b052287fc"
+  },
+  {
+    "file": "sketches/aphelocoma-californica-2.png",
+    "sha256": "b7143a2155230dca9be81cff6f3921426843777acb714da7cde3b90f5589688a"
+  },
+  {
+    "file": "sketches/aphelocoma-californica.png",
+    "sha256": "021463b3241e86af7693c587fc3c5ddf67028f4e42ab503e1c40e51b0a564885"
+  },
+  {
+    "file": "sketches/baeolophus-inornatus.png",
+    "sha256": "f293ba53c16367b4b41f8c2cf15b7e9c7f57b16a678902813e50055ea3480a17"
+  },
+  {
+    "file": "sketches/bombycilla-cedrorum.png",
+    "sha256": "414af69bb3b62fefad03036291e56b1a9e20a24db61bb15252cf56d2fc47ed28"
+  },
+  {
+    "file": "sketches/calypte-anna-2.png",
+    "sha256": "c1c38452f04ec8bbe6d4f93c1aba0e0e6d61a97818ea878b5c078aa67583aa25"
+  },
+  {
+    "file": "sketches/calypte-anna.png",
+    "sha256": "045fbdfc45e6638e0209f4e5cdbfebd640b43dc069c2e3d9d553027d1ac327ec"
+  },
+  {
+    "file": "sketches/cardellina-pusilla.png",
+    "sha256": "045adc87b7dca17a2e6ee5043a38c7d87a8065c9162adcb68bba41233c82d4ca"
+  },
+  {
+    "file": "sketches/catharus-guttatus-2.png",
+    "sha256": "eab82dd519de4cddf48de241d2e66fd2989d3ac8fd81cfc58872a1f4513d1e32"
+  },
+  {
+    "file": "sketches/catharus-guttatus.png",
+    "sha256": "c0077a1a64292460053548f8a5c01dbab133b2acd38c58151182f92e5a0ce01d"
+  },
+  {
+    "file": "sketches/cistothorus-palustris-2.png",
+    "sha256": "ee56f10e139748cb317f03956d29388b29eb37ce72cc2ef57d35376d01cfeb58"
+  },
+  {
+    "file": "sketches/cistothorus-palustris.png",
+    "sha256": "cbd3cc3e2b042c84b43a08e9519d0ef41650684b72e59de799708bfb1eab5561"
+  },
+  {
+    "file": "sketches/columba-livia-2.png",
+    "sha256": "29817c0f9c2e7cedebb5e5d8bc5b151d8b346a769dd014601e3127cb114ef45d"
+  },
+  {
+    "file": "sketches/columba-livia.png",
+    "sha256": "9d22d9edf634f1f03636bf94e9cbc951311b4c5bd83809643a088097e42726ed"
+  },
+  {
+    "file": "sketches/contopus-sordidulus.png",
+    "sha256": "4bf284d3e1a01bcd166d9fbe57ecc07dce3db5571e5d3bd65af00da03d8f3e31"
+  },
+  {
+    "file": "sketches/corvus-brachyrhynchos-2.png",
+    "sha256": "d4bbd2be5c58f0e79ef3dc9997d28fc08ca62e6f269efdef2e9c681518ee287b"
+  },
+  {
+    "file": "sketches/corvus-brachyrhynchos.png",
+    "sha256": "ed8967321b39af49bdd8c8e00b279e7cfee7e4e3ce8b8055f753c1fcd35aebf8"
+  },
+  {
+    "file": "sketches/corvus-corax-2.png",
+    "sha256": "0c306aeab34a837f92d694feb361bc28289e894bb98a6fe40346af880c9bd991"
+  },
+  {
+    "file": "sketches/corvus-corax.png",
+    "sha256": "87725e30ad8d887a4e3269b54bec39cd6832d262093cf52e71ba834bfac38b9b"
+  },
+  {
+    "file": "sketches/cyanocitta-stelleri-2.png",
+    "sha256": "0288ab1939524fe07a07898e83a6f6f69a927c8a866b9ddbe6db4aa7d000b493"
+  },
+  {
+    "file": "sketches/cyanocitta-stelleri.png",
+    "sha256": "7555d60eff9d2f60465f56e88fcb8b055567060302b83b6c641bd57676faf152"
+  },
+  {
+    "file": "sketches/empidonax-difficilis.png",
+    "sha256": "ddae68606671775238d8f95535a5109c067175dd2dd9cef0c68e004106a01187"
+  },
+  {
+    "file": "sketches/euphagus-cyanocephalus.png",
+    "sha256": "87d32fae58341570d166c17e5721b2bec0b931a445fafcfaa27ba239b500f7ec"
+  },
+  {
+    "file": "sketches/geothlypis-trichas-2.png",
+    "sha256": "3896c0d2fe185f4d7fa55cc061c0f1ddd1e5290c8d2b213a1a8563f8a7e07585"
+  },
+  {
+    "file": "sketches/geothlypis-trichas.png",
+    "sha256": "1c26416577e7f1ab77de1e085f1e6d70f2fc73927c6cc4d6be0301bc42570557"
+  },
+  {
+    "file": "sketches/haemorhous-mexicanus-2.png",
+    "sha256": "675cf89b20c069927668ecc8926a43dd989b41f618e8ee923e31d7ae87c98379"
+  },
+  {
+    "file": "sketches/haemorhous-mexicanus.png",
+    "sha256": "7a65ac79b4e4541298d6b6e7fa79456f40c5a7b89434a68507eaf8bbf9ff541a"
+  },
+  {
+    "file": "sketches/haemorhous-purpureus.png",
+    "sha256": "dc9107e98eb1616f05641383c7922675076a8a858f34268c9596cbe06843f7f9"
+  },
+  {
+    "file": "sketches/icterus-bullockii.png",
+    "sha256": "b7c724a04f069fe19379ea6946513ea1ec6c3cbbc34027c5a1bba8f43f64ba9c"
+  },
+  {
+    "file": "sketches/icterus-cucullatus-2.png",
+    "sha256": "eb68125b9078fc58577cc3549530037304d426409ba5d528f246a2e912769260"
+  },
+  {
+    "file": "sketches/icterus-cucullatus.png",
+    "sha256": "c0445c2bc8cc1248d81942a9f97e56718814e859ac0f765d3874298488c14221"
+  },
+  {
+    "file": "sketches/junco-hyemalis-2.png",
+    "sha256": "d50009d4669887a4e3e742508cd152b736ed365fb355b9156046c16918f5bf92"
+  },
+  {
+    "file": "sketches/junco-hyemalis.png",
+    "sha256": "d2cc02ec70bc92da85a95f5e254e9bb917acf7a4b723eed524208f12601bfd67"
+  },
+  {
+    "file": "sketches/larus-occidentalis-2.png",
+    "sha256": "413b0ed34871fac6b9f38d2b7b54ae9176a771c9eef1273c961f3d654d0f9ff3"
+  },
+  {
+    "file": "sketches/larus-occidentalis.png",
+    "sha256": "fcf97a4ed5ac35e6352523192e83ef3f5bfb4d252be38b582a058cb6c98a6067"
+  },
+  {
+    "file": "sketches/leiothlypis-celata.png",
+    "sha256": "32f67254971d4896680290a246a3b0a62dd1706967cf46e2354230f273d6040d"
+  },
+  {
+    "file": "sketches/melospiza-melodia-2.png",
+    "sha256": "1e421b8ebeb49bc1ee179b7114df160fd840f86e3639c6b99b0986d42db4f698"
+  },
+  {
+    "file": "sketches/melospiza-melodia.png",
+    "sha256": "7685cc79f4b7d86ecc6af50420d8074093183529dfc61169de44f4456ecf5694"
+  },
+  {
+    "file": "sketches/melozone-crissalis.png",
+    "sha256": "b584443990b1996ed81a9f9b9d171e5e179b7ed05492daf319e4efcee6c3a558"
+  },
+  {
+    "file": "sketches/mimus-polyglottos-2.png",
+    "sha256": "cbd1e9458eb73196a0a79e99995168635f3e26a54e6f2faf32a6ce8626c99819"
+  },
+  {
+    "file": "sketches/mimus-polyglottos.png",
+    "sha256": "b987b8ef5cad73243616df0e68057f31a65a9dd378ea55b82d6e5212886c6a75"
+  },
+  {
+    "file": "sketches/molothrus-ater-2.png",
+    "sha256": "cfa67893e265764ef04a9fc34df87eb9c12b6eb522da4c591093c6295bc0478c"
+  },
+  {
+    "file": "sketches/molothrus-ater.png",
+    "sha256": "ef88ecd71c68ee7fddbcca64f257dbc8cbc9709c922c6a4f50873a0c6dc82352"
+  },
+  {
+    "file": "sketches/passer-domesticus-2.png",
+    "sha256": "f201e8196f415c399b34a7908953b1bbe70fc3228c874cdf8128df0b915cfa1e"
+  },
+  {
+    "file": "sketches/passer-domesticus.png",
+    "sha256": "d504fe24580beb58de2542637cf40e05fee06d9aae34dd7dddd318ca29ea8761"
+  },
+  {
+    "file": "sketches/pipilo-maculatus.png",
+    "sha256": "af9c3fa8f01f51ed4e7be77c81334b4c57a6002cf0ca7a42024e2b82ed1cc6f2"
+  },
+  {
+    "file": "sketches/poecile-rufescens-2.png",
+    "sha256": "fa4a189973efcea1ccc1208c816ccfbad840e87fd3f02544924bf90000352ff1"
+  },
+  {
+    "file": "sketches/poecile-rufescens.png",
+    "sha256": "c068719d06b914cdb1bcaee2fe496db724dea7dedb28fd76989989e651390a7f"
+  },
+  {
+    "file": "sketches/psaltriparus-minimus.png",
+    "sha256": "a05fd5adc4e4a9d832870295b58edfb046c0117b6f85b9a26d717208a8a1b431"
+  },
+  {
+    "file": "sketches/sayornis-nigricans-2.png",
+    "sha256": "e562b3254f1e1bf45504f7e80eac914f90f6981c86da7187eb23c0c8c13c7c36"
+  },
+  {
+    "file": "sketches/sayornis-nigricans.png",
+    "sha256": "7041fd6f3558017478c0f6e810145f2d9bca98332ea32045ca7d3e40f0cc94cd"
+  },
+  {
+    "file": "sketches/selasphorus-sasin-2.png",
+    "sha256": "9d4369822f47ca3a5dbfd9a026458a89b542a7898f8bef9484e0c9b7b2a18aa0"
+  },
+  {
+    "file": "sketches/selasphorus-sasin.png",
+    "sha256": "b480f11f3195b14638da98719dc0bed41bf857f3c84c46d7786b860d60616918"
+  },
+  {
+    "file": "sketches/setophaga-coronata.png",
+    "sha256": "0269b1ae2508b32d51e122621fdcd6dca21d46d65daacee67f42bb857d4e7aa0"
+  },
+  {
+    "file": "sketches/setophaga-townsendi.png",
+    "sha256": "a21d4dcd6031223d62fe70981af6de8180d8ee0325f61e52dac4d7f4358cd3d8"
+  },
+  {
+    "file": "sketches/sialia-mexicana.png",
+    "sha256": "41d8920f59a9204dc9956f2ae0f85abf8d423e3761bf95c7f0116d54dd287844"
+  },
+  {
+    "file": "sketches/spinus-pinus-2.png",
+    "sha256": "3723a1a7c79b4dcf65b597009f8604c1ff9a55838cc8195ba4d043bcf59c8a35"
+  },
+  {
+    "file": "sketches/spinus-pinus.png",
+    "sha256": "54f1848f6b97f48770ec4d5eaeb606ae6cf24f197d79439d4f9f1fe919e522bd"
+  },
+  {
+    "file": "sketches/spinus-psaltria.png",
+    "sha256": "bb5b339768254083367e9bd2410c1b83fa7b5ed4c697abeb1f6bee00282c36e1"
+  },
+  {
+    "file": "sketches/spinus-tristis-2.png",
+    "sha256": "5a3c92244e6fee2fcf68ab086e2cf0a52dcdcac0f81862deb9e95574cc452bc6"
+  },
+  {
+    "file": "sketches/spinus-tristis.png",
+    "sha256": "015d88d74497cba84f27f421596b561758b0de5c05fc4eb77b9bbc4412d961ba"
+  },
+  {
+    "file": "sketches/streptopelia-decaocto-2.png",
+    "sha256": "a986102ba50746e728680b44776c9297563f97a04c2347a8623d43b7ff2d2604"
+  },
+  {
+    "file": "sketches/streptopelia-decaocto.png",
+    "sha256": "97e21df6fd21439c9efbb54a18d6f592a35ce4c99c18d2c21843e2189cf07960"
+  },
+  {
+    "file": "sketches/sturnus-vulgaris-2.png",
+    "sha256": "1e0a937b25e2ca9d93d69c50f89c47d95e213b5c407cb116fb23965d0eb5d6f3"
+  },
+  {
+    "file": "sketches/sturnus-vulgaris.png",
+    "sha256": "92787f6fbddf29750d2061280e985806e0511c4d19bbfe9ffbb7ccac1110855f"
+  },
+  {
+    "file": "sketches/thryomanes-bewickii.png",
+    "sha256": "20d8acf3f72ebf842ed074dae88054ff0b85039ecc607824acd1f67cfe5d0508"
+  },
+  {
+    "file": "sketches/toxostoma-redivivum.png",
+    "sha256": "7c8f808934e42dc21c28e170e5891e9edf6103d1eb7f11f0fa0d7f8b54ce8c32"
+  },
+  {
+    "file": "sketches/troglodytes-pacificus.png",
+    "sha256": "fee9bdef23909f7a80f3c1134710d085bbc194ca5cc27f81da2a039fa4d06a61"
+  },
+  {
+    "file": "sketches/turdus-migratorius-2.png",
+    "sha256": "ca9d90f18381d402bc1508cf9384f44fb860b4ad31ffef9d0907d973221fe20f"
+  },
+  {
+    "file": "sketches/turdus-migratorius.png",
+    "sha256": "1e5673e40ad85f554772b22da29161d9438dae66506c53c406bb2135967703b8"
+  },
+  {
+    "file": "sketches/zenaida-macroura-2.png",
+    "sha256": "eef5d23ed7a740e2b3024069c194dc05ae5d34cfe75793cb1462079522a51ba6"
+  },
+  {
+    "file": "sketches/zenaida-macroura.png",
+    "sha256": "b5eb99b16f837c339d78f615427613cb299c7b5e1300696480463f40c6ecea81"
+  },
+  {
+    "file": "sketches/zonotrichia-atricapilla.png",
+    "sha256": "f4a993ce82b9323ba5d0ef0f19966d0bc28f41f27cd8f62b24a045adeda38068"
+  },
+  {
+    "file": "sketches/zonotrichia-leucophrys-2.png",
+    "sha256": "4c3b2f1b3b902b404f6fc121129184157fcf7cf41c88e7ef0c7d8c7f1ac20bd0"
+  },
+  {
+    "file": "sketches/zonotrichia-leucophrys.png",
+    "sha256": "1ce3676348751d7db98d1fcda890bd201558dd3b56447eb81b49200f7935844b"
+  }
+]
