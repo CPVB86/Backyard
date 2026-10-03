@@ -6,6 +6,7 @@ from pathlib import Path
 import sqlite3
 import stat
 import time
+from app.core.migrations import SCHEMA_VERSION
 
 
 def database_inventory(path, since, check=False):
@@ -16,8 +17,9 @@ def database_inventory(path, since, check=False):
         deadline = time.monotonic() + 10
         db.set_progress_handler(lambda: int(time.monotonic() > deadline), 10000)
         version = db.execute("PRAGMA user_version").fetchone()[0]
-        if version != 2:
-            raise ValueError(f"Database schema is {version}, expected 2; no migration performed")
+        if version != SCHEMA_VERSION:
+            raise ValueError(
+                f"Database schema is {version}, expected {SCHEMA_VERSION}; no migration performed")
         def counts(column, where="", args=()):
             return {str(key): count for key, count in db.execute(
                 f"SELECT {column}, COUNT(*) FROM observations {where} GROUP BY {column}", args)}

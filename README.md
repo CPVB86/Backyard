@@ -163,7 +163,7 @@ Daarna voert migratie 0â†’1 onder BEGIN IMMEDIATE Ã©Ã©n transactie uit:
 - Behoudt de oorspronkelijke detecties en het ingestcontract.
 
 De nieuwe migratie 1→2 voegt observations en observation_candidates toe.
-PRAGMA user_version wordt pas na alle succesvolle stappen op **2** gezet.
+PRAGMA user_version wordt pas na alle succesvolle stappen op **3** gezet.
 Bestaande versie-1-data/audio wordt niet aangepast; ook de historische
 chimpansee blijft bewaard. Zie docs/OBSERVATION_POLICY.md.
 
@@ -392,3 +392,37 @@ Authenticated species illustrations and existing AvianVisitors assets are availa
 through the domain-neutral Generator. Accepted observations automatically schedule
 missing species assets in a durable background queue. Consumers only read assets.
 See [Generator setup and API](docs/GENERATOR.md).
+
+## Centrale species-catalogus
+
+Backyard gebruikt `domain + scientific_name` als canonieke soortidentiteit. Een
+Waarneming.nl-ID is een externe, brongebonden identifier en vervangt die identiteit
+niet. De tabel `species_catalog` staat in dezelfde SQLite-database als observations
+en kan ook soorten bevatten die Backyard nog nooit heeft waargenomen.
+
+De catalogus bewaart de Nederlandse naam, taxonomie, authority, familie, type,
+parent-ID, zeldzaamheid, status, obscurity, bronlink en de oorspronkelijke CSV-rij.
+Lege bronvelden blijven `null`. `rarity` en `status` zijn uitsluitend context; ze
+veranderen de observation policy niet. Velden voor latere encyclopedische verrijking
+zijn aanwezig, maar gewone GET-requests doen geen Wikipedia-, OpenAI- of andere
+externe aanvraag.
+
+Stop de API voor migratie/import en voer daarna uit:
+
+```bash
+source .venv/bin/activate
+python -m app.core.migrate
+python -m app.modules.species.import_species --domain bird --file '/pad/naar/vogels.csv'
+python -m app.modules.species.import_species --domain bat --only-bats --file '/pad/naar/zoogdieren.csv'
+```
+
+De importer is offline en herhaalbaar en rapporteert `inserted`, `updated`,
+`unchanged` en `rejected`. Hij wijzigt geen observations of Generator-assets en
+start geen generation jobs. Onverwachte kolommen, ongeldige ID's en conflicterende
+duplicaten worden expliciet geweigerd; er is geen fuzzy matching.
+
+`GET /api/species/{domain}/{scientific_name}?locale=nl` combineert catalogusmetadata
+met accepted-only Backyard-statistieken, één deterministisch gekozen permanente
+audio-observation en read-only Generator-metadata. Audio blijft via de bestaande
+beveiligde observation-route lopen. AvianVisitors en de WordPress-plugin zijn
+consumers van deze centrale laag en bezitten geen eigen kopie van de catalogus.

@@ -9,7 +9,7 @@ from sqlalchemy import inspect
 
 from app.core.observation_migration import upgrade_1_to_2, validate_v1
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 FOUNDATION_COLUMNS = {
     "id", "timestamp", "scientific_name", "common_name", "confidence",
     "source", "audio_reference", "model_version", "raw_metadata", "created_at",
@@ -61,10 +61,34 @@ def upgrade_0_to_1(connection):
     """)
 
 
+def upgrade_2_to_3(connection):
+    connection.exec_driver_sql("""
+        CREATE TABLE species_catalog (
+            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            domain VARCHAR(16) NOT NULL CHECK (domain IN ('bird','bat')),
+            scientific_name VARCHAR(255) NOT NULL,
+            common_name_nl VARCHAR(255), authority VARCHAR(255), family VARCHAR(255),
+            taxon_type VARCHAR(100), taxon_group VARCHAR(100),
+            parent_source_species_id INTEGER, source VARCHAR(50) NOT NULL,
+            source_species_id INTEGER NOT NULL, source_url VARCHAR(2048),
+            rarity VARCHAR(100), status VARCHAR(100), obscurity VARCHAR(255),
+            source_metadata JSON NOT NULL,
+            wikipedia_nl_url VARCHAR(2048), summary_nl TEXT, fact_nl TEXT,
+            encyclopedia_source VARCHAR(255), imported_at DATETIME NOT NULL,
+            updated_at DATETIME NOT NULL
+        )
+    """)
+    connection.exec_driver_sql(
+        "CREATE UNIQUE INDEX uq_species_identity ON species_catalog (domain, scientific_name)")
+    connection.exec_driver_sql(
+        "CREATE UNIQUE INDEX uq_species_source_id ON species_catalog (source, source_species_id)")
+
+
 def initialize_or_check(engine):
     from app.core.database import Base
     from app.modules.birds import models  # noqa: F401
     from app.modules.observations import models as observation_models  # noqa: F401
+    from app.modules.species import models as species_models  # noqa: F401
     with engine.connect() as connection:
         connection.exec_driver_sql("BEGIN IMMEDIATE")
         try:
@@ -89,7 +113,7 @@ def migrate(engine, database_path: Path):
         current = version(connection)
         if current == SCHEMA_VERSION:
             return None
-        if current not in (0, 1):
+        if current not in (0, 1, 2):
             raise RuntimeError("Unsupported database version; refusing migration")
         if not inspect(connection).get_table_names():
             connection.rollback()
@@ -97,7 +121,7 @@ def migrate(engine, database_path: Path):
             return None
         if current == 0:
             validate_foundation(connection)
-        else:
+        elif current == 1:
             validate_v1(connection)
 
     # API/producers must be stopped. SQLite backup also handles committed WAL data.
@@ -114,7 +138,9 @@ def migrate(engine, database_path: Path):
             if current == 0:
                 validate_foundation(connection)
                 upgrade_0_to_1(connection)
-            upgrade_1_to_2(connection)
+            if current in (0, 1):
+                upgrade_1_to_2(connection)
+            upgrade_2_to_3(connection)
             connection.exec_driver_sql(f"PRAGMA user_version = {SCHEMA_VERSION}")
             connection.commit()
         except BaseException:

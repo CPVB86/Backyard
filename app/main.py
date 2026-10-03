@@ -19,6 +19,7 @@ from generator.store import AssetStore
 from generator.scheduler import Scheduler
 from app.generator.router import router as generator_router
 from app.modules.avian_visitors.router import router as avian_visitors_router
+from app.modules.species.router import router as species_router
 
 logger = logging.getLogger("backyard.api")
 
@@ -68,6 +69,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(observations_router)
     app.include_router(generator_router)
     app.include_router(avian_visitors_router)
+    app.include_router(species_router)
     app.mount("/avian-visitors", StaticFiles(
         directory=Path(__file__).parent / "modules" / "avian_visitors" / "static", html=True,
     ), name="avian-visitors")
