@@ -5,3 +5,5 @@ import pytest
 def api_test_token(monkeypatch):
     """Isolate all tests from real production credentials."""
     monkeypatch.setenv("BACKYARD_API_TOKEN", "backyard-test-token")
+
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)

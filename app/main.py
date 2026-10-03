@@ -14,6 +14,7 @@ from app.modules.birds.router import router as birds_router
 from app.modules.observations.router import router as observations_router
 from observations.policy import Policy
 from generator.store import AssetStore
+from generator.scheduler import Scheduler
 from app.generator.router import router as generator_router
 
 logger = logging.getLogger("backyard.api")
@@ -28,15 +29,21 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise RuntimeError("Configure a nonempty valid BACKYARD_API_TOKEN before starting the API")
         configure_logging(config.log_level)
         engine = create_database(config)
+        scheduler = None
         try:
             initialize_database(engine)
             app.state.engine = engine
             app.state.settings = config
             app.state.generator = AssetStore(config.resolved_storage_root / "generator")
+            scheduler = Scheduler(app.state.generator)
+            app.state.generator_scheduler = scheduler
+            scheduler.start()
             app.state.observation_policy = Policy.load(config.policy_path)
             logger.info("Backyard started")
             yield
         finally:
+            if scheduler:
+                scheduler.stop()
             engine.dispose()
             logger.info("Backyard stopped")
 

@@ -178,8 +178,8 @@ def test_generator_api_auth_metadata_assets_and_generation(tmp_path, monkeypatch
             assert image.status_code == 200
             assert image.content.startswith(b"\x89PNG")
             assert image.headers["cache-control"] == "private, max-age=3600"
-        assert client.post("/api/generator/bird/generate", json=payload, headers=AUTH).status_code == 200
-        assert client.post("/api/generator/bat/generate", json=payload, headers=AUTH).status_code == 501
+        assert client.post("/api/generator/bird/generate", json=payload, headers=AUTH).status_code == 405
+        assert client.post("/api/generator/bat/generate", json=payload, headers=AUTH).status_code == 405
         assert client.get(f"/api/generator/bat/assets/{key}/perched", headers=AUTH).status_code == 404
         assert client.get("/api/generator/bird/assets/invalid/perched", headers=AUTH).status_code == 422
         assert client.get(f"/api/generator/bird/assets/{key}/missing", headers=AUTH).status_code == 404

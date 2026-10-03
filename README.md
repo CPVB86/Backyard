@@ -357,4 +357,6 @@ Nederlandse/Duitse namen: Birds/observations-output bevat `common_name_nl` en
 ## Generator
 
 Authenticated species illustrations and existing AvianVisitors assets are available
-through the domain-neutral Generator. See [Generator setup and API](docs/GENERATOR.md).
+through the domain-neutral Generator. Accepted observations automatically schedule
+missing species assets in a durable background queue. Consumers only read assets.
+See [Generator setup and API](docs/GENERATOR.md).

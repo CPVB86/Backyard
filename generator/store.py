@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+from generator.jobs import Jobs
 
 
 class GenerationConflict(RuntimeError):
@@ -30,10 +31,18 @@ def write_json(path, value):
 class AssetStore:
     def __init__(self, root, adapters=None):
         self.root = Path(root).resolve()
+        self.jobs = Jobs(self.root / "jobs.sqlite3")
         if adapters is None:
             from generator.domains.birds.adapter import Birds
             adapters = {"bird": Birds(), "bat": None}
         self.adapters = adapters
+
+    def configuration_reason(self, domain):
+        adapter = self.adapter(domain)
+        if adapter is None:
+            return "domain_not_configured"
+        check = getattr(adapter, "configuration_reason", None)
+        return check() if check else None
 
     def adapter(self, domain):
         if not re.fullmatch(r"[a-z][a-z0-9_-]{0,31}", domain) or domain not in self.adapters:
@@ -73,7 +82,16 @@ class AssetStore:
         status = "not_configured" if adapter is None else "ready" if not missing else "partial" if assets else "missing"
         state_path = directory / "state.json"
         attempts = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {}
-        return {"domain": domain, "scientific_name": scientific_name, "species_key": species_key(scientific_name),
+        generation = None if status == "ready" else self.jobs.get(domain, scientific_name)
+        if status == "ready":
+            generation = {"status": "complete", "reason": None}
+        elif generation is None or generation["status"] == "complete":
+            if any(key in attempts for key in missing):
+                generation = {"status": "generation_failed", "reason": "previous_attempt_requires_review"}
+            else:
+                reason = self.configuration_reason(domain)
+                generation = {"status": "generation_not_configured" if reason else "incomplete", "reason": reason}
+        return {"generation": generation, "domain": domain, "scientific_name": scientific_name, "species_key": species_key(scientific_name),
                 "status": status, "assets": assets, "missing_assets": missing, "attempts": attempts}
 
     def resolve_key(self, domain, key):

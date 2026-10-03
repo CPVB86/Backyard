@@ -10,7 +10,7 @@ The source checkout/fork has not been modified or removed.
 | AvianVisitors source | Backyard Birds component |
 | --- | --- |
 | `demo/generate.py`: prepare_prompt, save_cutout | `render.py`; only resource paths adapted |
-| `avian/scripts/openai_images.py` | `openai_images.py`, unchanged HTTP/image protocol and defaults |
+| `avian/scripts/openai_images.py` | `openai_images.py`, retained HTTP/image protocol and defaults; sanitized credential-rejection classification added |
 | `avian/scripts/pregen.py`: slugify, load_prompt, load_species_notes, POSES | `helpers.py` |
 | `avian/scripts/prompt.template.md`, species-notes.json | Same files, byte-for-byte |
 | `avian/scripts/build_masks.py`: build_tables, dump_perkey and constants | `masks.py`, unchanged algorithms |
@@ -24,8 +24,8 @@ The working OpenAI path already present in the fork is the runtime generator.
 Its complete prompt, species notes, role-based optional anatomy/negative references,
 per-pose robin style references, transparent-background override, alpha validation,
 crop/padding, atomic PNG publication, preserved raw response and mask generation
-are retained. Generation remains explicit. There is no second automatic detector
-or observation-triggered generator. The older Gemini orchestration and Pi SSH
+are retained. Accepted observations now schedule this same generator through the
+central Generator worker; no separate detector-side generator is added. The older Gemini orchestration and Pi SSH
 upgrade transport are not new Backyard services; their reusable image processing
 and optional species/anatomy verification are retained here.
 

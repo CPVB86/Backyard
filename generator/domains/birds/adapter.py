@@ -30,6 +30,12 @@ def valid_plate(path, modified_ns, size, sha256):
 class Birds:
     required_assets = ("perched", "flight")
 
+    def configuration_reason(self):
+        key = os.environ.get("OPENAI_API_KEY", "")
+        if not key or any(ord(char) < 33 or ord(char) > 126 for char in key):
+            return "openai_key_missing_or_invalid"
+        return None
+
     def identities(self):
         return catalogue().keys()
 

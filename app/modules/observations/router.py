@@ -37,6 +37,7 @@ async def create(request: Request, response: Response):
     result, created = await run_in_threadpool(
         service.ingest, request.app.state.engine, request.app.state.observation_policy, payload)
     response.status_code = 201 if created else 200
+    await run_in_threadpool(request.app.state.generator_scheduler.accepted, result)
     return result
 
 
@@ -111,7 +112,9 @@ def get_audio(request: Request, identity: UUID):
 
 @router.post("/{identity}/confirm")
 def confirm(request: Request, identity: UUID, payload: ReviewInput):
-    return service.review(request.app.state.engine, request.app.state.settings, identity, "confirm", payload)
+    result = service.review(request.app.state.engine, request.app.state.settings, identity, "confirm", payload)
+    request.app.state.generator_scheduler.accepted(result)
+    return result
 
 
 @router.post("/{identity}/reject")

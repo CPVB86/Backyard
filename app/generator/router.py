@@ -2,17 +2,9 @@
 from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import FileResponse
-from pydantic import BaseModel, ConfigDict, Field
 from generator.store import GenerationConflict, UnsupportedDomain, public_status
 
 router = APIRouter(prefix="/api/generator", tags=["generator"])
-
-
-class GenerateRequest(BaseModel):
-    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
-    scientific_name: str = Field(min_length=1, max_length=255)
-    common_name: str = Field(min_length=1, max_length=255)
-    retry_failed: bool = False
 
 
 def invoke(action):
@@ -40,11 +32,9 @@ def species(request: Request, domain: str,
     return invoke(lambda: public_status(request.app.state.generator.lookup(domain, scientific_name)))
 
 
-@router.post("/{domain}/generate")
-def generate(request: Request, domain: str, payload: GenerateRequest):
-    # Explicit action only. GETs, observations and detector ingest never trigger paid calls.
-    return invoke(lambda: public_status(request.app.state.generator.ensure(
-        domain, payload.scientific_name, payload.common_name, retry_failed=payload.retry_failed)))
+@router.post("/{domain}/generate", include_in_schema=False)
+def generate(domain: str):
+    raise HTTPException(405, "Generation is scheduled by accepted observations; consumers use GET")
 
 
 @router.get("/{domain}/assets/{key}/{asset_id}")

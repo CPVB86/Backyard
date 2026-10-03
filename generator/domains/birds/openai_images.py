@@ -1,7 +1,7 @@
 """OpenAI Images adapter. No SDK, retries or logging of credentials.
 
 Reference: https://developers.openai.com/api/docs/guides/image-generation
-Only an explicit CLI generation action invokes this module's request function.
+Invoked by the central Generator worker or an explicit local administrator action.
 """
 import base64
 import json
@@ -10,6 +10,7 @@ from pathlib import Path
 import urllib.error
 import urllib.request
 import uuid
+from generator.errors import GenerationNotConfigured
 
 DEFAULT_MODEL = "gpt-image-2.5-flare"
 API_ROOT = "https://api.openai.com/v1/images/"
@@ -57,6 +58,9 @@ def generate_png(key, prompt, references=(), model=DEFAULT_MODEL, quality="mediu
     except (json.JSONDecodeError, UnicodeError):
         raise RuntimeError("OpenAI returned invalid JSON. No automatic retry was made.") from None
     except urllib.error.HTTPError as error:
+        error.close()
+        if error.code in (401, 403):
+            raise GenerationNotConfigured("Provider credentials unavailable") from None
         # Do not echo remote bodies: proxies may reflect request credentials.
         raise RuntimeError(f"OpenAI returned HTTP {error.code}; check account access, billing, model and key. No automatic retry was made.") from None
     except (urllib.error.URLError, TimeoutError, OSError):
