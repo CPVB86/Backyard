@@ -68,9 +68,11 @@ de API en /openapi.json werken zonder cloud.
 
 ### AvianVisitors-browsercollage
 
-AvianVisitors is een presentatielaag binnen dezelfde Backyard-app. De pagina leest
-uitsluitend geaccepteerde bird-observations en gebruikt de bestaande Generator-assets;
-er is geen afzonderlijke database, afbeeldingsmap of interne HTTP-koppeling.
+AvianVisitors is een presentatielaag binnen dezelfde Backyard-app. De herkenbare
+collage, server-side statistieken en postzegelatlas lezen uitsluitend geaccepteerde
+bird-observations en gebruiken de bestaande Generator-assets; er is geen afzonderlijke
+database, afbeeldingsmap of interne HTTP-koppeling. Periodekeuze, viewwissels,
+silhouet-packing en de zittend/vliegend-varianten blijven onderdeel van de browserlaag.
 
 Open na het starten van de API:
 
@@ -87,9 +89,13 @@ De onderliggende response is beschikbaar via de geauthenticeerde route:
 
 ```text
 GET /api/avian-visitors/recent?hours=24&locale=nl
+GET /api/avian-visitors/stats?hours=24&locale=nl
+GET /api/avian-visitors/lifelist?locale=nl
 ```
 
-Ondersteunde locales zijn `nl` (standaard), `en` en `de`.
+Ondersteunde locales zijn `nl` (standaard), `en` en `de`. De algemene interface
+blijft Nederlandstalig. Zie `app/modules/avian_visitors/PROVENANCE.md` voor de
+herkomst van de uit de oorspronkelijke AvianVisitors-presentatie aangepaste logica.
 
 ## Projectstructuur
 

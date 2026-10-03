@@ -137,3 +137,54 @@ def test_existing_bundled_generator_assets_are_exposed(client):
         assert item["assets"][pose]["dimensions"]
         assert item["assets"][pose]["mask"]["bits"]
         assert item["assets"][pose]["url"].endswith("/" + pose)
+
+
+def test_stats_and_lifelist_only_use_accepted_birds_and_group_by_identity(client, monkeypatch):
+    now = datetime.now(timezone.utc)
+    monkeypatch.setattr("app.modules.avian_visitors.service.localized_name",
+                        lambda sci, english, locale: "Koolmees" if sci == "Parus major" and locale == "nl" else english)
+    add(client, "Parus major", "Great Tit", now - timedelta(hours=2), event="tit-1")
+    add(client, "Parus major", "Great Tit", now - timedelta(hours=1), status="human_confirmed", event="tit-2")
+    add(client, "Flightus only", "Flight only", now - timedelta(hours=30), event="old-flight")
+    add(client, "Perchedus only", "Perched only", now - timedelta(minutes=20), status="pending_review")
+    add(client, "Assetless bird", "Assetless", now - timedelta(minutes=10), status="human_rejected")
+    add(client, "Pipistrellus pipistrellus", "Common Pipistrelle", now - timedelta(minutes=5), domain="bat")
+
+    stats = client.get("/api/avian-visitors/stats?hours=24&locale=nl").json()
+    assert stats["observation_count"] == 2 and stats["species_count"] == 1
+    assert stats["species"][0]["scientific_name"] == "Parus major"
+    assert stats["species"][0]["common_name"] == "Koolmees" and stats["species"][0]["count"] == 2
+    assert stats["all_time_observation_count"] == 3 and stats["all_time_species_count"] == 2
+    assert sum(item["count"] for item in stats["timeline"]) == 2
+    assert sum(stats["rhythm"]) == 2
+    assert stats["hourly_species"][0]["scientific_name"] == "Parus major"
+    assert sum(stats["hourly_species"][0]["counts"]) == 2
+
+    life = client.get("/api/avian-visitors/lifelist?locale=nl").json()
+    assert life["observation_count"] == 3 and life["species_count"] == 2
+    species = {item["scientific_name"]: item for item in life["species"]}
+    assert set(species) == {"Parus major", "Flightus only"}
+    assert species["Parus major"]["count"] == 2 and species["Parus major"]["common_name"] == "Koolmees"
+    assert set(species["Flightus only"]["assets"]) == {"flight"}
+
+    recent = client.get("/api/avian-visitors/recent?hours=24&locale=nl").json()
+    assert recent["observation_count"] == 2 and recent["species"][0]["count"] == 2
+
+
+def test_stats_periods_and_empty_public_views(client):
+    empty_stats = client.get("/api/avian-visitors/stats?hours=24").json()
+    empty_life = client.get("/api/avian-visitors/lifelist").json()
+    assert empty_stats["observation_count"] == 0 and empty_stats["species"] == []
+    assert sum(item["count"] for item in empty_stats["timeline"]) == 0
+    assert empty_stats["hourly_species"] == []
+    assert empty_life["observation_count"] == 0 and empty_life["species"] == []
+
+    now = datetime.now(timezone.utc)
+    add(client, "Parus major", "Great Tit", now - timedelta(hours=2), event="inside")
+    add(client, "Flightus only", "Flight only", now - timedelta(hours=26), event="outside")
+    day = client.get("/api/avian-visitors/stats?hours=24").json()
+    week = client.get("/api/avian-visitors/stats?hours=168").json()
+    assert day["observation_count"] == 1 and day["timeline_granularity"] == "hour"
+    assert week["observation_count"] == 2 and week["timeline_granularity"] == "day"
+    assert client.get("/api/avian-visitors/stats?locale=fr").status_code == 422
+    assert client.get("/api/avian-visitors/lifelist?locale=fr").status_code == 422
