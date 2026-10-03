@@ -1,64 +1,24 @@
 <!doctype html>
 <html lang="nl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="referrer" content="no-referrer">
-  <title>Vogelbezoeken</title>
-  <link rel="stylesheet" href="./avian-visitors.css">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="referrer" content="no-referrer">
+  <title>Vogelbezoeken</title><link rel="stylesheet" href="./avian-visitors.css">
 </head>
 <body>
-  <header class="top-controls">
-    <div class="segmented window-pick" id="windowPick" role="tablist" aria-label="Periode">
-      <i aria-hidden="true"></i>
-      <button data-hours="1" type="button">1U</button><button data-hours="12" type="button">12U</button>
-      <button data-hours="24" type="button" aria-current="true">24U</button><button data-hours="168" type="button">7D</button>
-      <button data-hours="1000000" type="button">ALLE</button>
-    </div>
-    <div class="segmented locale-pick" id="localePick" role="tablist" aria-label="Taal">
-      <i aria-hidden="true"></i>
-      <button data-locale="nl" type="button" aria-current="true">NL</button>
-      <button data-locale="en" type="button">EN</button><button data-locale="de" type="button">DE</button>
-    </div>
+  <header class="top">
+    <div class="window-pick" id="windowPick" role="tablist" aria-label="Periode"><i class="seg-pill" aria-hidden="true"></i><button data-hours="1" type="button">1U</button><button data-hours="12" type="button">12U</button><button data-hours="24" type="button" aria-current="true">24U</button><button data-hours="168" type="button">7D</button><button data-hours="1000000" type="button">ALLE</button></div>
+    <div class="top-actions"><div class="locale-pick" id="localePick" role="tablist" aria-label="Taal"><i class="seg-pill" aria-hidden="true"></i><button data-locale="nl" type="button" aria-current="true">NL</button><button data-locale="en" type="button">EN</button><button data-locale="de" type="button">DE</button></div><form id="access" class="access" autocomplete="off"><label class="sr-only" for="token">Backyard API-token</label><input id="token" name="token" type="password" placeholder="API-token" required><button type="submit">open</button></form></div>
   </header>
-  <form id="access" class="access" autocomplete="off">
-    <label for="token">Backyard API-token</label><input id="token" name="token" type="password" required>
-    <button type="submit">Open Vogelbezoeken</button>
-  </form>
   <main class="stage">
-    <header class="masthead"><p>Vogelbezoeken</p><h1 id="viewTitle">Recent gehoord</h1><small id="viewSubtitle">de afgelopen 24 uur</small></header>
+    <header class="static-head"><p class="pre">Vogelbezoeken</p><h1 id="viewTitle">Recent gehoord</h1><small id="viewSubtitle">de afgelopen 24 uur</small></header>
     <div id="message" class="message" role="status">Voer het Backyard API-token in.</div>
     <div class="views" id="views">
-      <section class="view collage-view" id="view-collage" aria-label="Vogelcollage"><div id="collage" class="collage"></div></section>
-      <section class="view stats-view" id="view-stats" aria-label="Statistieken">
-        <div class="stats-grid">
-          <section class="stats-chart-panel">
-            <div class="segmented chart-pick" id="chartPick" role="tablist" aria-label="Statistiekweergave">
-              <i aria-hidden="true"></i><button data-chart="timeline" type="button" aria-current="true">tijdlijn</button><button data-chart="hours" type="button">uren</button>
-            </div>
-            <div id="statsTimeline" class="timeline"></div><div id="statsHeatmap" class="heatmap" hidden></div>
-          </section>
-          <aside class="stats-side">
-            <section><small>detecties per periode</small><dl id="periodStats"></dl></section>
-            <section><small>meest gehoord</small><ol id="topSpecies"></ol></section>
-            <section><small>nieuwste soorten</small><ol id="newestSpecies"></ol></section>
-          </aside>
-          <section class="rhythm-panel"><div><h2>Dagritme</h2><small>waarnemingen per uur in de gekozen periode</small></div><div id="rhythm" class="rhythm"></div></section>
-        </div>
-      </section>
-      <section class="view atlas-view" id="view-atlas" aria-label="Vogelatlas">
-        <div class="atlas-head">
-          <div class="segmented atlas-sort" id="atlasSort" role="tablist" aria-label="Sorteer atlas">
-            <i aria-hidden="true"></i><button data-sort="life" type="button" aria-current="true">lifelist</button><button data-sort="alpha" type="button">alfabetisch</button><button data-sort="count" type="button">meest gehoord</button>
-          </div><p id="atlasCount"></p>
-        </div>
-        <div id="atlasGrid" class="atlas-grid"></div>
-      </section>
+      <section class="view" id="v0" aria-label="Vogelcollage"><div id="collage" class="gcollage"></div></section>
+      <section class="view" id="v1" aria-label="Statistieken"><div class="stats-grid"><section class="stats-chart"><div class="chart-pick" id="chartPick" role="tablist" aria-label="Statistiekweergave"><i class="seg-pill" aria-hidden="true"></i><button data-chart="timeline" type="button" aria-current="true">tijdlijn</button><button data-chart="hours" type="button">uren</button></div><div id="statsTimeline" class="stats-timeline"></div><div id="statsHeatmap" class="heatmap" hidden></div></section><aside class="stats-side"><section class="grp"><h3>Waarnemingen</h3><small>gekozen periode en totaal</small><dl id="periodStats"></dl></section><section class="grp"><h3>Meest gehoord</h3><small>soorten in deze periode</small><ol id="topSpecies"></ol></section><section class="grp"><h3>Nieuwste soorten</h3><small>toegevoegd aan de lifelist</small><ol id="newestSpecies"></ol></section></aside><section class="stats-rhythm"><div><h3>Dagritme</h3><small>waarnemingen per uur</small></div><div id="rhythm" class="rh-plot"></div></section></div></section>
+      <section class="view" id="v2" aria-label="Vogelatlas"><div class="atlas-controls"><div class="atlas-sort" id="atlasSort" role="tablist" aria-label="Sorteer atlas"><i class="seg-pill" aria-hidden="true"></i><button data-sort="life" type="button" aria-current="true">lifelist</button><button data-sort="alpha" type="button">alfabetisch</button><button data-sort="count" type="button">meest gehoord</button></div><p id="atlasCount"></p></div><div id="atlasGrid" class="atlas-grid"></div></section>
     </div>
   </main>
-  <nav class="view-nav segmented" id="viewNav" aria-label="Weergave">
-    <i aria-hidden="true"></i><button data-view="0" type="button" aria-current="true">collage</button><button data-view="1" type="button">statistiek</button><button data-view="2" type="button">atlas</button>
-  </nav>
+  <nav class="slider" id="viewNav" aria-label="Weergave"><i class="seg-pill" aria-hidden="true"></i><button data-view="0" type="button" aria-current="true">collage</button><button data-view="1" type="button">statistiek</button><button data-view="2" type="button">atlas</button></nav>
   <script src="./avian-visitors.js"></script>
 </body>
 </html>

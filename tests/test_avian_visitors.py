@@ -127,6 +127,23 @@ def test_collage_is_served_and_contains_no_generator_asset_copies(client):
     assert client.get("/api/avian-visitors/recent", headers={"Authorization": "Bearer wrong"}).status_code == 401
 
 
+def test_presentation_uses_original_view_geometry_and_mask_packer(client):
+    root = Path(__file__).parents[1] / "app/modules/avian_visitors/static"
+    html = (root / "index.html").read_text(encoding="utf-8")
+    css = (root / "avian-visitors.css").read_text(encoding="utf-8")
+    js = (root / "avian-visitors.js").read_text(encoding="utf-8")
+
+    assert 'class="static-head"' in html
+    assert 'class="view" id="v0"' in html
+    assert "flex:0 0 100%" in css
+    assert "width:300%" not in css and "33.333333" not in js
+    assert 'translateX(-"+(state.view*100)+"%)' in js
+    assert "function maskPack(" in js and "function tuning(" in js
+    assert "x=-99999" in js
+    assert "var columns=" not in js
+    assert "radial-gradient" not in css
+
+
 def test_existing_bundled_generator_assets_are_exposed(client):
     client.app.state.generator = AssetStore(client.app.state.settings.resolved_storage_root / "generator-real")
     add(client, "Turdus migratorius", "American Robin", datetime.now(timezone.utc) - timedelta(minutes=1))
