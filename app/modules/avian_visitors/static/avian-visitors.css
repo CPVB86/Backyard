@@ -1,0 +1,26 @@
+@font-face { font-family:Caveat; src:local("Caveat"); font-display:swap; }
+:root { color-scheme:light; --paper:#f2efe7; --ink:#181713; --muted:#756f63; }
+* { box-sizing:border-box; }
+html,body { margin:0; min-height:100%; background:var(--paper); color:var(--ink); }
+body { min-height:100vh; overflow:hidden; font-family:Georgia,"Times New Roman",serif; background-image:radial-gradient(#332d2210 .7px,transparent .8px); background-size:5px 5px; }
+header { position:fixed; z-index:4; left:4vw; top:3vh; pointer-events:none; }
+.eyebrow { margin:0 0 .15rem; font:600 .67rem/1.2 Arial,sans-serif; letter-spacing:.22em; }
+h1 { margin:0; font-size:clamp(2rem,4vw,4.8rem); font-weight:700; letter-spacing:-.055em; }
+.period { margin:.25rem 0 0; color:var(--muted); font:italic clamp(.75rem,1.2vw,1rem)/1.2 Georgia,serif; }
+.access { position:fixed; z-index:8; inset:1rem 1rem auto auto; display:flex; align-items:center; gap:.45rem; padding:.45rem; border:1px solid #cfc9bb; border-radius:999px; background:#f8f5edee; box-shadow:0 4px 20px #382f2112; font:600 .67rem/1 Arial,sans-serif; }
+.access label { margin-left:.55rem; }
+.access input { width:10rem; border:0; border-bottom:1px solid #aaa18f; background:transparent; outline:0; }
+.access button { border:0; border-radius:999px; padding:.55rem .75rem; color:#f8f5ed; background:#27241f; cursor:pointer; }
+.access.connected label,.access.connected input { display:none; }
+.message { position:fixed; z-index:3; left:50%; top:52%; transform:translate(-50%,-50%); color:var(--muted); font-style:italic; }
+.message[hidden] { display:none; }
+.collage { position:absolute; inset:13vh 3vw 3vh; overflow:hidden; }
+.bird { position:absolute; opacity:0; transform:translateY(10px) scale(.97); transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1); }
+.bird.entered { opacity:1; transform:none; }
+.bird img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 2px 1px #33281612); }
+.bird svg { position:absolute; inset:-12%; width:124%; height:124%; overflow:visible; pointer-events:none; }
+.bird text { fill:var(--ink); font-family:Caveat,"Segoe Print",cursive; font-weight:650; letter-spacing:.01em; paint-order:stroke; stroke:var(--paper); stroke-width:3px; stroke-linejoin:round; }
+.bird.missing { border:1px solid #bdb5a6; border-radius:50%; display:grid; place-items:center; color:var(--muted); background:#ede8dc; }
+.bird.missing span { max-width:80%; text-align:center; font-style:italic; font-size:clamp(.65rem,1vw,.9rem); }
+@media(max-width:700px){ header{top:2vh}.access{top:auto;bottom:.65rem;left:50%;right:auto;transform:translateX(-50%)}.collage{inset:15vh 2vw 8vh} }
+@media(prefers-reduced-motion:reduce){.bird{transition:none}}

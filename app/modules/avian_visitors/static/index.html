@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Vogels in de tuin</title>
+  <link rel="stylesheet" href="./avian-visitors.css">
+</head>
+<body>
+  <header><p class="eyebrow">AVIAN VISITORS</p><h1>Recent gehoord</h1><p class="period">de afgelopen 24 uur</p></header>
+  <form id="access" class="access" autocomplete="off">
+    <label for="token">Backyard API-token</label><input id="token" name="token" type="password" required><button type="submit">Open collage</button>
+  </form>
+  <main><div id="message" class="message" role="status">Voer het Backyard API-token in.</div><section id="collage" class="collage" aria-label="Recent waargenomen vogels"></section></main>
+  <script src="./avian-visitors.js"></script>
+</body>
+</html>

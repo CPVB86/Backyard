@@ -1,10 +1,12 @@
 from contextlib import asynccontextmanager
 import logging
+from pathlib import Path
 import secrets
 import re
 from fastapi import FastAPI, Request, Security
 from fastapi.security import HTTPBearer
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from app.core.config import Settings
@@ -16,6 +18,7 @@ from observations.policy import Policy
 from generator.store import AssetStore
 from generator.scheduler import Scheduler
 from app.generator.router import router as generator_router
+from app.modules.avian_visitors.router import router as avian_visitors_router
 
 logger = logging.getLogger("backyard.api")
 
@@ -64,6 +67,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(birds_router)
     app.include_router(observations_router)
     app.include_router(generator_router)
+    app.include_router(avian_visitors_router)
+    app.mount("/avian-visitors", StaticFiles(
+        directory=Path(__file__).parent / "modules" / "avian_visitors" / "static", html=True,
+    ), name="avian-visitors")
 
     @app.exception_handler(SQLAlchemyError)
     async def database_failure(request, error):

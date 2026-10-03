@@ -66,6 +66,31 @@ Bearer-auth versleutelt HTTP niet; gebruik HTTPS bij verkeer buiten het vertrouw
 Gebruik Ã©Ã©n API-worker. Swagger staat op /docs (interface gebruikt CDN-assets);
 de API en /openapi.json werken zonder cloud.
 
+### AvianVisitors-browsercollage
+
+AvianVisitors is een presentatielaag binnen dezelfde Backyard-app. De pagina leest
+uitsluitend geaccepteerde bird-observations en gebruikt de bestaande Generator-assets;
+er is geen afzonderlijke database, afbeeldingsmap of interne HTTP-koppeling.
+
+Open na het starten van de API:
+
+```text
+http://127.0.0.1:8010/avian-visitors/
+```
+
+Vul het bestaande `BACKYARD_API_TOKEN` in. Het token blijft alleen gedurende de
+browsersessie in `sessionStorage`; afbeeldingen worden met dezelfde Bearer-header
+opgehaald en als tijdelijke browser-blob getoond. Op een Pi die via het LAN luistert,
+vervang je `127.0.0.1` door de hostnaam of het IP-adres van de Pi.
+
+De onderliggende response is beschikbaar via de geauthenticeerde route:
+
+```text
+GET /api/avian-visitors/recent?hours=24&locale=nl
+```
+
+Ondersteunde locales zijn `nl` (standaard), `en` en `de`.
+
 ## Projectstructuur
 
 - app/core: configuratie, logging, database, versiegebonden SQLite-migraties.
@@ -76,6 +101,7 @@ de API en /openapi.json werken zonder cloud.
 - app/modules/birds/router.py: ingest, filters en audio retrieval.
 - observations: gedeelde pure policy/aggregatie, zonder ML/database-afhankelijkheid.
 - app/modules/observations: generieke bird/bat observations, supports en review/evidence.
+- app/modules/avian_visitors: read-only collage-view-model en statische browserweergave.
 - detector/providers.py: BirdNET-taxonomie en optioneel locatie/week-signaal.
 - tests: foundation, ingest/audio, policy/review, migratie- en foutscenario's.
 
