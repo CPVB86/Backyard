@@ -9,7 +9,7 @@ from sqlalchemy import inspect
 
 from app.core.observation_migration import upgrade_1_to_2, validate_v1
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 FOUNDATION_COLUMNS = {
     "id", "timestamp", "scientific_name", "common_name", "confidence",
     "source", "audio_reference", "model_version", "raw_metadata", "created_at",
@@ -84,6 +84,18 @@ def upgrade_2_to_3(connection):
         "CREATE UNIQUE INDEX uq_species_source_id ON species_catalog (source, source_species_id)")
 
 
+def upgrade_3_to_4(connection):
+    # Fixed additive migration; existing identities, source data and enrichment stay intact.
+    for definition in (
+        "wikipedia_title_nl VARCHAR(255)",
+        "wikipedia_match_status VARCHAR(20)",
+        "wikipedia_match_note TEXT",
+        "wikipedia_en_url VARCHAR(2048)",
+        "wikipedia_title_en VARCHAR(255)",
+    ):
+        connection.exec_driver_sql("ALTER TABLE species_catalog ADD COLUMN " + definition)
+
+
 def initialize_or_check(engine):
     from app.core.database import Base
     from app.modules.birds import models  # noqa: F401
@@ -113,7 +125,7 @@ def migrate(engine, database_path: Path):
         current = version(connection)
         if current == SCHEMA_VERSION:
             return None
-        if current not in (0, 1, 2):
+        if current not in (0, 1, 2, 3):
             raise RuntimeError("Unsupported database version; refusing migration")
         if not inspect(connection).get_table_names():
             connection.rollback()
@@ -140,7 +152,9 @@ def migrate(engine, database_path: Path):
                 upgrade_0_to_1(connection)
             if current in (0, 1):
                 upgrade_1_to_2(connection)
-            upgrade_2_to_3(connection)
+            if current in (0, 1, 2):
+                upgrade_2_to_3(connection)
+            upgrade_3_to_4(connection)
             connection.exec_driver_sql(f"PRAGMA user_version = {SCHEMA_VERSION}")
             connection.commit()
         except BaseException:

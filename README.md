@@ -163,7 +163,7 @@ Daarna voert migratie 0â†’1 onder BEGIN IMMEDIATE Ã©Ã©n transactie uit:
 - Behoudt de oorspronkelijke detecties en het ingestcontract.
 
 De nieuwe migratie 1→2 voegt observations en observation_candidates toe.
-PRAGMA user_version wordt pas na alle succesvolle stappen op **3** gezet.
+PRAGMA user_version wordt pas na alle succesvolle stappen op **4** gezet.
 Bestaande versie-1-data/audio wordt niet aangepast; ook de historische
 chimpansee blijft bewaard. Zie docs/OBSERVATION_POLICY.md.
 
@@ -426,3 +426,9 @@ met accepted-only Backyard-statistieken, één deterministisch gekozen permanent
 audio-observation en read-only Generator-metadata. Audio blijft via de bestaande
 beveiligde observation-route lopen. AvianVisitors en de WordPress-plugin zijn
 consumers van deze centrale laag en bezitten geen eigen kopie van de catalogus.
+
+
+Encyclopedia-enrichment gebruikt een aparte, strikt update-only importer met
+standaard dry-run en verplichte 1647/1647 identity-match. Zie
+[veilige enrichment-import, deployment en verificatie](docs/SPECIES_ENRICHMENT.md).
+De CSV hoort in de genegeerde map `import/`; de runtime leest alleen de database.

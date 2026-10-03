@@ -59,7 +59,9 @@ def test_csv_import_utf8_idempotent_update_nulls_and_lookup(api, tmp_path):
     item = api.get("/api/species/bird/Parus%20major?locale=nl").json()
     assert item["identity"]["common_name"] == "Koolmees"
     assert item["waarneming"]["rarity"] == "zeldzaam" and item["waarneming"]["status"] == "exoot"
-    assert item["encyclopedia"] == {"wikipedia_nl_url": None, "summary_nl": None, "fact_nl": None, "source": None}
+    assert item["encyclopedia"] == {"wikipedia_nl_url": None, "summary_nl": None, "fact_nl": None, "source": None,
+        "wikipedia_title_nl": None, "wikipedia_match_status": None, "wikipedia_match_note": None,
+        "wikipedia_en_url": None, "wikipedia_title_en": None}
 
 
 def test_duplicate_conflicts_and_bad_format_are_deterministic(api, tmp_path):
@@ -129,7 +131,7 @@ def test_schema_v2_migrates_catalog_without_touching_observations(tmp_path):
     backup = migrate(engine, settings.resolved_database_path)
     assert backup.is_file()
     with engine.connect() as connection:
-        assert connection.exec_driver_sql("PRAGMA user_version").scalar_one() == 3
+        assert connection.exec_driver_sql("PRAGMA user_version").scalar_one() == 4
         assert connection.exec_driver_sql("SELECT count(*) FROM observations").scalar_one() == 0
         assert connection.exec_driver_sql("SELECT count(*) FROM species_catalog").scalar_one() == 0
     engine.dispose()

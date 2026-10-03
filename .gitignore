@@ -26,3 +26,6 @@ logs/*
 
 # Optional local copy; production config lives in /etc/backyard
 /deploy/systemd/backyard.env
+
+# Operator-supplied catalog import data; runtime truth is the database.
+/import/
