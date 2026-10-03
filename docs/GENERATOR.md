@@ -49,7 +49,7 @@ After ingest/review has committed, `auto_accepted` and `human_confirmed` results
 notify the Generator scheduler. Pending/recommended review, rejection and raw
 candidates never schedule. Idempotent ingest/confirm retries may safely repeat the
 check. Existing complete species do not create a job. No historical observation
-backfill is performed.
+backfill is performed automatically; explicit reconciliation is available below.
 
 One daemon thread in the existing single-worker API process processes a durable
 SQLite queue in `BACKYARD_STORAGE_ROOT/generator/jobs.sqlite3`. This is Generator
@@ -131,3 +131,47 @@ server file paths via the remote API. `--retry-failed` is an explicit recovery a
 Backyard is the central API/store for future AvianVisitors, WordPress and other
 consumers. This migration does not alter those consumers or delete the original
 fork. Point consumers at this API before retiring their old generators.
+
+
+## Reconcile existing accepted species
+
+For accepted observations predating automatic scheduling (or a missed enqueue),
+use the explicit management command. It reads unique `(domain, scientific_name)`
+from `auto_accepted`/`human_confirmed` observations and checks the existing store.
+Ready species are skipped; others pass through Scheduler.accepted and the same
+queue. No observations, assets or attempt state are changed by reconciliation.
+The existing API worker polls the queue; this command never starts a second worker,
+calls the provider, resets running jobs, or enables retry_failed. Failed/attempted
+jobs retain their safeguards. A non-accepted or nonexistent requested species fails
+without creating a job. There is no GET side effect or automatic all-species scan.
+
+After deploying this change, to schedule **only Houtduif / Columba palumbus**, run
+as the existing service user (cpvb86, with read access to the shared env file):
+
+```sh
+cd /home/cpvb86/Backyard
+.venv/bin/python -m generator.reconcile \
+  --environment-file /etc/backyard/backyard.env \
+  --domain bird --scientific-name "Columba palumbus"
+```
+
+The common name is read from the existing accepted observation; it is not supplied
+as a new observation or a translation override. Output reports the current
+`generation.status` (normally generation_pending, or running if already claimed).
+Repeating the command is safe. The API service must be running to process jobs and
+must have loaded OPENAI_API_KEY from the shared environment. The CLI opens the
+observation SQLite database in enforced read-only mode; only Generator queue
+storage is writable. No observation migration or new dependencies are needed.
+
+Only when intentionally reconciling **all** accepted species:
+
+```sh
+.venv/bin/python -m generator.reconcile \
+  --environment-file /etc/backyard/backyard.env --all
+```
+
+Add `--domain bird` to restrict that scan to Birds. Jobs already pending, running,
+failed or rejected by provider credentials are not reset. Existing unconfigured
+jobs follow the existing API-restart recovery rules; this command does not invoke
+recover on a live worker. For genuine failed paid attempts, inspect provider usage
+and raw responses before the existing local CLI --retry-failed recovery.

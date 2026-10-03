@@ -33,16 +33,18 @@ class Scheduler:
 
     def accepted(self, observation):
         if observation.get("status") not in {"auto_accepted", "human_confirmed"}:
-            return
+            return False
         try:
             domain, name = observation["domain"], observation["scientific_name"]
             current = self.store.lookup(domain, name)
             if current["status"] == "ready":
-                return
+                return True
             self.jobs.enqueue(domain, name, observation["common_name"])
             self.wake.set()
+            return True
         except Exception:
             logger.error("Generator scheduling failed; accepted observation retained")
+            return False
 
     def run_one(self):
         job = self.jobs.claim()
