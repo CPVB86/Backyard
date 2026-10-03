@@ -8,6 +8,7 @@
   if(state.view<0||state.view>2)state.view=0;
   var collage=document.getElementById("collage"),message=document.getElementById("message"),access=document.getElementById("access"),tokenInput=document.getElementById("token"),stage=document.querySelector(".stage");
   var views=document.getElementById("views"),viewTitle=document.getElementById("viewTitle"),viewSubtitle=document.getElementById("viewSubtitle");
+  var detail=window.AvianDetail.create({fetchJson:fetchJson,loadAsset:loadAsset,fetchBlob:function(url){return fetch(url,{headers:headers()}).then(function(response){if(!response.ok)throw new Error("Opname niet beschikbaar");return response.blob();});},locale:function(){return state.locale;}});
 
   function read(key,fallback){try{return localStorage.getItem(key)||fallback;}catch(_){return fallback;}}
   function write(key,value){try{localStorage.setItem(key,String(value));}catch(_){}}
@@ -84,15 +85,15 @@
     function bounds(all){var L=Infinity,R=-Infinity,Top=Infinity,B=-Infinity;all.forEach(function(t){if(t.x<-1000)return;L=Math.min(L,t.x);R=Math.max(R,t.x+t.fullW);Top=Math.min(Top,t.y);B=Math.max(B,t.y+t.fullH);});return{L:L,R:R,T:Top,B:B};}
     var b=bounds(placed);for(var iter=0;iter<10;iter++){var missing=placed.some(function(t){return t.x<-1000;}),overflow=b.L<0||b.T<0||b.R>W||b.B>H;if(!missing&&!overflow)break;var scale=.93;if(overflow){var sx=W*.96/Math.max(b.R-b.L,W*.96),sy=H*.94/Math.max(b.B-b.T,H*.94);scale=Math.min(scale,sx,sy);}arranged.forEach(function(t){t.fullW*=scale;t.fullH*=scale;});placed=maskPack(arranged,W,H,xBias,yBias,pad);b=bounds(placed);}
     if(isFinite(b.L)){var shiftX=W/2-(b.L+b.R)/2,shiftY=H/2-(b.T+b.B)/2;placed.forEach(function(t){if(t.x>-1000){t.x+=shiftX;t.y+=shiftY;}});}
-    var missingItems=items.filter(function(item){return !arranged.some(function(t){return t.item===item;});});
+    var missingItems=items.filter(function(item){return !arranged.some(function(t){return t.item===item&&t.x>-1000;});});
     placed.filter(function(t){return t.x>-1000;}).forEach(function(tile,index){
-      var el=document.createElement("button");el.type="button";el.className="gtile";el.style.cssText="left:"+tile.x+"px;top:"+tile.y+"px;width:"+tile.fullW+"px;height:"+tile.fullH+"px";el.setAttribute("aria-label",tile.item.common_name+", "+tile.item.count+" waarnemingen");
+      var el=document.createElement("button");el.type="button";el.className="gtile";el.dataset.scientificName=tile.item.scientific_name;el.style.cssText="left:"+tile.x+"px;top:"+tile.y+"px;width:"+tile.fullW+"px;height:"+tile.fullH+"px";el.setAttribute("aria-label",tile.item.common_name+", "+tile.item.count+" waarnemingen");el.addEventListener("click",function(){detail.open(tile.item.scientific_name,el);});
       if(tile.selected){
         var image=document.createElement("img");image.alt="";el.appendChild(image);loadAsset(tile.selected.data.url,image).catch(function(){el.classList.add("missing");image.remove();var fallback=document.createElement("span");fallback.textContent=tile.item.common_name;el.appendChild(fallback);});
         var id="edge-"+index,svg=document.createElementNS("http://www.w3.org/2000/svg","svg");svg.setAttribute("class","gtile-label");svg.setAttribute("viewBox","0 0 100 100");svg.innerHTML='<defs><path id="'+id+'" d="'+edgePath(tile.mask)+'"/></defs><text style="font-size:'+Math.max(4.8,Math.min(8,120/tile.item.common_name.length))+'px"><textPath href="#'+id+'" startOffset="50%" text-anchor="middle">'+esc(tile.item.common_name)+'</textPath></text>';el.appendChild(svg);
       }
       collage.appendChild(el);
-    });missingItems.forEach(function(item,index){var el=document.createElement("div");el.className="missing-bird";el.textContent=item.common_name;el.style.cssText="width:92px;height:92px;left:"+(12+(index%3)*102)+"px;bottom:"+(12+Math.floor(index/3)*102)+"px";collage.appendChild(el);});
+    });missingItems.forEach(function(item,index){var el=document.createElement("button");el.type="button";el.className="missing-bird";el.dataset.scientificName=item.scientific_name;el.textContent=item.common_name;el.style.cssText="width:92px;height:92px;left:"+(12+(index%3)*102)+"px;bottom:"+(12+Math.floor(index/3)*102)+"px";el.addEventListener("click",function(){detail.open(item.scientific_name,el);});collage.appendChild(el);});
     var tip=document.createElement("div");tip.className="collage-tip";tip.setAttribute("aria-hidden","true");collage.appendChild(tip);animateCollage();
   }
 
@@ -132,12 +133,12 @@
     else if(state.sort==="count")items.sort(function(a,b){return b.count-a.count||a.common_name.localeCompare(b.common_name,state.locale);});
     else items.sort(function(a,b){return new Date(b.first_observed_at)-new Date(a.first_observed_at)||b.scientific_name.localeCompare(a.scientific_name);});
     items.forEach(function(item,index){
-      var issue=hash(item.scientific_name)%5+1,card=document.createElement("article");card.className="stamp-card issue-"+issue;card.setAttribute("aria-label",item.common_name+", "+item.count+" waarnemingen");
+      var issue=hash(item.scientific_name)%5+1,card=document.createElement("article");card.className="stamp-card issue-"+issue;card.dataset.scientificName=item.scientific_name;card.tabIndex=0;card.setAttribute("role","button");card.setAttribute("aria-label",item.common_name+", "+item.count+" waarnemingen");
       card.innerHTML='<div class="stamp"><div class="stamp-inner"><p class="stamp-issue">VOGELBEZOEKEN</p><b class="stamp-number">'+String(accession[item.scientific_name]).padStart(2,"0")+'</b><div class="stamp-art"></div><footer class="stamp-caption"><h2>'+esc(item.common_name)+'</h2><em>'+esc(item.scientific_name)+'</em><span>'+number(item.count)+'×</span></footer></div></div>';
       var art=card.querySelector(".stamp-art"),preferred="perched",asset=atlasAsset(item,preferred);
       function paint(next){art.replaceChildren();if(!next){art.innerHTML='<span class="no-art">illustratie onderweg</span>';return;}var image=document.createElement("img");image.alt="";art.appendChild(image);loadAsset(next.url,image).catch(function(){art.innerHTML='<span class="no-art">illustratie niet beschikbaar</span>';});}
       paint(asset);
-      if(item.assets&&item.assets.perched&&item.assets.flight){card.title="Klik om zittend/vliegend te wisselen";card.addEventListener("click",function(){preferred=preferred==="perched"?"flight":"perched";paint(atlasAsset(item,preferred));});}
+      card.title="Open soortdetail";card.addEventListener("click",function(){detail.open(item.scientific_name,card);});card.addEventListener("keydown",function(event){if(event.key==="Enter"||event.key===" "){event.preventDefault();detail.open(item.scientific_name,card);}});
       grid.appendChild(card);
     });animateAtlas();
   }
@@ -154,7 +155,7 @@
 
   document.getElementById("viewNav").addEventListener("click",function(event){var button=event.target.closest("button[data-view]");if(button)setView(+button.dataset.view,true);});
   document.getElementById("windowPick").addEventListener("click",function(event){var button=event.target.closest("button[data-hours]");if(!button)return;state.hours=+button.dataset.hours;write("avian:hours",state.hours);select(this,"hours",state.hours);viewSubtitle.textContent=windowLabel();refresh();});
-  document.getElementById("localePick").addEventListener("click",function(event){var button=event.target.closest("button[data-locale]");if(!button)return;state.locale=button.dataset.locale;write("avian:locale",state.locale);select(this,"locale",state.locale);refresh();});
+  document.getElementById("localePick").addEventListener("click",function(event){var button=event.target.closest("button[data-locale]");if(!button)return;detail.close();state.locale=button.dataset.locale;write("avian:locale",state.locale);select(this,"locale",state.locale);refresh();});
   document.getElementById("atlasSort").addEventListener("click",function(event){var button=event.target.closest("button[data-sort]");if(!button)return;state.sort=button.dataset.sort;write("avian:sort",state.sort);select(this,"sort",state.sort);renderAtlas();});
   document.getElementById("chartPick").addEventListener("click",function(event){var button=event.target.closest("button[data-chart]");if(!button)return;state.chart=button.dataset.chart;applyChart();});
   access.addEventListener("submit",function(event){event.preventDefault();var value=token();if(value){if(value!==sessionRead("backyardApiToken"))clearAssets();sessionWrite("backyardApiToken",value);refresh();}});
