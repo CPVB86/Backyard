@@ -19,7 +19,7 @@
     </div>
   </main>
   <nav class="slider" id="viewNav" aria-label="Weergave"><i class="seg-pill" aria-hidden="true"></i><button data-view="0" type="button" aria-current="true">collage</button><button data-view="1" type="button">statistiek</button><button data-view="2" type="button">atlas</button></nav>
-  <div id="speciesDetail" class="postcard-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="detailCommon">
+  <div id="speciesDetail" class="postcard-modal is-idle" data-state="idle" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="detailCommon">
     <button class="postcard-backdrop" type="button" data-detail-close aria-label="Sluit soortdetail"></button>
     <article class="postcard-sheet" role="document">
       <button class="postcard-close" type="button" data-detail-close aria-label="Sluiten">×</button>
@@ -29,7 +29,8 @@
         <div class="postcard-pose-toggle" id="detailPoseToggle" role="tablist" aria-label="Vogelhouding"><button type="button" data-pose="perched">Zittend</button><button type="button" data-pose="flight">Vliegend</button></div>
       </section>
       <section class="postcard-content">
-        <div id="detailLoading" class="postcard-loading" role="status">Soortinformatie laden…</div>
+        <div id="detailLoading" class="postcard-loading" role="status" hidden><span aria-hidden="true"></span><p>Soortinformatie laden…</p></div>
+        <div id="detailError" class="postcard-error" role="alert" hidden></div>
         <div id="detailBody" hidden>
           <header class="postcard-identity"><p class="postcard-kicker">Vogelbezoek</p><h2 id="detailCommon">—</h2><p id="detailScientific" class="postcard-scientific"></p><p id="detailTaxonomy" class="postcard-taxonomy"></p><div id="detailBadges" class="postcard-badges"></div></header>
           <section class="postcard-section" id="detailSummarySection"><h3>Over deze vogel</h3><p id="detailSummary"></p></section>

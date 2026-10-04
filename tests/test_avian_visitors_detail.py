@@ -39,6 +39,13 @@ def test_pose_fallbacks_cover_both_single_and_missing_assets():
     assert run_detail("d.availablePoses({})") == []
 
 
+def test_explicit_loading_loaded_error_and_idle_visibility():
+    assert run_detail("d.stateVisibility('idle')") == {"loading": False, "content": False, "error": False}
+    assert run_detail("d.stateVisibility('loading')") == {"loading": True, "content": False, "error": False}
+    assert run_detail("d.stateVisibility('loaded')") == {"loading": False, "content": True, "error": False}
+    assert run_detail("d.stateVisibility('error')") == {"loading": False, "content": False, "error": True}
+
+
 def test_houtduif_presentation_content_stats_audio_and_formatting():
     result = run_detail(f"d.present({json.dumps(houtduif())},'nl-NL')")
     assert result["summary"] == "Een grote duif." and result["fact"] == "Ook bosduif genoemd."
@@ -63,6 +70,20 @@ def test_optional_fact_wikipedia_audio_and_zero_count_fallbacks():
     assert run_detail(f"d.present({json.dumps(data)},'nl-NL').wikipedia") is None
 
 
+def test_null_encyclopedia_and_waarneming_keep_observations_audio_and_assets():
+    data = houtduif(waarneming=None, encyclopedia=None)
+    result = run_detail(f"d.present({json.dumps(data)},'nl-NL')")
+    assert result["summary"] is None and result["fact"] is None
+    assert result["wikipedia"] is None and result["waarnemingUrl"] is None
+    assert result["total"] == 5 and result["audio"]["url"].endswith("/audio")
+    assert result["poses"] == ["perched", "flight"]
+
+
+def test_stale_species_response_is_rejected_by_request_guard():
+    assert run_detail("d.isCurrentRequest(2,2)") is True
+    assert run_detail("d.isCurrentRequest(1,2)") is False
+
+
 def test_single_shared_detail_component_is_wired_to_collage_and_atlas():
     html = (STATIC / "index.html").read_text(encoding="utf-8")
     script = (STATIC / "avian-visitors.js").read_text(encoding="utf-8")
@@ -73,6 +94,22 @@ def test_single_shared_detail_component_is_wired_to_collage_and_atlas():
     assert 'detail.open(item.scientific_name,card)' in script
     assert 'if(opener&&document.contains(opener))opener.focus()' in detail
     assert 'event.key==="Escape"' in detail and 'data-detail-close' in html
+
+
+def test_dom_state_contract_hides_loading_and_old_content_on_success_or_error():
+    html = (STATIC / "index.html").read_text(encoding="utf-8")
+    css = (STATIC / "avian-visitors.css").read_text(encoding="utf-8")
+    detail = (STATIC / "avian-detail.js").read_text(encoding="utf-8")
+    assert 'id="detailLoading"' in html and 'id="detailError"' in html
+    assert '.postcard-modal [hidden]{display:none!important}' in css
+    assert '.postcard-modal.is-loading .postcard-visual' in css
+    assert '.postcard-modal.is-error .postcard-visual' in css
+    assert 'setState("loading")' in detail
+    assert 'setState("loaded")' in detail
+    assert 'setState("error",error&&error.message)' in detail
+    assert 'body.hidden=!visibility.content' in detail
+    assert 'errorBox.hidden=!visibility.error' in detail
+    assert 'controller.abort()' in detail
 
 
 def test_avian_module_contains_no_copied_central_assets():
