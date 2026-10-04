@@ -56,11 +56,6 @@ def test_houtduif_presentation_content_stats_audio_and_formatting():
     assert run_detail("d.familyLabel('Columbidae (Duiven)')") == "Duiven \u00b7 Columbidae"
 
 
-def test_compact_dutch_date_time_omits_current_year_and_keeps_other_year():
-    assert run_detail("d.formatCompactDateTime('2026-10-03T14:28:00Z','nl-NL','2026-10-04T12:00:00Z')") == "3 okt · 16:28"
-    assert run_detail("d.formatCompactDateTime('2025-10-03T14:28:00Z','nl-NL','2026-10-04T12:00:00Z')") == "3 okt 2025 · 16:28"
-
-
 def test_story_slider_two_single_and_empty_states_and_navigation():
     assert run_detail("d.storySlides('Samenvatting','Feit')") == [
         {"title": "Over deze vogel", "text": "Samenvatting"},
@@ -128,17 +123,29 @@ def test_dom_state_contract_hides_loading_and_old_content_on_success_or_error():
     assert 'controller.abort()' in detail
 
 
-def test_compact_story_observation_audio_and_link_markup_contract():
+def test_story_slider_keeps_original_observation_audio_and_link_presentation():
     html = (STATIC / "index.html").read_text(encoding="utf-8")
     css = (STATIC / "avian-visitors.css").read_text(encoding="utf-8")
     detail = (STATIC / "avian-detail.js").read_text(encoding="utf-8")
     assert 'id="detailStory"' in html and 'data-story-step="-1"' in html and 'data-story-step="1"' in html
-    assert 'grid-template-columns:repeat(3,minmax(0,1fr))' in css
-    assert '.postcard-audio{min-height:34px;display:grid' in css
-    assert '.postcard-links{justify-content:space-between' in css
+    assert '.postcard-garden dl{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))' in css
+    assert '.postcard-audio{display:flex;align-items:center;gap:13px;flex-wrap:wrap}' in css
+    assert '.postcard-links{display:flex;flex-wrap:wrap;gap:9px;padding-top:3px}' in css
     assert 'obs.today==null?null' in detail and 'obs.last_7_days==null?null' in detail
+    assert '"Afgelopen 7 dagen"' in detail and '"Eerste waarneming",vm.first' in detail
+    assert 'formatDateTime(vm.audio.timestamp' in detail
+    assert '"Meer op Wikipedia"' in detail and '"Bekijk op Waarneming.nl"' in detail
     assert 'event.key==="ArrowLeft"||event.key==="ArrowRight"' in detail
     assert 'touchstart' in detail and 'touchend' in detail
+
+
+def test_postcard_desktop_and_mobile_layout_contracts_avoid_internal_clipping():
+    css = (STATIC / "avian-visitors.css").read_text(encoding="utf-8")
+    assert 'max-height:min(760px,calc(100dvh - 48px))' in css
+    assert '.postcard-content{padding:30px clamp(32px,3vw,44px)}' in css
+    assert '.postcard-content>div:not([hidden]){gap:16px}' in css
+    assert '@media(max-width:720px){.postcard-sheet{grid-template-columns:1fr;grid-template-rows:minmax(220px,34dvh) auto}' in css
+    assert '.postcard-story{height:145px;min-height:145px' in css
 
 
 def test_collage_gets_a_taller_responsive_canvas_without_repacking_changes():
