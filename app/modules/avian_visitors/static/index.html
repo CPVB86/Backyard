@@ -33,8 +33,11 @@
         <div id="detailError" class="postcard-error" role="alert" hidden></div>
         <div id="detailBody" hidden>
           <header class="postcard-identity"><p class="postcard-kicker">Vogelbezoek</p><h2 id="detailCommon">—</h2><p id="detailScientific" class="postcard-scientific"></p><p id="detailTaxonomy" class="postcard-taxonomy"></p><div id="detailBadges" class="postcard-badges"></div></header>
-          <section class="postcard-section" id="detailSummarySection"><h3>Over deze vogel</h3><p id="detailSummary"></p></section>
-          <aside class="postcard-fact" id="detailFactSection" hidden><h3>Wist je dat?</h3><p id="detailFact"></p></aside>
+          <section class="postcard-story" id="detailStory" tabindex="0" aria-roledescription="carousel" aria-label="Soortverhaal" hidden>
+            <header><h3 id="detailStoryTitle"></h3><span id="detailStoryCounter"></span></header>
+            <div class="postcard-story-viewport"><p id="detailStoryText" aria-live="polite"></p></div>
+            <footer id="detailStoryNav"><div id="detailStoryDots" class="postcard-story-dots" aria-label="Kies tekst"></div><div class="postcard-story-arrows"><button type="button" data-story-step="-1" aria-label="Vorige tekst">‹</button><button type="button" data-story-step="1" aria-label="Volgende tekst">›</button></div></footer>
+          </section>
           <section class="postcard-section postcard-garden"><h3>In mijn tuin</h3><dl id="detailObservations"></dl></section>
           <section class="postcard-audio" id="detailAudioSection" hidden><button id="detailAudio" type="button" aria-pressed="false"><span>▶</span> Beluister deze waarneming</button><p id="detailAudioMeta"></p></section>
           <nav class="postcard-links" id="detailLinks" aria-label="Externe bronnen"></nav>

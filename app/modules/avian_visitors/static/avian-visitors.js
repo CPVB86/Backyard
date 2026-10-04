@@ -33,6 +33,7 @@
 
   function setView(index,persist){
     state.view=Math.max(0,Math.min(2,index));if(persist!==false)write("avian:view",state.view);
+    stage.classList.toggle("is-collage",state.view===0);
     views.style.transform="translateX(-"+(state.view*100)+"%)";
     select(document.getElementById("viewNav"),"view",state.view);
     viewTitle.textContent=state.view===2?"Vogelatlas":"Recent gehoord";
@@ -90,7 +91,7 @@
       var el=document.createElement("button");el.type="button";el.className="gtile";el.dataset.scientificName=tile.item.scientific_name;el.style.cssText="left:"+tile.x+"px;top:"+tile.y+"px;width:"+tile.fullW+"px;height:"+tile.fullH+"px";el.setAttribute("aria-label",tile.item.common_name+", "+tile.item.count+" waarnemingen");el.addEventListener("click",function(){detail.open(tile.item.scientific_name,el);});
       if(tile.selected){
         var image=document.createElement("img");image.alt="";el.appendChild(image);loadAsset(tile.selected.data.url,image).catch(function(){el.classList.add("missing");image.remove();var fallback=document.createElement("span");fallback.textContent=tile.item.common_name;el.appendChild(fallback);});
-        var id="edge-"+index,svg=document.createElementNS("http://www.w3.org/2000/svg","svg");svg.setAttribute("class","gtile-label");svg.setAttribute("viewBox","0 0 100 100");svg.innerHTML='<defs><path id="'+id+'" d="'+edgePath(tile.mask)+'"/></defs><text style="font-size:'+Math.max(4.8,Math.min(8,120/tile.item.common_name.length))+'px"><textPath href="#'+id+'" startOffset="50%" text-anchor="middle">'+esc(tile.item.common_name)+'</textPath></text>';el.appendChild(svg);
+        var id="edge-"+index,svg=document.createElementNS("http://www.w3.org/2000/svg","svg"),targetPx=Math.max(11,Math.min(18,11+Math.log2(Math.max(1,+tile.item.count||1))*1.35)),sizeByTile=targetPx*100/(Math.max(70,tile.fullW)*1.24),fontSize=Math.max(3.8,Math.min(8.2,sizeByTile,104/tile.item.common_name.length));svg.setAttribute("class","gtile-label");svg.setAttribute("viewBox","0 0 100 100");svg.innerHTML='<defs><path id="'+id+'" d="'+edgePath(tile.mask)+'"/></defs><text style="font-size:'+fontSize.toFixed(2)+'px"><textPath href="#'+id+'" startOffset="50%" text-anchor="middle">'+esc(tile.item.common_name)+'</textPath></text>';el.appendChild(svg);
       }
       collage.appendChild(el);
     });missingItems.forEach(function(item,index){var el=document.createElement("button");el.type="button";el.className="missing-bird";el.dataset.scientificName=item.scientific_name;el.textContent=item.common_name;el.style.cssText="width:92px;height:92px;left:"+(12+(index%3)*102)+"px;bottom:"+(12+Math.floor(index/3)*102)+"px";el.addEventListener("click",function(){detail.open(item.scientific_name,el);});collage.appendChild(el);});

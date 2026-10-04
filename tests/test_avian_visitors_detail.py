@@ -56,6 +56,22 @@ def test_houtduif_presentation_content_stats_audio_and_formatting():
     assert run_detail("d.familyLabel('Columbidae (Duiven)')") == "Duiven \u00b7 Columbidae"
 
 
+def test_compact_dutch_date_time_omits_current_year_and_keeps_other_year():
+    assert run_detail("d.formatCompactDateTime('2026-10-03T14:28:00Z','nl-NL','2026-10-04T12:00:00Z')") == "3 okt · 16:28"
+    assert run_detail("d.formatCompactDateTime('2025-10-03T14:28:00Z','nl-NL','2026-10-04T12:00:00Z')") == "3 okt 2025 · 16:28"
+
+
+def test_story_slider_two_single_and_empty_states_and_navigation():
+    assert run_detail("d.storySlides('Samenvatting','Feit')") == [
+        {"title": "Over deze vogel", "text": "Samenvatting"},
+        {"title": "Wist je dat?", "text": "Feit"},
+    ]
+    assert run_detail("d.storySlides('Alleen summary',null)") == [{"title": "Over deze vogel", "text": "Alleen summary"}]
+    assert run_detail("d.storySlides(null,'Alleen feit')") == [{"title": "Wist je dat?", "text": "Alleen feit"}]
+    assert run_detail("d.storySlides(null,null)") == []
+    assert run_detail("[d.steppedIndex(0,1,2),d.steppedIndex(0,-1,2),d.steppedIndex(1,1,2)]") == [1, 1, 0]
+
+
 def test_optional_fact_wikipedia_audio_and_zero_count_fallbacks():
     data = houtduif(
         observations={"total": 0, "highest_confidence": None},
@@ -110,6 +126,36 @@ def test_dom_state_contract_hides_loading_and_old_content_on_success_or_error():
     assert 'body.hidden=!visibility.content' in detail
     assert 'errorBox.hidden=!visibility.error' in detail
     assert 'controller.abort()' in detail
+
+
+def test_compact_story_observation_audio_and_link_markup_contract():
+    html = (STATIC / "index.html").read_text(encoding="utf-8")
+    css = (STATIC / "avian-visitors.css").read_text(encoding="utf-8")
+    detail = (STATIC / "avian-detail.js").read_text(encoding="utf-8")
+    assert 'id="detailStory"' in html and 'data-story-step="-1"' in html and 'data-story-step="1"' in html
+    assert 'grid-template-columns:repeat(3,minmax(0,1fr))' in css
+    assert '.postcard-audio{min-height:34px;display:grid' in css
+    assert '.postcard-links{justify-content:space-between' in css
+    assert 'obs.today==null?null' in detail and 'obs.last_7_days==null?null' in detail
+    assert 'event.key==="ArrowLeft"||event.key==="ArrowRight"' in detail
+    assert 'touchstart' in detail and 'touchend' in detail
+
+
+def test_collage_gets_a_taller_responsive_canvas_without_repacking_changes():
+    css = (STATIC / "avian-visitors.css").read_text(encoding="utf-8")
+    script = (STATIC / "avian-visitors.js").read_text(encoding="utf-8")
+    assert 'stage.classList.toggle("is-collage",state.view===0)' in script
+    assert '@media(min-width:901px)' in css
+    assert '.stage.is-collage #v0{padding:86px 32px 68px}' in css
+    assert '@media(min-width:701px) and (max-width:900px)' in css
+    assert 'function maskPack(' in script and 'countExp:.65' in script
+
+
+def test_collage_label_typography_uses_late_editorial_serif_override():
+    css = (STATIC / "avian-visitors.css").read_text(encoding="utf-8")
+    assert '--avian-display:ui-serif,"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif' in css
+    assert css.rfind('.gtile-label text{fill:var(--ink-2)') > css.find('"Segoe Print"')
+    assert 'stroke-width:.72px' in css and 'letter-spacing:.025em' in css
 
 
 def test_avian_module_contains_no_copied_central_assets():
