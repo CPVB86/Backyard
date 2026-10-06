@@ -137,6 +137,8 @@ def test_story_slider_keeps_original_observation_audio_and_link_presentation():
     assert '"Meer op Wikipedia"' in detail and '"Bekijk op Waarneming.nl"' in detail
     assert 'event.key==="ArrowLeft"||event.key==="ArrowRight"' in detail
     assert 'touchstart' in detail and 'touchend' in detail
+    story_rule = css.split('.postcard-story{', 1)[1].split('}', 1)[0]
+    assert 'background:' not in story_rule
 
 
 def test_postcard_desktop_and_mobile_layout_contracts_avoid_internal_clipping():
@@ -153,7 +155,11 @@ def test_collage_gets_a_taller_responsive_canvas_without_repacking_changes():
     script = (STATIC / "avian-visitors.js").read_text(encoding="utf-8")
     assert 'stage.classList.toggle("is-collage",state.view===0)' in script
     assert '@media(min-width:901px)' in css
-    assert '.stage.is-collage #v0{padding:86px 32px 68px}' in css
+    assert '.stage.is-collage #v0{padding:154px 32px 0}' in css
+    assert '.stage.is-collage .static-head{position:absolute;top:0;left:0;right:0;padding:84px 32px 22px' in css
+    assert '.stage.is-collage .static-head .pre{opacity:1;max-height:30px;margin:0 0 6px;transform:none}' in css
+    assert '.stage.is-collage .static-head small{opacity:1;max-height:30px;margin-top:7px;transform:none}' in css
+    assert '.stage.is-collage .static-head h1{font-size:clamp(24px,3.2vw,40px);letter-spacing:.06em;transform:none}' in css
     assert '@media(min-width:701px) and (max-width:900px)' in css
     assert 'function maskPack(' in script and 'countExp:.65' in script
 
