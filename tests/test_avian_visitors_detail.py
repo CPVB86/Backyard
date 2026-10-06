@@ -39,6 +39,17 @@ def test_pose_fallbacks_cover_both_single_and_missing_assets():
     assert run_detail("d.availablePoses({})") == []
 
 
+def test_pose_toggle_uses_original_icons_with_accessible_labels_and_left_alignment():
+    html = (STATIC / "index.html").read_text(encoding="utf-8")
+    css = (STATIC / "avian-visitors.css").read_text(encoding="utf-8")
+    assert 'data-pose="perched" aria-label="Zittend"><svg viewBox="0 0 640 512"' in html
+    assert 'data-pose="flight" aria-label="Vliegend"><svg viewBox="0 0 512 512"' in html
+    assert '>Zittend</button>' not in html and '>Vliegend</button>' not in html
+    assert '.postcard-pose-toggle{position:static;left:auto;bottom:auto;transform:none;justify-self:start}' in css
+    assert '.postcard-pose-toggle button svg{width:13px;height:13px;display:block' in css
+    assert '.postcard-pose-toggle button[aria-current="true"] svg{opacity:.72}' in css
+
+
 def test_explicit_loading_loaded_error_and_idle_visibility():
     assert run_detail("d.stateVisibility('idle')") == {"loading": False, "content": False, "error": False}
     assert run_detail("d.stateVisibility('loading')") == {"loading": True, "content": False, "error": False}

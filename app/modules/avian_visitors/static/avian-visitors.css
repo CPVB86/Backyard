@@ -32,7 +32,10 @@
 /* Keep artwork and pose controls in normal grid flow for stable pose changes. */
 .postcard-visual{position:relative;padding:52px 32px 24px;grid-template-rows:minmax(330px,1fr) auto;gap:18px}
 .postcard-artwork img{width:100%;height:100%;object-fit:contain}
-.postcard-pose-toggle{position:static;left:auto;bottom:auto;transform:none}
+.postcard-pose-toggle{position:static;left:auto;bottom:auto;transform:none;justify-self:start}
+.postcard-pose-toggle button{width:30px;height:26px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.postcard-pose-toggle button svg{width:13px;height:13px;display:block;opacity:1;transition:opacity 200ms ease}
+.postcard-pose-toggle button:hover svg,.postcard-pose-toggle button:focus-visible svg,.postcard-pose-toggle button[aria-current="true"] svg{opacity:.72}
 .postcard-identity h2{overflow-wrap:anywhere}
 @media(max-width:720px){.postcard-visual{padding:28px 24px 10px;grid-template-rows:minmax(0,1fr) auto;gap:8px}.postcard-artwork img{max-height:25dvh}.postcard-loading,.postcard-error{min-height:72px}}
 
