@@ -49,6 +49,7 @@ class ReviewInput(BaseModel):
 
 
 def serialize(record):
+    from app.modules.observations.classification import category
     audio_available = bool(record.audio and record.audio.get("status") == "available"
                            and record.evidence_kind != "deleted")
     return {
@@ -62,7 +63,7 @@ def serialize(record):
         "common_name": record.common_name, "start_at": record.start_at, "end_at": record.end_at,
         "best_confidence": record.best_confidence, "supporting_candidate_count": len(record.supports),
         "candidates": [candidate.raw for candidate in record.supports],
-        "status": record.status, "decision": record.decision, "policy": record.policy,
+        "status": record.status, "classification": category(record), "decision": record.decision, "policy": record.policy,
         "clip": record.clip, "evidence_kind": record.evidence_kind,
         "audio": record.audio,
         "audio_url": f"/api/observations/{record.id}/audio" if record.audio and record.evidence_kind != "deleted" else None,

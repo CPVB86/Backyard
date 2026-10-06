@@ -8,7 +8,8 @@ import os
 from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
-VERSION = "observation-policy-1"
+VERSION = "observation-policy-2"
+EVIDENCE_THRESHOLDS = (.85, .75, .65)
 
 
 @dataclass(frozen=True)
@@ -51,7 +52,7 @@ class Policy:
 
     @property
     def fingerprint(self):
-        return hashlib.sha256(json.dumps(asdict(self), sort_keys=True).encode()).hexdigest()
+        return hashlib.sha256(json.dumps({"version": VERSION, "values": asdict(self)}, sort_keys=True).encode()).hexdigest()
 
     @classmethod
     def load(cls, path=None):
@@ -132,15 +133,38 @@ def domain_from_taxonomy(class_name, order_name):
     return "unsupported"
 
 
+def classify(confidence, windows, state, policy, *, recommended=False):
+    """Shared production, simulation and backlog classification.
+
+    Supports are qualifying overlapping BirdNET windows, NOT independent calls.
+    Catalog rarity is deliberately not an input.
+    """
+    if state not in {"normal", "unusual", "unknown"}:
+        raise ValueError("Invalid plausibility state")
+    high, medium, low = EVIDENCE_THRESHOLDS
+    enough = confidence >= high or confidence >= medium and windows >= 2 or confidence >= low and windows >= 3
+    if state == "unknown":
+        return "unknown", enough
+    if state == "normal":
+        return ("accepted" if enough else "low_evidence"), enough
+    review = (recommended or confidence >= policy.strong_unusual or
+              confidence >= policy.auto_supported and windows >= policy.required_windows)
+    return ("human_review" if review else "discarded"), enough
+
+
+def evidence_summary(supports, policy):
+    states = {c.plausibility["state"] for c in supports}
+    state = "unusual" if "unusual" in states else "unknown" if "unknown" in states else "normal"
+    return max(c.confidence for c in supports), len({c.window_id for c in supports if c.confidence >= policy.review_lower}), state
+
+
 def decision(supports, policy):
     if not supports:
         raise ValueError("No candidates")
     if any(c.domain not in policy.target_domains for c in supports):
         return {"status": "discarded", "evidence": "none", "reasons": ["outside_target_domain"]}
-    best = max(c.confidence for c in supports)
-    states = {c.plausibility["state"] for c in supports}
-    state = "unusual" if "unusual" in states else "unknown" if "unknown" in states else "normal"
-    windows = len({c.window_id for c in supports if c.confidence >= policy.review_lower})
+    best, windows, state = evidence_summary(supports, policy)
+    classification, enough = classify(best, windows, state, policy)
     reasons = ["target_domain", f"plausibility_{state}"]
     if windows >= policy.required_windows:
         reasons.append("overlapping_window_support")
@@ -151,21 +175,22 @@ def decision(supports, policy):
         if best >= policy.strong_unusual:
             status, evidence = "review_recommended", "permanent"
             reasons.append("strong_unusual_preserve")
-        elif windows >= policy.required_windows and best >= policy.auto_supported:
+        elif classification == "human_review":
             status, evidence = "pending_review", "review"
             reasons.append("unusual_supported_review")
         else:
             status, evidence = "discarded", "none"
             reasons.append("unusual_insufficient_support")
-    elif ((state == "normal" and best >= policy.auto_single)
-          or (state == "unknown" and best >= policy.unknown_single)
-          or (windows >= policy.required_windows and best >= policy.auto_supported)):
+    elif classification == "accepted":
         status, evidence = "auto_accepted", "permanent"
-        reasons.append("strong_single" if windows < policy.required_windows else "supported_confidence")
+        reasons.append("sufficient_overlapping_window_evidence" if windows >= 2 else "strong_single")
     else:
         status, evidence = "pending_review", "review"
-        reasons.append("gray_zone_preserve_for_review")
+        reasons.append("plausibility_unresolved" if classification == "unknown" else "insufficient_evidence")
+    if status == "discarded":
+        classification = "discarded"
     return {"status": status, "evidence": evidence, "reasons": reasons,
+            "classification": classification, "evidence_qualified": enough,
             "plausibility": state, "best_confidence": best, "supporting_windows": windows,
             "policy_version": VERSION, "policy_fingerprint": policy.fingerprint}
 

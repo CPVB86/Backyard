@@ -30,10 +30,10 @@ def candidate(start=0, score=.94, domain="bird", state="normal", **changes):
     (.68, "unusual", 1, "discarded", "none"),
     (.88, "unusual", 2, "pending_review", "review"),
     (.88, "normal", 2, "auto_accepted", "permanent"),
-    (.88, "normal", 1, "pending_review", "review"),
+    (.88, "normal", 1, "auto_accepted", "permanent"),
     (.96, "unknown", 1, "pending_review", "review"),
-    (.97, "unknown", 1, "auto_accepted", "permanent"),
-    (.88, "unknown", 2, "auto_accepted", "permanent"),
+    (.97, "unknown", 1, "pending_review", "review"),
+    (.88, "unknown", 2, "pending_review", "review"),
     (.60, "normal", 1, "pending_review", "review"),
 ])
 def test_explainable_policy(score, state, count, status, evidence):

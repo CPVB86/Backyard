@@ -72,7 +72,8 @@ def test_auto_accepted_permanent_evidence_without_human_action(client):
 def test_review_audio_survives_due_date_then_confirm_promotes_one_file(client):
     item, audio = upload(client, create(client, score=.68))
     assert item["status"] == "pending_review" and item["evidence_kind"] == "review"
-    assert client.get("/api/observations/review").json()[0]["id"] == item["id"]
+    assert client.get("/api/observations/review").json() == []
+    assert item["classification"] == "low_evidence"
     future = datetime.now(timezone.utc) + timedelta(days=365)
     assert cleanup(client.app.state.engine, client.app.state.settings, apply=True, now=future) == []
     assert client.get(item["audio_url"]).content == audio
@@ -110,6 +111,7 @@ def test_strong_unusual_is_permanent_but_review_recommended(client):
     assert item["evidence_kind"] == "permanent"
     assert "strong_unusual_preserve" in item["decision"]["reasons"]
     assert client.get("/api/observations/review").json()[0]["id"] == item["id"]
+    assert item["classification"] == "human_review"
 
 
 @pytest.mark.parametrize("domain,name,score,state", [

@@ -115,6 +115,6 @@ def test_swagger_nested_candidate_schema_resolves(tmp_path):
 
 def test_low_support_does_not_boost_auto_acceptance():
     from observations.policy import decision
-    outcome = decision([raw(score=.88), raw(start=12000, score=.1)], Policy())
+    outcome = decision([raw(score=.80), raw(start=12000, score=.1)], Policy())
     assert outcome["status"] == "pending_review"
     assert outcome["supporting_windows"] == 1

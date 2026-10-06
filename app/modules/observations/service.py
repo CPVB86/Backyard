@@ -71,7 +71,7 @@ def ingest(engine, policy, payload):
                   "start_at": first.timestamp(before), "end_at": first.timestamp(after),
                   "stream_id": first.stream_id, "channels": 1, "sample_width": 2},
             review_due_at=now + timedelta(days=policy.review_days)
-                if outcome["status"] in ("pending_review", "review_recommended") else None,
+                if outcome["classification"] == "human_review" else None,
             created_at=now,
         )
         session.add(record)
