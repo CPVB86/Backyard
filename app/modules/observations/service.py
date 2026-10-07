@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 from app.modules.birds import storage
 from app.modules.observations.models import Observation, SupportingCandidate
-from app.modules.observations.schemas import serialize
+from app.modules.observations.schemas import serialize, identity_overrides
 from observations.policy import RawCandidate, decision, validate_event
 
 logger = logging.getLogger("backyard.observations")
@@ -143,18 +143,23 @@ def attach_audio(engine, settings, identity, data):
 
 
 def review(engine, settings, identity, action, payload):
+    if action != "confirm" and payload.identity_override is not None:
+        raise HTTPException(422, "Identity override is only allowed on confirm")
     target = "human_confirmed" if action == "confirm" else "human_rejected"
     owned = None
     try:
         with Session(engine) as session:
             session.execute(text("BEGIN IMMEDIATE"))
             record = require(session, identity)
-            if record.status == target and record.review and record.review["note"] == payload.note:
+            if (record.status == target and record.review and record.review["note"] == payload.note
+                    and record.review.get("identity_override") == payload.identity_override):
                 return serialize(record)
             if record.status != payload.expected_status:
                 raise HTTPException(409, "Observation changed; refresh before reviewing")
             if record.status in ("human_confirmed", "human_rejected"):
                 raise HTTPException(409, "Human decision is final in this phase")
+            if payload.identity_override is not None and payload.identity_override not in identity_overrides(record):
+                raise HTTPException(422, "Identity override is not available for this observation")
             now = datetime.now(timezone.utc)
             if action == "confirm":
                 _, data = checked_audio(settings, record)
@@ -173,6 +178,8 @@ def review(engine, settings, identity, action, payload):
             record.status = target
             record.review = {"action": action, "note": payload.note, "at": now.isoformat(),
                              "reason": "human_confirmation" if action == "confirm" else "human_rejection"}
+            if payload.identity_override is not None:
+                record.review["identity_override"] = payload.identity_override
             record.review_due_at = None
             session.flush()
             result = serialize(record)

@@ -46,6 +46,20 @@ class ReviewInput(BaseModel):
     expected_status: Literal["auto_accepted", "pending_review", "review_recommended",
                              "human_confirmed", "human_rejected"]
     note: str = Field(default="", max_length=1000)
+    identity_override: Literal["otje"] | None = None
+
+
+# Exact human-review allowlist from AvianVisitors a60888f OTJE_API_CONTRACT.md.
+# Eligibility only: never automatically infer an identity from species/evidence.
+OTJE_SPECIES = frozenset({
+    "Gallus gallus", "Gallus gallus domesticus", "Gallus domesticus",
+    "Gallus sonneratii", "Gallus lafayettii", "Gallus varius",
+})
+
+
+def identity_overrides(record):
+    return ["otje"] if (record.domain == "bird" and record.scientific_name in OTJE_SPECIES
+                        and record.status in ("pending_review", "review_recommended")) else []
 
 
 def serialize(record):
@@ -69,6 +83,7 @@ def serialize(record):
         "audio_url": f"/api/observations/{record.id}/audio" if record.audio and record.evidence_kind != "deleted" else None,
         "review_due_at": record.review_due_at, "cleanup_after": record.cleanup_after,
         "review": record.review, "created_at": record.created_at,
+        "review_capabilities": {"identity_overrides": identity_overrides(record)},
     }
 
 

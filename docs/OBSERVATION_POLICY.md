@@ -613,3 +613,25 @@ BirdNET-bron en Engelse fallback. Audio-availability betreft de geregistreerde
 uploadstatus: de lijst doet geen filesystemscan; de audio-GET controleert ook
 het bestand en kan 404 geven bij ontbrekende/verwijderde evidence.
 Geen schema-, policy-, confidence-, detector-, auth- of systemd-wijzigingen.
+
+
+## Explicit Otje review identity
+
+Contract: AvianVisitors `wordpress/backyard/OTJE_API_CONTRACT.md` at `a60888f`.
+The existing authenticated confirm endpoint accepts `identity_override: "otje"`
+alongside `expected_status` (pending_review or review_recommended) and optional note.
+Only bird observations with these exact names are eligible: Gallus gallus,
+Gallus gallus domesticus, Gallus domesticus, Gallus sonneratii,
+Gallus lafayettii, Gallus varius. This allowlist enables a human choice only.
+
+Responses expose `review_capabilities.identity_overrides` (eligible: ["otje"],
+otherwise []). Confirm stores the override inside the existing `review` JSON,
+with the ordinary action/note/at/reason. Species, confidence, times, decision,
+policy and raw candidates remain unchanged. Existing audio promotion applies.
+No schema migration, automatic aliasing, presentation or asset selection is added.
+
+Unknown override values, ineligible species/domain and reject with a non-null
+override return 422. Final reviews with a different override return 409.
+Identical retries compare the stored override as well as status/note; legacy
+reviews without that key are treated as null. Ordinary requests may omit it.
+Only backyard-api.service needs restarting for this backend extension.
