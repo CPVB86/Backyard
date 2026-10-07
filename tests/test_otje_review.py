@@ -138,18 +138,18 @@ def test_otje_filtered_view_count_and_confirmation(client):
     listing = "/api/observations/review?domain=bird&identity_override=otje&limit=1"
     counter = "/api/observations/count?domain=bird&review_only=true&identity_override=otje"
     assert [r["id"] for r in client.get(listing).json()] == [item["id"]]
-    assert client.get(counter).json() == {"count": 1}
+    assert client.get(counter).json() == {"count": 1, "identity_override": "otje"}
     # The filter uses the same capability function, not another species list.
     with patch("app.modules.observations.schemas.identity_overrides", return_value=["otje"]):
-        assert client.get(counter).json() == {"count": 2}
+        assert client.get(counter).json() == {"count": 2, "identity_override": "otje"}
     with Session(client.app.state.engine) as session:
         row = session.get(Observation, item["id"])
         with patch("app.modules.observations.router.selected_review_records", return_value=iter([row]*151)):
-            assert client.get(counter).json() == {"count": 151}
+            assert client.get(counter).json() == {"count": 151, "identity_override": "otje"}
     response = client.post(f"/api/observations/{item['id']}/confirm",
                            json={"expected_status":item["status"], "identity_override":"otje"})
     assert response.status_code == 200
     assert client.get(listing).json() == []
-    assert client.get(counter).json() == {"count": 0}
+    assert client.get(counter).json() == {"count": 0, "identity_override": "otje"}
     assert other["id"] in [r["id"] for r in client.get("/api/observations/review").json()]
     assert client.get("/api/observations/count?identity_override=otje").status_code == 422

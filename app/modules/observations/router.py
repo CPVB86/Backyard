@@ -107,7 +107,10 @@ def observation_count(request: Request, domain: Literal["bird", "bat"] | None = 
     if review_only:
         if status is not None:
             raise HTTPException(422, "review_only cannot be combined with status")
-        return {"count": sum(1 for _ in selected_review_records(request, domain, identity_override))}
+        result = {"count": sum(1 for _ in selected_review_records(request, domain, identity_override))}
+        if identity_override is not None:
+            result["identity_override"] = identity_override
+        return result
     statement = filtered(select(func.count()).select_from(Observation), domain, [status] if status else None)
     with Session(request.app.state.engine) as session:
         return {"count": session.scalar(statement)}
