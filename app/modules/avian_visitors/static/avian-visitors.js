@@ -53,8 +53,8 @@
     try{var raw=atob(mask.bits),cells=[];for(var i=0;i<mask.w*mask.h;i++)if(raw.charCodeAt(i>>3)&(128>>(i&7)))cells.push([i%mask.w,Math.floor(i/mask.w)]);return cells.length?{w:mask.w,h:mask.h,cells:cells}:null;}catch(_){return null;}
   }
   function chooseAsset(item){
-    var perched=item.assets&&item.assets.perched,flight=item.assets&&item.assets.flight,pose=poseBySpecies[item.scientific_name];
-    if(!pose){pose=perched&&flight?(hash(item.scientific_name)%1000<FLY_PROB*1000?"flight":"perched"):perched?"perched":flight?"flight":null;poseBySpecies[item.scientific_name]=pose;}
+    var perched=item.assets&&item.assets.perched,flight=item.assets&&item.assets.flight,key=item.identity_id||item.scientific_name,pose=poseBySpecies[key];
+    if(!pose){pose=perched&&flight?(hash(key)%1000<FLY_PROB*1000?"flight":"perched"):perched?"perched":flight?"flight":null;poseBySpecies[key]=pose;}
     if(pose==="perched"&&!perched)pose=flight?"flight":null;if(pose==="flight"&&!flight)pose=perched?"perched":null;
     return pose?{pose:pose,data:item.assets[pose]}:null;
   }
@@ -88,13 +88,13 @@
     if(isFinite(b.L)){var shiftX=W/2-(b.L+b.R)/2,shiftY=H/2-(b.T+b.B)/2;placed.forEach(function(t){if(t.x>-1000){t.x+=shiftX;t.y+=shiftY;}});}
     var missingItems=items.filter(function(item){return !arranged.some(function(t){return t.item===item&&t.x>-1000;});});
     placed.filter(function(t){return t.x>-1000;}).forEach(function(tile,index){
-      var el=document.createElement("button");el.type="button";el.className="gtile";el.dataset.scientificName=tile.item.scientific_name;el.style.cssText="left:"+tile.x+"px;top:"+tile.y+"px;width:"+tile.fullW+"px;height:"+tile.fullH+"px";el.setAttribute("aria-label",tile.item.common_name+", "+tile.item.count+" waarnemingen");el.addEventListener("click",function(){detail.open(tile.item.scientific_name,el);});
+      var el=document.createElement("button");el.type="button";el.className="gtile";el.dataset.scientificName=tile.item.scientific_name;el.style.cssText="left:"+tile.x+"px;top:"+tile.y+"px;width:"+tile.fullW+"px;height:"+tile.fullH+"px";el.setAttribute("aria-label",tile.item.common_name+", "+tile.item.count+" waarnemingen");el.addEventListener("click",function(){detail.open(tile.item.scientific_name,el,tile.item.identity_id);});
       if(tile.selected){
         var image=document.createElement("img");image.alt="";el.appendChild(image);loadAsset(tile.selected.data.url,image).catch(function(){el.classList.add("missing");image.remove();var fallback=document.createElement("span");fallback.textContent=tile.item.common_name;el.appendChild(fallback);});
         var id="edge-"+index,svg=document.createElementNS("http://www.w3.org/2000/svg","svg"),targetPx=Math.max(11,Math.min(18,11+Math.log2(Math.max(1,+tile.item.count||1))*1.35)),sizeByTile=targetPx*100/(Math.max(70,tile.fullW)*1.24),fontSize=Math.max(3.8,Math.min(8.2,sizeByTile,104/tile.item.common_name.length));svg.setAttribute("class","gtile-label");svg.setAttribute("viewBox","0 0 100 100");svg.innerHTML='<defs><path id="'+id+'" d="'+edgePath(tile.mask)+'"/></defs><text style="font-size:'+fontSize.toFixed(2)+'px"><textPath href="#'+id+'" startOffset="50%" text-anchor="middle">'+esc(tile.item.common_name)+'</textPath></text>';el.appendChild(svg);
       }
       collage.appendChild(el);
-    });missingItems.forEach(function(item,index){var el=document.createElement("button");el.type="button";el.className="missing-bird";el.dataset.scientificName=item.scientific_name;el.textContent=item.common_name;el.style.cssText="width:92px;height:92px;left:"+(12+(index%3)*102)+"px;bottom:"+(12+Math.floor(index/3)*102)+"px";el.addEventListener("click",function(){detail.open(item.scientific_name,el);});collage.appendChild(el);});
+    });missingItems.forEach(function(item,index){var el=document.createElement("button");el.type="button";el.className="missing-bird";el.dataset.scientificName=item.scientific_name;el.textContent=item.common_name;el.style.cssText="width:92px;height:92px;left:"+(12+(index%3)*102)+"px;bottom:"+(12+Math.floor(index/3)*102)+"px";el.addEventListener("click",function(){detail.open(item.scientific_name,el,item.identity_id);});collage.appendChild(el);});
     var tip=document.createElement("div");tip.className="collage-tip";tip.setAttribute("aria-hidden","true");collage.appendChild(tip);animateCollage();
   }
 
@@ -139,7 +139,7 @@
       var art=card.querySelector(".stamp-art"),preferred="perched",asset=atlasAsset(item,preferred);
       function paint(next){art.replaceChildren();if(!next){art.innerHTML='<span class="no-art">illustratie onderweg</span>';return;}var image=document.createElement("img");image.alt="";art.appendChild(image);loadAsset(next.url,image).catch(function(){art.innerHTML='<span class="no-art">illustratie niet beschikbaar</span>';});}
       paint(asset);
-      card.title="Open soortdetail";card.addEventListener("click",function(){detail.open(item.scientific_name,card);});card.addEventListener("keydown",function(event){if(event.key==="Enter"||event.key===" "){event.preventDefault();detail.open(item.scientific_name,card);}});
+      card.title="Open soortdetail";card.addEventListener("click",function(){detail.open(item.scientific_name,card,item.identity_id);});card.addEventListener("keydown",function(event){if(event.key==="Enter"||event.key===" "){event.preventDefault();detail.open(item.scientific_name,card,item.identity_id);}});
       grid.appendChild(card);
     });animateAtlas();
   }

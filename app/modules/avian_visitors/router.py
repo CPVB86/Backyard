@@ -1,11 +1,23 @@
 """Browser-facing AvianVisitors API; internal reads stay in Python services."""
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Query, Request
+from fastapi import APIRouter, HTTPException, Path, Query, Request
 
 from app.modules.avian_visitors import service
 
 router = APIRouter(prefix="/api/avian-visitors", tags=["avian-visitors"])
+
+
+@router.get("/detail/{scientific_name:path}")
+def detail(request: Request,
+           scientific_name: Annotated[str, Path(min_length=1, max_length=255)],
+           locale: Literal["nl", "en", "de"] = "nl",
+           identity: Annotated[str | None, Query(max_length=64)] = None):
+    result = service.detail(request.app.state.engine, request.app.state.settings,
+                            request.app.state.generator, scientific_name, locale, identity)
+    if result is None:
+        raise HTTPException(404, "Species not found")
+    return result
 
 
 @router.get("/recent")

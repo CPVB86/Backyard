@@ -1,11 +1,13 @@
 """Read-only AvianVisitors view models built from Backyard-owned data."""
 from datetime import datetime, timedelta, timezone
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, case, func, select
 from sqlalchemy.orm import Session
 
 from app.core.species_names import localized_name
 from app.modules.observations.models import Observation
+from app.modules.avian_visitors.identities import PROFILES, resolve
+from app.modules.species import service as species_service
 from generator.store import public_status
 
 ACCEPTED_STATUSES = ("auto_accepted", "human_confirmed")
@@ -35,18 +37,28 @@ def _filters(start: datetime | None, end: datetime):
     return values
 
 
+def _identity_expression():
+    return case(
+        (and_(Observation.review["identity_override"].as_string() == "otje",
+              Observation.scientific_name.in_(PROFILES["otje"]["source_species"])), "otje"),
+        else_=None,
+    )
+
+
 def _aggregate(engine, start: datetime | None, end: datetime):
+    identity_id = _identity_expression().label("identity_id")
     statement = (
         select(
             Observation.scientific_name,
+            identity_id,
             func.max(Observation.common_name).label("common_name"),
             func.count(Observation.id).label("count"),
             func.min(Observation.start_at).label("first_observed_at"),
             func.max(Observation.start_at).label("last_observed_at"),
         )
         .where(*_filters(start, end))
-        .group_by(Observation.scientific_name)
-        .order_by(func.count(Observation.id).desc(), Observation.scientific_name.asc())
+        .group_by(Observation.scientific_name, identity_id)
+        .order_by(func.count(Observation.id).desc(), Observation.scientific_name.asc(), identity_id.asc())
     )
     with Session(engine) as session:
         return list(session.execute(statement))
@@ -55,10 +67,15 @@ def _aggregate(engine, start: datetime | None, end: datetime):
 def _species(rows, generator, locale: str, *, assets: bool) -> list[dict]:
     result = []
     for row in rows:
+        profile = resolve(row.identity_id, row.scientific_name)
+        source_name = display_name(row.scientific_name, row.common_name, locale)
         item = {
             "scientific_name": row.scientific_name,
-            "common_name": display_name(row.scientific_name, row.common_name, locale),
+            "common_name": profile["display_name"] if profile else source_name,
             "common_name_en": (row.common_name or "").strip() or row.scientific_name,
+            "identity_id": profile["id"] if profile else None,
+            "subtitle": profile["subtitle"] if profile else None,
+            "source_common_name": source_name,
             "count": row.count,
             "first_observed_at": row.first_observed_at,
             "last_observed_at": row.last_observed_at,
@@ -73,6 +90,30 @@ def _species(rows, generator, locale: str, *, assets: bool) -> list[dict]:
                            for pose in ("perched", "flight") if pose in generated["assets"]},
             })
         result.append(item)
+    return result
+
+
+def detail(engine, settings, generator, scientific_name: str, locale: str, identity_id: str | None = None):
+    """Compose local presentation over unchanged species enrichment and evidence."""
+    _validate(locale)
+    profile = resolve(identity_id, scientific_name)
+    result = species_service.detail(
+        engine, settings, generator, "bird", scientific_name, locale,
+        identity_override=profile["id"] if profile else None,
+    )
+    if result is None:
+        return None
+    if profile:
+        result["presentation"] = {
+            "id": profile["id"], "display_name": profile["display_name"],
+            "subtitle": profile["subtitle"], "images": profile["images"],
+        }
+        result["local_content"] = {
+            "summary_nl": profile["summary_nl"], "fact_nl": profile["fact_nl"],
+        }
+        for pose, asset in result["generator"]["assets"].items():
+            if pose in profile["images"]:
+                asset["identity_file"] = profile["images"][pose]
     return result
 
 
@@ -120,7 +161,8 @@ def stats(engine, hours: int, locale: str, *, now: datetime | None = None) -> di
     period_species = _species(period_rows, None, locale, assets=False)
     all_rows = _aggregate(engine, None, end)
     all_species = _species(all_rows, None, locale, assets=False)
-    names = {item["scientific_name"]: item["common_name"] for item in period_species}
+    names = {(item["scientific_name"], item["identity_id"]): item["common_name"]
+             for item in period_species}
     bucket_format = "%Y-%m-%dT%H:00:00Z" if hours <= 48 else "%Y-%m-%dT00:00:00Z"
     bucket = func.strftime(bucket_format, Observation.start_at)
     hour = func.strftime("%H", Observation.start_at)
@@ -139,11 +181,12 @@ def stats(engine, hours: int, locale: str, *, now: datetime | None = None) -> di
                 .group_by(hour).order_by(hour)):
             rhythm[int(value)] = count
         heatmap = {}
-        for scientific_name, value, count in session.execute(
-                select(Observation.scientific_name, hour, func.count(Observation.id))
-                .where(*_filters(start, end)).group_by(Observation.scientific_name, hour)
-                .order_by(Observation.scientific_name, hour)):
-            heatmap.setdefault(scientific_name, [0] * 24)[int(value)] = count
+        identity_id = _identity_expression().label("identity_id")
+        for scientific_name, identity, value, count in session.execute(
+                select(Observation.scientific_name, identity_id, hour, func.count(Observation.id))
+                .where(*_filters(start, end)).group_by(Observation.scientific_name, identity_id, hour)
+                .order_by(Observation.scientific_name, identity_id, hour)):
+            heatmap.setdefault((scientific_name, identity), [0] * 24)[int(value)] = count
     if hours <= 48:
         cursor = timeline_start.replace(minute=0, second=0, microsecond=0)
         step = timedelta(hours=1)
@@ -176,7 +219,8 @@ def stats(engine, hours: int, locale: str, *, now: datetime | None = None) -> di
         "timeline": timeline,
         "rhythm": rhythm,
         "hourly_species": [
-            {"scientific_name": scientific_name, "common_name": names[scientific_name], "counts": counts}
-            for scientific_name, counts in heatmap.items()
+            {"scientific_name": scientific_name, "identity_id": identity,
+             "common_name": names[(scientific_name, identity)], "counts": counts}
+            for (scientific_name, identity), counts in heatmap.items()
         ],
     }

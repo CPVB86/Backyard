@@ -28,8 +28,8 @@ def houtduif(**updates):
 
 
 def test_species_endpoint_and_scientific_name_are_encoded():
-    assert run_detail("d.detailUrl('Columba palumbus','nl')") == "/api/species/bird/Columba%20palumbus?locale=nl"
-    assert run_detail("d.detailUrl('A/B ?','de')") == "/api/species/bird/A%2FB%20%3F?locale=de"
+    assert run_detail("d.detailUrl('Columba palumbus','nl')") == "/api/avian-visitors/detail/Columba%20palumbus?locale=nl"
+    assert run_detail("d.detailUrl('A/B ?','de','otje')") == "/api/avian-visitors/detail/A%2FB%20%3F?locale=de&identity=otje"
 
 
 def test_pose_fallbacks_cover_both_single_and_missing_assets():
@@ -65,6 +65,18 @@ def test_houtduif_presentation_content_stats_audio_and_formatting():
     assert result["confidence"] == "94,6%"
     assert "3 oktober 2026" in result["last"] and "16:28" in result["last"]
     assert run_detail("d.familyLabel('Columbidae (Duiven)')") == "Duiven \u00b7 Columbidae"
+
+
+def test_local_identity_content_changes_copy_but_not_species_links_or_evidence():
+    data = houtduif(
+        presentation={"id": "otje", "display_name": "Otje", "subtitle": "Barnevelder"},
+        local_content={"summary_nl": "Lokale samenvatting.", "fact_nl": "Lokaal feit."},
+    )
+    result = run_detail(f"d.present({json.dumps(data)},'nl-NL')")
+    assert result["summary"] == "Lokale samenvatting." and result["fact"] == "Lokaal feit."
+    assert result["wikipedia"]["url"] == data["encyclopedia"]["wikipedia_nl_url"]
+    assert result["waarnemingUrl"] == data["waarneming"]["url"]
+    assert result["audio"] == data["audio"] and result["total"] == 5
 
 
 def test_story_slider_two_single_and_empty_states_and_navigation():
@@ -112,8 +124,8 @@ def test_single_shared_detail_component_is_wired_to_collage_and_atlas():
     detail = (STATIC / "avian-detail.js").read_text(encoding="utf-8")
     assert html.count('id="speciesDetail"') == 1
     assert html.index("avian-detail.js") < html.index("avian-visitors.js")
-    assert 'detail.open(tile.item.scientific_name,el)' in script
-    assert 'detail.open(item.scientific_name,card)' in script
+    assert 'detail.open(tile.item.scientific_name,el,tile.item.identity_id)' in script
+    assert 'detail.open(item.scientific_name,card,item.identity_id)' in script
     assert 'if(opener&&document.contains(opener))opener.focus()' in detail
     assert 'event.key==="Escape"' in detail and 'data-detail-close' in html
 

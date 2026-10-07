@@ -24,7 +24,8 @@ def _observation_names(session, domain, scientific_name):
         Observation.status.in_(ACCEPTED)).order_by(Observation.start_at.desc())))
 
 
-def detail(engine, settings, generator, domain, scientific_name, locale="nl", now=None):
+def detail(engine, settings, generator, domain, scientific_name, locale="nl", now=None,
+           identity_override=None):
     if domain not in ("bird", "bat") or locale not in LOCALES:
         raise ValueError("Unsupported domain or locale")
     scientific_name = scientific_name.strip()
@@ -37,6 +38,8 @@ def detail(engine, settings, generator, domain, scientific_name, locale="nl", no
             Species.domain == domain, Species.scientific_name == scientific_name))
         filters = (Observation.domain == domain, Observation.scientific_name == scientific_name,
                    Observation.status.in_(ACCEPTED))
+        if identity_override is not None:
+            filters += (Observation.review["identity_override"].as_string() == identity_override,)
         totals = session.execute(select(
             func.count(Observation.id), func.min(Observation.start_at), func.max(Observation.start_at),
             func.max(Observation.best_confidence)).where(*filters)).one()

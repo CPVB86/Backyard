@@ -7,7 +7,9 @@ from sqlalchemy.orm import Session
 
 from app.core.config import Settings
 from app.main import create_app
+from app.modules.birds.storage import audio_path
 from app.modules.observations.models import Observation
+from app.modules.species.models import Species
 from generator.scheduler import Scheduler
 from generator.store import AssetStore, species_key
 
@@ -45,19 +47,48 @@ def client(tmp_path, monkeypatch):
             "Flightus only": ("flight",),
             "Perchedus only": ("perched",),
             "Assetless bird": (),
+            "Gallus gallus": ("perched", "flight"),
         })
         yield api
 
 
-def add(client, scientific_name, common_name, start_at, *, status="auto_accepted", domain="bird", event=None):
+def add(client, scientific_name, common_name, start_at, *, status="auto_accepted", domain="bird", event=None,
+        review=None, confidence=.9, audio=False):
     identity = event or f"{scientific_name}-{status}-{start_at.isoformat()}"
+    storage_key = (f"birds/audio/{start_at:%Y/%m/%d}/00000000-0000-0000-0000-000000000001.wav"
+                   if audio else None)
     with Session(client.app.state.engine) as session:
-        session.add(Observation(
+        record = Observation(
             source="test", event_id=identity, ingest_hash="0" * 64, domain=domain,
             scientific_name=scientific_name, common_name=common_name,
-            start_at=start_at, end_at=start_at + timedelta(seconds=3), best_confidence=.9,
+            start_at=start_at, end_at=start_at + timedelta(seconds=3), best_confidence=confidence,
             status=status, decision={}, policy={}, clip={}, evidence_kind="permanent",
-            created_at=start_at,
+            audio={"status": "available"} if audio else None,
+            storage_key=storage_key,
+            review=review, created_at=start_at,
+        )
+        session.add(record)
+        session.commit()
+        record_id = record.id
+    if audio:
+        path = audio_path(client.app.state.settings.resolved_storage_root, storage_key)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"otje-audio")
+    return record_id
+
+
+def add_gallus_catalog(client, now):
+    with Session(client.app.state.engine) as session:
+        session.add(Species(
+            domain="bird", scientific_name="Gallus gallus", common_name_nl="Bankivahoen",
+            authority="Linnaeus, 1758", family="Phasianidae (Fazantachtigen)",
+            source="waarneming.nl", source_species_id=777, source_url="https://waarneming.nl/species/777/",
+            rarity="algemeen", status="inheems", source_metadata={},
+            wikipedia_nl_url="https://nl.wikipedia.org/wiki/Bankivahoen",
+            wikipedia_title_nl="Bankivahoen", wikipedia_match_status="matched",
+            wikipedia_en_url="https://en.wikipedia.org/wiki/Red_junglefowl",
+            summary_nl="Onderliggende soorttekst.", fact_nl="Onderliggend soortfeit.",
+            encyclopedia_source="wikipedia", imported_at=now, updated_at=now,
         ))
         session.commit()
 
@@ -154,6 +185,71 @@ def test_existing_bundled_generator_assets_are_exposed(client):
         assert item["assets"][pose]["dimensions"]
         assert item["assets"][pose]["mask"]["bits"]
         assert item["assets"][pose]["url"].endswith("/" + pose)
+
+
+def test_explicit_otje_identity_is_local_presentation_over_unchanged_species_data(client, monkeypatch):
+    now = datetime.now(timezone.utc)
+    monkeypatch.setattr("app.modules.avian_visitors.service.localized_name",
+                        lambda sci, english, locale: "Bankivahoen" if sci == "Gallus gallus" and locale == "nl" else english)
+    add_gallus_catalog(client, now)
+    normal_at = now - timedelta(hours=2)
+    otje_at = now - timedelta(hours=1)
+    add(client, "Gallus gallus", "Red Junglefowl", normal_at, event="normal-gallus")
+    add(client, "Gallus gallus", "Red Junglefowl", otje_at, status="human_confirmed",
+        event="otje", review={"action": "confirm", "identity_override": "otje"},
+        confidence=.972, audio=True)
+    add(client, "Parus major", "Great Tit", now - timedelta(minutes=10), event="other-bird",
+        review={"action": "confirm", "identity_override": "otje"})
+
+    recent = client.get("/api/avian-visitors/recent?hours=24&locale=nl").json()
+    gallus = [item for item in recent["species"] if item["scientific_name"] == "Gallus gallus"]
+    assert len(gallus) == 2
+    normal = next(item for item in gallus if item["identity_id"] is None)
+    otje = next(item for item in gallus if item["identity_id"] == "otje")
+    assert normal["common_name"] == "Bankivahoen" and normal["count"] == 1
+    assert otje["common_name"] == "Otje" and otje["subtitle"] == "Barnevelder" and otje["count"] == 1
+    assert otje["scientific_name"] == "Gallus gallus" and otje["common_name_en"] == "Red Junglefowl"
+    assert set(otje["assets"]) == {"perched", "flight"}
+    assert {pose: data["url"].rsplit("/", 1)[-1] for pose, data in otje["assets"].items()} == {
+        "perched": "perched", "flight": "flight"}
+    assert next(item for item in recent["species"] if item["scientific_name"] == "Parus major")["common_name"] == "Great Tit"
+
+    stats = client.get("/api/avian-visitors/stats?hours=24&locale=nl").json()
+    stats_gallus = [item for item in stats["species"] if item["scientific_name"] == "Gallus gallus"]
+    assert {(item["identity_id"], item["common_name"], item["count"]) for item in stats_gallus} == {
+        (None, "Bankivahoen", 1), ("otje", "Otje", 1)}
+    assert {item["identity_id"] for item in stats["hourly_species"]
+            if item["scientific_name"] == "Gallus gallus"} == {None, "otje"}
+    life_gallus = [item for item in client.get("/api/avian-visitors/lifelist?locale=nl").json()["species"]
+                   if item["scientific_name"] == "Gallus gallus"]
+    assert {(item["identity_id"], item["common_name"]) for item in life_gallus} == {
+        (None, "Bankivahoen"), ("otje", "Otje")}
+
+    response = client.get("/api/avian-visitors/detail/Gallus%20gallus?locale=nl&identity=otje")
+    assert response.status_code == 200, response.text
+    detail = response.json()
+    assert detail["presentation"] == {"id": "otje", "display_name": "Otje", "subtitle": "Barnevelder",
+                                      "images": {"perched": "otje.png", "flight": "otje-2.png"}}
+    assert detail["local_content"]["summary_nl"].startswith("De barnevelder is een middelzwaar kippenras")
+    assert detail["local_content"]["fact_nl"].startswith("Otje is één van de drie kippen")
+    assert detail["identity"]["scientific_name"] == "Gallus gallus"
+    assert detail["identity"]["common_name"] == "Bankivahoen"
+    assert detail["encyclopedia"]["summary_nl"] == "Onderliggende soorttekst."
+    assert detail["encyclopedia"]["wikipedia_nl_url"] == "https://nl.wikipedia.org/wiki/Bankivahoen"
+    assert detail["waarneming"]["url"] == "https://waarneming.nl/species/777/"
+    assert detail["observations"]["total"] == 1
+    assert detail["observations"]["highest_confidence"] == .972
+    assert datetime.fromisoformat(detail["observations"]["first_observed_at"]) == otje_at
+    assert detail["audio"]["url"].startswith("/api/observations/")
+    assert datetime.fromisoformat(detail["audio"]["timestamp"]) == otje_at
+    assert detail["generator"]["assets"]["perched"]["identity_file"] == "otje.png"
+    assert detail["generator"]["assets"]["flight"]["identity_file"] == "otje-2.png"
+
+    fallback = client.get("/api/avian-visitors/detail/Gallus%20gallus?locale=nl&identity=unknown").json()
+    assert "presentation" not in fallback and "local_content" not in fallback
+    assert fallback["identity"]["common_name"] == "Bankivahoen"
+    assert fallback["observations"]["total"] == 2
+    assert fallback["encyclopedia"]["wikipedia_nl_url"] == detail["encyclopedia"]["wikipedia_nl_url"]
 
 
 def test_stats_and_lifelist_only_use_accepted_birds_and_group_by_identity(client, monkeypatch):
