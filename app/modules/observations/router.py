@@ -78,20 +78,36 @@ def review_records(request, domain):
                 yield row
 
 
+def selected_review_records(request, domain, identity_override=None):
+    if identity_override is None:
+        yield from review_records(request, domain)
+        return
+    from app.modules.observations.schemas import identity_overrides
+    statement = filtered(select(Observation), domain, ["pending_review", "review_recommended"])
+    with Session(request.app.state.engine) as session:
+        for row in session.scalars(statement.order_by(Observation.start_at.desc(), Observation.id.desc())):
+            if identity_override in identity_overrides(row):
+                yield row
+
+
 @router.get("/review")
 def review_list(request: Request, domain: Literal["bird", "bat"] | None = None,
-                limit: Annotated[int, Query(ge=1, le=100)] = 50):
+                limit: Annotated[int, Query(ge=1, le=100)] = 50,
+                identity_override: Literal["otje"] | None = None):
     from itertools import islice
-    return [serialize(row) for row in islice(review_records(request, domain), limit)]
+    return [serialize(row) for row in islice(selected_review_records(request, domain, identity_override), limit)]
 
 
 @router.get("/count")
 def observation_count(request: Request, domain: Literal["bird", "bat"] | None = None,
-                      status: Status | None = None, review_only: bool = False):
+                      status: Status | None = None, review_only: bool = False,
+                      identity_override: Literal["otje"] | None = None):
+    if identity_override is not None and not review_only:
+        raise HTTPException(422, "identity_override requires review_only")
     if review_only:
         if status is not None:
             raise HTTPException(422, "review_only cannot be combined with status")
-        return {"count": sum(1 for _ in review_records(request, domain))}
+        return {"count": sum(1 for _ in selected_review_records(request, domain, identity_override))}
     statement = filtered(select(func.count()).select_from(Observation), domain, [status] if status else None)
     with Session(request.app.state.engine) as session:
         return {"count": session.scalar(statement)}

@@ -645,3 +645,7 @@ unset BACKYARD_API_TOKEN
 Verwacht respectievelijk health ok en 401. Oude curl- en debugvoorbeelden in
 historische fase-documentatie vereisen nu ook deze header/omgevingsvariabele.
 Start geen extra monitor naast systemd.
+
+### Potential Otje review view
+
+GET `/api/observations/review?domain=bird&identity_override=otje&limit=50` filters open observations by the existing identity capability before applying the limit. GET `/api/observations/count?domain=bird&review_only=true&identity_override=otje` returns the full matching count. Without this optional filter, existing human-review behavior is unchanged. Deploy the updated backend and restart `backyard-api` before using the corresponding WordPress view.
