@@ -99,7 +99,33 @@ def test_plain_final_review_cannot_gain_override(client,action):
 
 def test_auto_accepted_not_offered_override(client):
     item,_=upload(client,create(client,name="Gallus gallus"))
-    assert item["review_capabilities"]=={"identity_overrides":[]}
+    # Simulate a pre-existing accepted Gallus; reads must not reclassify it.
+    with Session(client.app.state.engine) as session:
+        session.get(Observation,item["id"]).status = "auto_accepted"
+        session.commit()
     path="/api/observations/"+item["id"]
+    item = client.get(path).json()
+    assert item["review_capabilities"]=={"identity_overrides":[]}
     assert client.post(path+"/confirm",json=dict(expected_status="auto_accepted",identity_override="otje")).status_code==422
     assert client.get(path).json()==item
+
+
+def test_new_strong_gallus_requires_review_without_automatic_identity(client):
+    item = create(client, name="Gallus gallus", score=.99)
+    assert item["status"] == "pending_review"
+    assert item["classification"] == "human_review"
+    assert item["review"] is None
+    row = client.get("/api/observations/review").json()[0]
+    assert row["id"] == item["id"]
+    assert row["review_capabilities"]["identity_overrides"] == ["otje"]
+    other = create(client, stream="other", name="Parus major", score=.99)
+    assert other["status"] == "auto_accepted"
+    assert client.get("/api/observations/count?review_only=true").json() == {"count":1}
+
+
+@pytest.mark.parametrize("state", ["normal", "unknown", "unusual"])
+def test_new_gallus_gate_does_not_depend_on_geo(state):
+    from observations.policy import decision
+    support = [raw(name="Gallus gallus", state=state, score=.7)]
+    assert decision(support, Policy())["classification"] == "human_review"
+    assert decision(support, Policy(), new_observation=False)["classification"] != "human_review"

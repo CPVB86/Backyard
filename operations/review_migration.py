@@ -33,7 +33,7 @@ def migrate(path, *, apply=False):
             if not support:
                 raise ValueError("Missing candidate evidence for observation " + row["id"])
             policy = Policy(**json.loads(row["policy"]))
-            outcome = decision(support, policy)
+            outcome = decision(support, policy, new_observation=False)
             confidence, windows, state = evidence_summary(support, policy)
             classification, enough = classify(confidence, windows, state, policy,
                                                recommended=row["status"] == "review_recommended")

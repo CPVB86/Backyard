@@ -7,6 +7,7 @@ import math
 import os
 from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
+from observations.identities import OTJE_SPECIES
 
 VERSION = "observation-policy-2"
 EVIDENCE_THRESHOLDS = (.85, .75, .65)
@@ -52,7 +53,7 @@ class Policy:
 
     @property
     def fingerprint(self):
-        return hashlib.sha256(json.dumps({"version": VERSION, "values": asdict(self)}, sort_keys=True).encode()).hexdigest()
+        return hashlib.sha256(json.dumps({"version": VERSION, "new_gallus_review": 1, "values": asdict(self)}, sort_keys=True).encode()).hexdigest()
 
     @classmethod
     def load(cls, path=None):
@@ -158,7 +159,7 @@ def evidence_summary(supports, policy):
     return max(c.confidence for c in supports), len({c.window_id for c in supports if c.confidence >= policy.review_lower}), state
 
 
-def decision(supports, policy):
+def decision(supports, policy, *, new_observation=True):
     if not supports:
         raise ValueError("No candidates")
     if any(c.domain not in policy.target_domains for c in supports):
@@ -189,6 +190,13 @@ def decision(supports, policy):
         reasons.append("plausibility_unresolved" if classification == "unknown" else "insufficient_evidence")
     if status == "discarded":
         classification = "discarded"
+    if (new_observation and supports[0].domain == "bird"
+            and supports[0].scientific_name in OTJE_SPECIES):
+        # Human identity choice only; original species/evidence remain untouched.
+        if classification != "human_review":
+            status, evidence = "pending_review", "review"
+        classification = "human_review"
+        reasons.append("potential_otje_human_review")
     return {"status": status, "evidence": evidence, "reasons": reasons,
             "classification": classification, "evidence_qualified": enough,
             "plausibility": state, "best_confidence": best, "supporting_windows": windows,

@@ -3,6 +3,7 @@ from app.core.species_names import localized_name
 from typing import Annotated, Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 from observations.policy import RawCandidate
+from observations.identities import OTJE_SPECIES
 
 Name = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=255)]
 
@@ -49,12 +50,6 @@ class ReviewInput(BaseModel):
     identity_override: Literal["otje"] | None = None
 
 
-# Exact human-review allowlist from AvianVisitors a60888f OTJE_API_CONTRACT.md.
-# Eligibility only: never automatically infer an identity from species/evidence.
-OTJE_SPECIES = frozenset({
-    "Gallus gallus", "Gallus gallus domesticus", "Gallus domesticus",
-    "Gallus sonneratii", "Gallus lafayettii", "Gallus varius",
-})
 
 
 def identity_overrides(record):

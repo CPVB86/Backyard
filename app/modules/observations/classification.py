@@ -7,6 +7,8 @@ def category(record):
         return record.status
     if record.status == "auto_accepted":
         return "accepted"
+    if "potential_otje_human_review" in record.decision.get("reasons", []):
+        return "human_review"
     policy = Policy(**record.policy)
     candidates = [RawCandidate(**c.raw) for c in record.supports]
     if not candidates:
