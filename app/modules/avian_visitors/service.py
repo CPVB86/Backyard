@@ -1,7 +1,7 @@
 """Read-only AvianVisitors view models built from Backyard-owned data."""
 from datetime import datetime, timedelta, timezone
 
-from sqlalchemy import and_, case, exists, func, or_, select
+from sqlalchemy import and_, case, func, or_, select
 from sqlalchemy.orm import Session
 
 from app.core.species_names import localized_name
@@ -54,33 +54,39 @@ def search(engine, query: str, limit: int = 8) -> list[dict]:
     escaped = term.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
     contains = f"%{escaped}%"
     starts = f"{escaped}%"
-    accepted = and_(Observation.domain == "bird", Observation.status.in_(ACCEPTED_STATUSES),
-                    Observation.scientific_name == Species.scientific_name)
-    observed_name = exists(select(Observation.id).where(
-        accepted, Observation.common_name.ilike(contains, escape="\\")))
-    counts = (select(Observation.scientific_name.label("scientific_name"),
-                     func.count(Observation.id).label("count"),
-                     func.max(Observation.start_at).label("last_observed_at"))
-              .where(Observation.domain == "bird", Observation.status.in_(ACCEPTED_STATUSES))
-              .group_by(Observation.scientific_name).subquery())
-    match = or_(Species.common_name_nl.ilike(contains, escape="\\"),
-                Species.scientific_name.ilike(contains, escape="\\"),
-                Species.wikipedia_title_nl.ilike(contains, escape="\\"),
-                Species.wikipedia_title_en.ilike(contains, escape="\\"), observed_name)
+    name_matches = [Species.common_name_nl.ilike(contains, escape="\\"),
+                    Species.scientific_name.ilike(contains, escape="\\"),
+                    Species.wikipedia_title_nl.ilike(contains, escape="\\"),
+                    Species.wikipedia_title_en.ilike(contains, escape="\\")]
     priority = case(
         (Species.common_name_nl.ilike(starts, escape="\\"), 0),
         (Species.scientific_name.ilike(starts, escape="\\"), 1), else_=2)
-    statement = (select(Species.common_name_nl, Species.scientific_name,
-                        counts.c.count, counts.c.last_observed_at)
-                 .outerjoin(counts, counts.c.scientific_name == Species.scientific_name)
-                 .where(Species.domain == "bird", match)
-                 .order_by(priority, Species.common_name_nl.asc(), Species.scientific_name.asc())
-                 .limit(limit))
     with Session(engine) as session:
-        rows = session.execute(statement)
+        observed_names = list(session.scalars(
+            select(Observation.scientific_name).where(
+                Observation.domain == "bird", Observation.status.in_(ACCEPTED_STATUSES),
+                Observation.common_name.ilike(contains, escape="\\")).distinct()))
+        if observed_names:
+            name_matches.append(Species.scientific_name.in_(observed_names))
+        rows = list(session.execute(
+            select(Species.common_name_nl, Species.scientific_name)
+            .where(Species.domain == "bird", or_(*name_matches))
+            .order_by(priority, Species.common_name_nl.asc(), Species.scientific_name.asc())
+            .limit(limit)))
+        scientific_names = [row.scientific_name for row in rows]
+        counts = {}
+        if scientific_names:
+            count_rows = session.execute(
+                select(Observation.scientific_name, func.count(Observation.id),
+                       func.max(Observation.start_at))
+                .where(Observation.domain == "bird", Observation.status.in_(ACCEPTED_STATUSES),
+                       Observation.scientific_name.in_(scientific_names))
+                .group_by(Observation.scientific_name))
+            counts = {row[0]: (row[1], row[2]) for row in count_rows}
         return [{"common_name_nl": row.common_name_nl or row.scientific_name,
-                 "scientific_name": row.scientific_name, "observation_count": row.count or 0,
-                 "last_observed_at": row.last_observed_at} for row in rows]
+                 "scientific_name": row.scientific_name,
+                 "observation_count": counts.get(row.scientific_name, (0, None))[0],
+                 "last_observed_at": counts.get(row.scientific_name, (0, None))[1]} for row in rows]
 
 
 def _aggregate(engine, start: datetime | None, end: datetime):
