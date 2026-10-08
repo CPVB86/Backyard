@@ -173,7 +173,7 @@ def test_postcard_desktop_and_mobile_layout_contracts_avoid_internal_clipping():
     assert '.postcard-story{height:145px;min-height:145px' in css
 
 
-def test_collage_gets_a_taller_responsive_canvas_without_repacking_changes():
+def test_collage_gets_a_taller_canvas_and_expands_successful_small_packs():
     css = (STATIC / "avian-visitors.css").read_text(encoding="utf-8")
     script = (STATIC / "avian-visitors.js").read_text(encoding="utf-8")
     assert 'stage.classList.toggle("is-collage",state.view===0)' in script
@@ -185,6 +185,8 @@ def test_collage_gets_a_taller_responsive_canvas_without_repacking_changes():
     assert '.stage.is-collage .static-head h1{font-size:clamp(24px,3.2vw,40px);letter-spacing:.06em;transform:none}' in css
     assert '@media(min-width:701px) and (max-width:900px)' in css
     assert 'function maskPack(' in script and 'countExp:.65' in script
+    assert 'postScaleMax:n<=4?1.75:n<=12?1.60:n<=25?1.42:1' in script
+    assert 'if(!placed.some(function(t){return t.x<-1000;}))b=expandPacked(' in script
 
 
 def test_collage_label_typography_uses_late_editorial_serif_override():
