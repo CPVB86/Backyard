@@ -1,0 +1,12 @@
+[Unit]
+Description=Export Avian collage every quarter hour (no Samsung upload)
+
+[Timer]
+OnCalendar=*-*-* *:00,15,30,45:00 Europe/Amsterdam
+AccuracySec=1s
+RandomizedDelaySec=0
+Persistent=false
+Unit=backyard-collage-export.service
+
+[Install]
+WantedBy=timers.target

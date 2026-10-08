@@ -27,6 +27,12 @@ class Settings(BaseSettings):
     samsung_frame_image_path: Path = Path("data/samsung_frame/samsung-frame.png")
     samsung_frame_timeout: float = Field(default=60, ge=1, le=300)
 
+    # Standalone export; no automatic TV upload.
+    avian_export_hours: int = Field(default=24, ge=1, le=1000000)
+    avian_export_max_upscale: float = Field(default=1.5, ge=1, le=2)
+    avian_export_chromium_path: Path | None = None
+    avian_export_timeout: int = Field(default=180, ge=10, le=600)
+
     @property
     def resolved_database_path(self) -> Path:
         path = self.database_path.expanduser()

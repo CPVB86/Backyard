@@ -207,8 +207,10 @@ def test_presentation_uses_original_view_geometry_and_mask_packer(client):
     assert "flex:0 0 100%" in css
     assert "width:300%" not in css and "33.333333" not in js
     assert 'translateX(-"+(state.view*100)+"%)' in js
-    assert "function maskPack(" in js and "function tuning(" in js
-    assert "x=-99999" in js
+    layout = (root / "collage-layout.js").read_text(encoding="utf-8")
+    assert "collage-layout.js" in html and "window.AvianCollage.arrange" in js
+    assert "function maskPack(" in layout and "function tuning(" in layout
+    assert "x=-99999" in layout
     assert "var columns=" not in js
     assert "radial-gradient" not in css
 

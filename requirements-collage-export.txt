@@ -1,0 +1,4 @@
+# Optional browser renderer; install in the existing Backyard .venv.
+playwright==1.58.0
+# Windows may need the IANA timezone database; Linux/Pi uses system tzdata.
+tzdata>=2025.2; sys_platform == "win32"

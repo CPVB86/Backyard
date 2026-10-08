@@ -442,3 +442,12 @@ Gebruik de bestaande `/home/cpvb86/Backyard`-installatie en `.venv`;
 zie [installatie, configuratie en testcommando's](docs/SAMSUNG_FRAME.md).
 Geen timer, automatische synchronisatie, Avian-koppeling of nieuwe service.
 API, detector en WordPress-contracten worden niet aangepast.
+
+## Avian Collage Exporter
+
+Zelfstandige 3840 × 2160 PNG-export van de bestaande vogelcollage, met
+Nederlandse soortnamen en Amsterdam-timestamp. Hergebruikt Avian-waarnemingen,
+Generator-afbeeldingen en gedeelde silhouette-packing. Schrijft atomisch naar
+het bestaande Samsung-imagepad. Geen automatische upload.
+Zie [installatie, handmatige export en bekijken](docs/AVIAN_COLLAGE_EXPORT.md).
+De afzonderlijke kwartiertimer wordt pas na visuele goedkeuring geactiveerd.

@@ -1,0 +1,22 @@
+[Unit]
+Description=Backyard one-shot Avian collage PNG export
+RequiresMountsFor=/home/cpvb86/Backyard
+
+[Service]
+Type=oneshot
+User=cpvb86
+WorkingDirectory=/home/cpvb86/Backyard
+EnvironmentFile=/etc/backyard/backyard.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/cpvb86/Backyard/.venv/bin/python -m app.modules.avian_collage_exporter
+TimeoutStartSec=10min
+TimeoutStopSec=15s
+KillMode=control-group
+LimitCORE=0
+UMask=0077
+NoNewPrivileges=yes
+ProtectSystem=full
+PrivateTmp=yes
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=backyard-collage-export
