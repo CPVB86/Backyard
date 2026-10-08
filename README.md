@@ -432,3 +432,13 @@ Encyclopedia-enrichment gebruikt een aparte, strikt update-only importer met
 standaard dry-run en verplichte 1647/1647 identity-match. Zie
 [veilige enrichment-import, deployment en verificatie](docs/SPECIES_ENRICHMENT.md).
 De CSV hoort in de genegeerde map `import/`; de runtime leest alleen de database.
+
+## Samsung The Frame (alleen handmatig)
+
+De zelfstandige `app.modules.samsung_frame` CLI uploadt een 3840 × 2160 PNG
+met verplicht `matte="none"`, verifieert activatie en verwijdert pas daarna
+het vorige eigen artwork. Token en content-ID worden persistent opgeslagen.
+Gebruik de bestaande `/home/cpvb86/Backyard`-installatie en `.venv`;
+zie [installatie, configuratie en testcommando's](docs/SAMSUNG_FRAME.md).
+Geen timer, automatische synchronisatie, Avian-koppeling of nieuwe service.
+API, detector en WordPress-contracten worden niet aangepast.

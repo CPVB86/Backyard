@@ -1,0 +1,4 @@
+# Install into the existing Backyard API .venv; no separate environment.
+samsungtvws==3.0.6
+# load_default(size=...) in the test generator requires Pillow 10.1+.
+Pillow>=10.1
