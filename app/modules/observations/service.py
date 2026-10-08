@@ -14,6 +14,8 @@ from app.modules.birds import storage
 from app.modules.observations.models import Observation, SupportingCandidate
 from app.modules.observations.schemas import serialize, identity_overrides, review_version
 from observations.identities import OTJE_SPECIES
+from app.modules.observations.effective import scientific_name as effective_species
+from app.modules.species.models import Species
 from observations.policy import RawCandidate, decision, validate_event
 
 logger = logging.getLogger("backyard.observations")
@@ -155,12 +157,17 @@ def review(engine, settings, identity, action, payload, *, correction=False):
             previous_review = dict(record.review or {})
             previous_status = record.status
             previous_identity = previous_review.get("identity_override")
+            previous_species = effective_species(record)
+            target_species = previous_species
             version = review_version(record)
             request_hash = None
             if correction:
                 if record.domain != "bird":
                     raise HTTPException(422, "Corrections currently support bird observations only")
-                request_hash = hashlib.sha256(json.dumps(payload.model_dump(mode="json"), sort_keys=True).encode()).hexdigest()
+                request_values = payload.model_dump(mode="json")
+                if "scientific_name_override" not in payload.model_fields_set:
+                    request_values.pop("scientific_name_override")  # Preserve legacy retry hashes.
+                request_hash = hashlib.sha256(json.dumps(request_values, sort_keys=True).encode()).hexdigest()
                 for event in previous_review.get("history", []):
                     if event.get("request_id") == str(payload.request_id):
                         if event.get("request_hash") != request_hash or event["revision"] != version:
@@ -175,7 +182,14 @@ def review(engine, settings, identity, action, payload, *, correction=False):
                 raise HTTPException(409, "Observation changed; refresh before reviewing")
             if not correction and record.status in ("human_confirmed", "human_rejected"):
                 raise HTTPException(409, "Use the versioned correction endpoint to revise a human decision")
-            allowed_identity = (record.domain == "bird" and record.scientific_name in OTJE_SPECIES) if correction else payload.identity_override in identity_overrides(record)
+            if correction and "scientific_name_override" in payload.model_fields_set:
+                target_species = payload.scientific_name_override or record.scientific_name
+                if payload.scientific_name_override is not None:
+                    known = session.scalar(select(Species.id).where(
+                        Species.domain == record.domain, Species.scientific_name == target_species))
+                    if known is None:
+                        raise HTTPException(422, "Target species must exist in the bird species catalog")
+            allowed_identity = (record.domain == "bird" and target_species in OTJE_SPECIES) if correction else payload.identity_override in identity_overrides(record)
             if payload.identity_override is not None and not allowed_identity:
                 raise HTTPException(422, "Identity override is not available for this observation")
             now = datetime.now(timezone.utc)
@@ -202,6 +216,7 @@ def review(engine, settings, identity, action, payload, *, correction=False):
             event = {
                 "observation_id": record.id, "revision": version + 1,
                 "old_status": previous_status, "old_identity": previous_identity,
+                "old_scientific_name": previous_species, "new_scientific_name": target_species,
                 "new_status": target, "new_identity": payload.identity_override,
                 "at": now.isoformat(), "actor": payload.actor if correction else None,
                 "note": payload.note,
@@ -216,6 +231,8 @@ def review(engine, settings, identity, action, payload, *, correction=False):
             record.review = {"action": action, "note": payload.note, "at": now.isoformat(),
                              "reason": "human_confirmation" if action == "confirm" else "human_rejection"}
             record.review.update(revision=version + 1, history=history)
+            if target_species != record.scientific_name:
+                record.review["scientific_name_override"] = target_species
             if payload.identity_override is not None:
                 record.review["identity_override"] = payload.identity_override
             record.review_due_at = None

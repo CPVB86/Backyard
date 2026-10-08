@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.core.species_names import localized_name
 from app.modules.observations.models import Observation
+from app.modules.observations.effective import species_expression, name_expression
 from app.modules.avian_visitors.identities import PROFILES, resolve
 from app.modules.species.models import Species
 from app.modules.species import service as species_service
@@ -41,7 +42,7 @@ def _filters(start: datetime | None, end: datetime):
 def _identity_expression():
     return case(
         (and_(Observation.review["identity_override"].as_string() == "otje",
-              Observation.scientific_name.in_(PROFILES["otje"]["source_species"])), "otje"),
+              species_expression().in_(PROFILES["otje"]["source_species"])), "otje"),
         else_=None,
     )
 
@@ -63,9 +64,9 @@ def search(engine, query: str, limit: int = 8) -> list[dict]:
         (Species.scientific_name.ilike(starts, escape="\\"), 1), else_=2)
     with Session(engine) as session:
         observed_names = list(session.scalars(
-            select(Observation.scientific_name).where(
+            select(species_expression()).where(
                 Observation.domain == "bird", Observation.status.in_(ACCEPTED_STATUSES),
-                Observation.common_name.ilike(contains, escape="\\")).distinct()))
+                name_expression().ilike(contains, escape="\\")).distinct()))
         if observed_names:
             name_matches.append(Species.scientific_name.in_(observed_names))
         rows = list(session.execute(
@@ -77,11 +78,11 @@ def search(engine, query: str, limit: int = 8) -> list[dict]:
         counts = {}
         if scientific_names:
             count_rows = session.execute(
-                select(Observation.scientific_name, func.count(Observation.id),
+                select(species_expression(), func.count(Observation.id),
                        func.max(Observation.start_at))
                 .where(Observation.domain == "bird", Observation.status.in_(ACCEPTED_STATUSES),
-                       Observation.scientific_name.in_(scientific_names))
-                .group_by(Observation.scientific_name))
+                       species_expression().in_(scientific_names))
+                .group_by(species_expression()))
             counts = {row[0]: (row[1], row[2]) for row in count_rows}
         return [{"common_name_nl": row.common_name_nl or row.scientific_name,
                  "scientific_name": row.scientific_name,
@@ -93,16 +94,16 @@ def _aggregate(engine, start: datetime | None, end: datetime):
     identity_id = _identity_expression().label("identity_id")
     statement = (
         select(
-            Observation.scientific_name,
+            species_expression().label("scientific_name"),
             identity_id,
-            func.max(Observation.common_name).label("common_name"),
+            func.max(name_expression()).label("common_name"),
             func.count(Observation.id).label("count"),
             func.min(Observation.start_at).label("first_observed_at"),
             func.max(Observation.start_at).label("last_observed_at"),
         )
         .where(*_filters(start, end))
-        .group_by(Observation.scientific_name, identity_id)
-        .order_by(func.count(Observation.id).desc(), Observation.scientific_name.asc(), identity_id.asc())
+        .group_by(species_expression(), identity_id)
+        .order_by(func.count(Observation.id).desc(), species_expression().asc(), identity_id.asc())
     )
     with Session(engine) as session:
         return list(session.execute(statement))
@@ -235,9 +236,9 @@ def stats(engine, hours: int, locale: str, *, now: datetime | None = None) -> di
         heatmap = {}
         identity_id = _identity_expression().label("identity_id")
         for scientific_name, identity, value, count in session.execute(
-                select(Observation.scientific_name, identity_id, hour, func.count(Observation.id))
-                .where(*_filters(start, end)).group_by(Observation.scientific_name, identity_id, hour)
-                .order_by(Observation.scientific_name, identity_id, hour)):
+                select(species_expression(), identity_id, hour, func.count(Observation.id))
+                .where(*_filters(start, end)).group_by(species_expression(), identity_id, hour)
+                .order_by(species_expression(), identity_id, hour)):
             heatmap.setdefault((scientific_name, identity), [0] * 24)[int(value)] = count
     if hours <= 48:
         cursor = timeline_start.replace(minute=0, second=0, microsecond=0)

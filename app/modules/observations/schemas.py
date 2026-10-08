@@ -5,6 +5,7 @@ from typing import Annotated, Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 from observations.policy import RawCandidate
 from observations.identities import OTJE_SPECIES
+from app.modules.observations.effective import scientific_name as effective_species
 
 Name = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=255)]
 
@@ -52,6 +53,7 @@ class ReviewInput(BaseModel):
 
 
 class CorrectionInput(ReviewInput):
+    scientific_name_override: Name | None = None
     action: Literal["confirm", "reject"]
     expected_version: int = Field(ge=0, strict=True)
     request_id: UUID
@@ -91,14 +93,14 @@ def serialize(record):
         "review_version": review_version(record),
         "review_modified_at": (record.review or {}).get("at"),
         "effective_identity": {
-            "domain": record.domain, "scientific_name": record.scientific_name,
+            "domain": record.domain, "scientific_name": effective_species(record),
             "identity_override": (record.review or {}).get("identity_override")
                 if record.status in ("auto_accepted", "human_confirmed") else None,
         },
         "review_capabilities": {"identity_overrides": identity_overrides(record)},
         "correction_capabilities": {
             "actions": ["confirm", "reject"] if record.domain == "bird" else [],
-            "identity_overrides": ["otje"] if record.domain == "bird" and record.scientific_name in OTJE_SPECIES else [],
+            "identity_overrides": ["otje"] if record.domain == "bird" and effective_species(record) in OTJE_SPECIES else [],
         },
     }
 

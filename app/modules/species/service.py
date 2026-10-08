@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.species_names import localized_name
 from app.modules.birds.storage import audio_path
 from app.modules.observations.models import Observation
+from app.modules.observations.effective import species_expression, name_expression
 from app.modules.species.models import Species
 from generator.store import public_status
 
@@ -19,8 +20,8 @@ def lookup(engine, domain, scientific_name):
 
 
 def _observation_names(session, domain, scientific_name):
-    return list(session.scalars(select(Observation.common_name).where(
-        Observation.domain == domain, Observation.scientific_name == scientific_name,
+    return list(session.scalars(select(name_expression()).where(
+        Observation.domain == domain, species_expression() == scientific_name,
         Observation.status.in_(ACCEPTED)).order_by(Observation.start_at.desc())))
 
 
@@ -36,7 +37,7 @@ def detail(engine, settings, generator, domain, scientific_name, locale="nl", no
     with Session(engine) as session:
         catalog = session.scalar(select(Species).where(
             Species.domain == domain, Species.scientific_name == scientific_name))
-        filters = (Observation.domain == domain, Observation.scientific_name == scientific_name,
+        filters = (Observation.domain == domain, species_expression() == scientific_name,
                    Observation.status.in_(ACCEPTED))
         if identity_override is not None:
             filters += (Observation.review["identity_override"].as_string() == identity_override,)
