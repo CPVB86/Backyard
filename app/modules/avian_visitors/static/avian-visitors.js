@@ -1,7 +1,7 @@
 /* Presentation behavior adapted from AvianVisitors; see ../PROVENANCE.md. */
 (function(){
   "use strict";
-  var FLY_PROB=.15, poseBySpecies=Object.create(null), assetUrls=new Map(), refreshTimer=0, requestGeneration=0;
+  var FLY_PROB=.15, poseBySpecies=Object.create(null), assetUrls=new Map(), refreshTimer=0, requestGeneration=0,atlasLoadQueue=[],atlasLoads=0,atlasGeneration=0;
   var state={hours:+read("avian:hours","24"),locale:read("avian:locale","nl"),view:+read("avian:view","0"),sort:read("avian:sort","life"),chart:"timeline",recent:null,stats:null,lifelist:null};
   if([1,12,24,168,1000000].indexOf(state.hours)<0)state.hours=24;
   if(["nl","en","de"].indexOf(state.locale)<0)state.locale="nl";
@@ -134,8 +134,11 @@
   function applyChart(){var timeline=state.chart==="timeline";document.getElementById("statsTimeline").hidden=!timeline;document.getElementById("statsHeatmap").hidden=timeline;select(document.getElementById("chartPick"),"chart",state.chart);}
 
   function atlasAsset(item,preferred){if(!item.assets)return null;return item.assets[preferred]||item.assets[preferred==="perched"?"flight":"perched"]||null;}
+  function drainAtlasAssets(){while(atlasLoads<2&&atlasLoadQueue.length){var task=atlasLoadQueue.shift();atlasLoads++;Promise.resolve().then(task).then(atlasAssetDone,atlasAssetDone);}}
+  function atlasAssetDone(){atlasLoads--;drainAtlasAssets();}
+  function queueAtlasAsset(task){atlasLoadQueue.push(task);drainAtlasAssets();}
   function renderAtlas(){
-    var grid=document.getElementById("atlasGrid"),items=(state.lifelist&&state.lifelist.species||[]).slice();grid.replaceChildren();
+    var generation=++atlasGeneration,grid=document.getElementById("atlasGrid"),items=(state.lifelist&&state.lifelist.species||[]).slice();atlasLoadQueue=[];grid.replaceChildren();
     document.getElementById("atlasCount").textContent=items.length?number(items.length)+(items.length===1?" soort":" soorten"):"";
     if(!items.length){grid.innerHTML='<div class="empty-state">De atlas vult zich zodra Backyard een vogel accepteert.</div>';return;}
     var accession={};items.forEach(function(item,index){accession[item.scientific_name]=index+1;});
@@ -146,8 +149,8 @@
       var issue=hash(item.scientific_name)%5+1,card=document.createElement("article");card.className="stamp-card issue-"+issue;card.dataset.scientificName=item.scientific_name;card.tabIndex=0;card.setAttribute("role","button");card.setAttribute("aria-label",item.common_name+", "+item.count+" waarnemingen");
       card.innerHTML='<div class="stamp"><div class="stamp-inner"><p class="stamp-issue">VOGELBEZOEKEN</p><b class="stamp-number">'+String(accession[item.scientific_name]).padStart(2,"0")+'</b><div class="stamp-art"></div><footer class="stamp-caption"><h2>'+esc(item.common_name)+'</h2><em>'+esc(item.scientific_name)+'</em><span>'+number(item.count)+'×</span></footer></div></div>';
       var art=card.querySelector(".stamp-art"),preferred="perched",asset=atlasAsset(item,preferred);
-      function nest(){art.innerHTML='<img class="ready nest-fallback" src="./nest.webp" alt="Leeg vogelnest; illustratie niet beschikbaar">';}function paint(next){art.replaceChildren();if(!next){nest();return;}var image=document.createElement("img");image.alt="";art.appendChild(image);loadAsset(next.url,image).catch(nest);}
-      paint(asset);
+      function nest(){art.innerHTML='<img class="ready nest-fallback" src="./nest.webp" alt="Leeg vogelnest; illustratie niet beschikbaar">';}function paint(next){art.replaceChildren();if(!next){nest();return Promise.resolve();}var image=document.createElement("img");image.alt="";art.appendChild(image);return loadAsset(next.url,image).catch(nest);}
+      if(asset)queueAtlasAsset(function(){return generation===atlasGeneration&&card.isConnected?paint(asset):Promise.resolve();});else nest();
       card.title="Open soortdetail";card.addEventListener("click",function(){detail.open(item.scientific_name,card,item.identity_id);});card.addEventListener("keydown",function(event){if(event.key==="Enter"||event.key===" "){event.preventDefault();detail.open(item.scientific_name,card,item.identity_id);}});
       grid.appendChild(card);
     });animateAtlas();
