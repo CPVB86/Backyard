@@ -186,6 +186,7 @@ def test_atlas_search_uses_full_catalog_names_and_real_observation_counts(client
 
     found = client.get("/api/avian-visitors/search?q=KRAAI").json()["results"]
     assert {item["common_name_nl"] for item in found} == {"Zwarte kraai", "Huiskraai", "Viskraai"}
+    assert client.get("/api/avian-visitors/species-suggestions?q=KRAAI").json()["results"] == found
     assert next(item for item in found if item["scientific_name"] == "Corvus corone")["observation_count"] == 1
     assert client.get("/api/avian-visitors/search?q=corone&limit=1").json()["results"][0]["scientific_name"] == "Corvus corone"
 

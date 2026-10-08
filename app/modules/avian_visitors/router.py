@@ -9,6 +9,7 @@ router = APIRouter(prefix="/api/avian-visitors", tags=["avian-visitors"])
 
 
 @router.get("/search")
+@router.get("/species-suggestions", include_in_schema=False)
 def search(request: Request,
            q: Annotated[str, Query(min_length=1, max_length=100)],
            limit: Annotated[int, Query(ge=1, le=8)] = 8):
