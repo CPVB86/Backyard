@@ -635,3 +635,7 @@ override return 422. Final reviews with a different override return 409.
 Identical retries compare the stored override as well as status/note; legacy
 reviews without that key are treated as null. Ordinary requests may omit it.
 Only backyard-api.service needs restarting for this backend extension.
+
+
+Voor het corrigeren van eerdere beslissingen, versiecontrole en auditgeschiedenis:
+zie [Observation-correcties API](OBSERVATION_CORRECTIONS_API.md).

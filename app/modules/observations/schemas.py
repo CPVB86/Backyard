@@ -1,4 +1,5 @@
 import json
+from uuid import UUID
 from app.core.species_names import localized_name
 from typing import Annotated, Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
@@ -50,6 +51,15 @@ class ReviewInput(BaseModel):
     identity_override: Literal["otje"] | None = None
 
 
+class CorrectionInput(ReviewInput):
+    action: Literal["confirm", "reject"]
+    expected_version: int = Field(ge=0, strict=True)
+    request_id: UUID
+    actor: str | None = Field(default=None, max_length=255)
+
+
+def review_version(record):
+    return (record.review or {}).get("revision", 0)
 
 
 def identity_overrides(record):
@@ -78,7 +88,18 @@ def serialize(record):
         "audio_url": f"/api/observations/{record.id}/audio" if record.audio and record.evidence_kind != "deleted" else None,
         "review_due_at": record.review_due_at, "cleanup_after": record.cleanup_after,
         "review": record.review, "created_at": record.created_at,
+        "review_version": review_version(record),
+        "review_modified_at": (record.review or {}).get("at"),
+        "effective_identity": {
+            "domain": record.domain, "scientific_name": record.scientific_name,
+            "identity_override": (record.review or {}).get("identity_override")
+                if record.status in ("auto_accepted", "human_confirmed") else None,
+        },
         "review_capabilities": {"identity_overrides": identity_overrides(record)},
+        "correction_capabilities": {
+            "actions": ["confirm", "reject"] if record.domain == "bird" else [],
+            "identity_overrides": ["otje"] if record.domain == "bird" and record.scientific_name in OTJE_SPECIES else [],
+        },
     }
 
 

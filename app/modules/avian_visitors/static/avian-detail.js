@@ -20,7 +20,7 @@
     return{poses:availablePoses(assets),summary:local.summary_nl||encyclopedia.summary_nl||null,fact:local.fact_nl||encyclopedia.fact_nl||null,wikipedia:encyclopedia.wikipedia_nl_url?{url:encyclopedia.wikipedia_nl_url,language:"nl"}:encyclopedia.wikipedia_en_url?{url:encyclopedia.wikipedia_en_url,language:"en"}:null,waarnemingUrl:waarneming.url||null,audio:audio&&audio.availability&&audio.url?audio:null,total:Number(observations.total||0),confidence:formatConfidence(observations.highest_confidence,locale),first:formatDateTime(observations.first_observed_at,locale),last:formatDateTime(observations.last_observed_at,locale)};
   }
   function create(options){
-    var modal=document.getElementById("speciesDetail"),body=document.getElementById("detailBody"),loading=document.getElementById("detailLoading"),errorBox=document.getElementById("detailError"),story=document.getElementById("detailStory"),cache=new Map(),opener=null,current=null,audio=null,audioObjectUrl=null,request=0,controller=null,slides=[],slideIndex=0,touchStart=null;
+    var modal=document.getElementById("speciesDetail"),body=document.getElementById("detailBody"),loading=document.getElementById("detailLoading"),errorBox=document.getElementById("detailError"),story=document.getElementById("detailStory"),opener=null,current=null,audio=null,audioObjectUrl=null,request=0,controller=null,slides=[],slideIndex=0,touchStart=null;
     function text(id,value){document.getElementById(id).textContent=value||"";}
     function show(id,visible){document.getElementById(id).hidden=!visible;}
     function setState(next,message){var visibility=stateVisibility(next);modal.dataset.state=next;["idle","loading","loaded","error"].forEach(function(name){modal.classList.toggle("is-"+name,name===next);});loading.hidden=!visibility.loading;body.hidden=!visibility.content;errorBox.hidden=!visibility.error;errorBox.textContent=visibility.error?(message||"Soortinformatie kon niet worden geladen."):"";}
@@ -49,7 +49,7 @@
     }
     function open(scientificName,source,identityId){
       opener=source||document.activeElement;if(controller)controller.abort();controller=typeof AbortController!=="undefined"?new AbortController():null;stopAudio();current=null;setState("loading");modal.setAttribute("aria-hidden","false");requestAnimationFrame(function(){modal.classList.add("is-open");});document.body.classList.add("postcard-open");
-      var key=options.locale()+"|"+scientificName+"|"+(identityId||""),seq=++request,promise=cache.has(key)?Promise.resolve(cache.get(key)):options.fetchJson(detailUrl(scientificName,options.locale(),identityId),controller?{signal:controller.signal}:undefined).then(function(data){cache.set(key,data);return data;});
+      var seq=++request,promise=options.fetchJson(detailUrl(scientificName,options.locale(),identityId),controller?{signal:controller.signal}:undefined);
       return promise.then(function(data){if(isCurrentRequest(seq,request))render(data);return data;}).catch(function(error){if(!isCurrentRequest(seq,request)||error&&error.name==="AbortError")return;current=null;setState("error",error&&error.message);});
     }
     function close(){request++;if(controller)controller.abort();controller=null;stopAudio();current=null;setState("idle");modal.classList.remove("is-open");modal.setAttribute("aria-hidden","true");document.body.classList.remove("postcard-open");if(opener&&document.contains(opener))opener.focus();opener=null;}
@@ -59,7 +59,7 @@
     story.addEventListener("touchstart",function(event){touchStart=event.changedTouches&&event.changedTouches[0]?event.changedTouches[0].clientX:null;},{passive:true});story.addEventListener("touchend",function(event){if(touchStart==null||!event.changedTouches||!event.changedTouches[0])return;var delta=event.changedTouches[0].clientX-touchStart;touchStart=null;if(Math.abs(delta)>42)showSlide(steppedIndex(slideIndex,delta<0?1:-1,slides.length));},{passive:true});
     document.addEventListener("keydown",function(event){if(event.key==="Escape"&&modal.getAttribute("aria-hidden")==="false")close();});
     document.getElementById("detailAudio").addEventListener("click",function(){var button=this;if(audio){if(audio.paused){audio.play();button.setAttribute("aria-pressed","true");audioLabel("❚❚","Pauzeer deze waarneming");}else{audio.pause();button.setAttribute("aria-pressed","false");audioLabel("▶","Beluister deze waarneming");}return;}button.disabled=true;options.fetchBlob(current.audio.url).then(function(blob){audioObjectUrl=URL.createObjectURL(blob);audio=new Audio(audioObjectUrl);audio.addEventListener("ended",stopAudio);return audio.play();}).then(function(){button.disabled=false;button.setAttribute("aria-pressed","true");audioLabel("❚❚","Pauzeer deze waarneming");}).catch(function(){button.disabled=false;audioLabel("!","Opname niet beschikbaar");});});
-    return{open:open,close:close,clearCache:function(){cache.clear();}};
+    return{open:open,close:close,clearCache:function(){/* Details are always fetched fresh. */}};
   }
   return{detailUrl:detailUrl,availablePoses:availablePoses,familyLabel:familyLabel,formatConfidence:formatConfidence,formatDateTime:formatDateTime,storySlides:storySlides,steppedIndex:steppedIndex,stateVisibility:stateVisibility,isCurrentRequest:isCurrentRequest,present:present,create:create};
 }));

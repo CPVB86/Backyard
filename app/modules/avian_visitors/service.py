@@ -198,7 +198,8 @@ def lifelist(engine, generator, locale: str, *, now: datetime | None = None) -> 
     return {
         "locale": locale,
         "observation_count": sum(item["count"] for item in species),
-        "species_count": len(species),
+        "species_count": len({item["scientific_name"] for item in species}),
+        "display_identity_count": len(species),
         "species": species,
     }
 
@@ -259,9 +260,10 @@ def stats(engine, hours: int, locale: str, *, now: datetime | None = None) -> di
         "window_start": start,
         "window_end": end,
         "observation_count": sum(item["count"] for item in period_species),
-        "species_count": len(period_species),
+        "species_count": len({item["scientific_name"] for item in period_species}),
+        "display_identity_count": len(period_species),
         "all_time_observation_count": sum(item["count"] for item in all_species),
-        "all_time_species_count": len(all_species),
+        "all_time_species_count": len({item["scientific_name"] for item in all_species}),
         "first_observed_at": min((item["first_observed_at"] for item in all_species), default=None),
         "last_observed_at": max((item["last_observed_at"] for item in all_species), default=None),
         "species": period_species,

@@ -24,7 +24,7 @@
   function token(){return tokenInput.value.trim()||sessionRead("backyardApiToken");}
   function headers(){return{Authorization:"Bearer "+token()};}
   function clearAssets(){assetUrls.forEach(URL.revokeObjectURL);assetUrls.clear();}
-  function fetchJson(url,options){var requestOptions=Object.assign({},options||{},{headers:headers()});return fetch(url,requestOptions).then(function(response){if(response.status===401)throw new Error("Token niet geaccepteerd.");if(!response.ok)throw new Error("Backyard kon de gegevens niet laden.");return response.json();});}
+  function fetchJson(url,options){var requestOptions=Object.assign({},options||{},{headers:headers(),cache:"no-store"});return fetch(url,requestOptions).then(function(response){if(response.status===401)throw new Error("Token niet geaccepteerd.");if(!response.ok)throw new Error("Backyard kon de gegevens niet laden.");return response.json();});}
   function loadAsset(url,image){
     if(!url)return Promise.reject(new Error("Geen asset"));
     if(assetUrls.has(url)){image.src=assetUrls.get(url);image.classList.add("ready");return Promise.resolve();}

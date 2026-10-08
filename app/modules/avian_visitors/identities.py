@@ -1,14 +1,13 @@
 """Explicit local presentation identities; never inferred from species data."""
 
+from observations.identities import OTJE_SPECIES
+
 PROFILES = {
     "otje": {
         "id": "otje",
         "display_name": "Otje",
         "subtitle": "Barnevelder",
-        "source_species": frozenset({
-            "Gallus gallus", "Gallus gallus domesticus", "Gallus domesticus",
-            "Gallus sonneratii", "Gallus lafayettii", "Gallus varius",
-        }),
+        "source_species": OTJE_SPECIES,
         "images": {"perched": "otje.png", "flight": "otje-2.png"},
         "asset_ids": {"perched": "otje_perched", "flight": "otje_flight"},
         "summary_nl": (

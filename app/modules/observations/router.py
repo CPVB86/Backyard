@@ -10,7 +10,7 @@ from starlette.concurrency import run_in_threadpool
 from app.modules.birds.router import bounded_body
 from app.modules.birds.storage import audio_path
 from app.modules.observations.models import Observation
-from app.modules.observations.schemas import ObservationInput, ReviewInput, serialize, observation_request_schema
+from app.modules.observations.schemas import ObservationInput, ReviewInput, CorrectionInput, serialize, observation_request_schema
 from app.modules.observations import service
 
 router = APIRouter(prefix="/api/observations", tags=["observations"])
@@ -158,3 +158,11 @@ def confirm(request: Request, identity: UUID, payload: ReviewInput):
 @router.post("/{identity}/reject")
 def reject(request: Request, identity: UUID, payload: ReviewInput):
     return service.review(request.app.state.engine, request.app.state.settings, identity, "reject", payload)
+
+
+@router.post("/{identity}/correct")
+def correct(request: Request, identity: UUID, payload: CorrectionInput):
+    # Explicit human correction never starts paid image generation. Existing species/
+    # individual assets remain available through the central Generator store.
+    return service.review(request.app.state.engine, request.app.state.settings,
+                          identity, payload.action, payload, correction=True)

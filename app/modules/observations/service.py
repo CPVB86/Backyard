@@ -12,7 +12,8 @@ from sqlalchemy.orm import Session
 
 from app.modules.birds import storage
 from app.modules.observations.models import Observation, SupportingCandidate
-from app.modules.observations.schemas import serialize, identity_overrides
+from app.modules.observations.schemas import serialize, identity_overrides, review_version
+from observations.identities import OTJE_SPECIES
 from observations.policy import RawCandidate, decision, validate_event
 
 logger = logging.getLogger("backyard.observations")
@@ -142,7 +143,7 @@ def attach_audio(engine, settings, identity, data):
                 logger.error("Evidence rollback cleanup failed")
 
 
-def review(engine, settings, identity, action, payload):
+def review(engine, settings, identity, action, payload, *, correction=False):
     if action != "confirm" and payload.identity_override is not None:
         raise HTTPException(422, "Identity override is only allowed on confirm")
     target = "human_confirmed" if action == "confirm" else "human_rejected"
@@ -151,14 +152,31 @@ def review(engine, settings, identity, action, payload):
         with Session(engine) as session:
             session.execute(text("BEGIN IMMEDIATE"))
             record = require(session, identity)
-            if (record.status == target and record.review and record.review["note"] == payload.note
+            previous_review = dict(record.review or {})
+            previous_status = record.status
+            previous_identity = previous_review.get("identity_override")
+            version = review_version(record)
+            request_hash = None
+            if correction:
+                if record.domain != "bird":
+                    raise HTTPException(422, "Corrections currently support bird observations only")
+                request_hash = hashlib.sha256(json.dumps(payload.model_dump(mode="json"), sort_keys=True).encode()).hexdigest()
+                for event in previous_review.get("history", []):
+                    if event.get("request_id") == str(payload.request_id):
+                        if event.get("request_hash") != request_hash or event["revision"] != version:
+                            raise HTTPException(409, "Correction request conflicts with current review")
+                        return serialize(record)
+                if version != payload.expected_version:
+                    raise HTTPException(409, "Review version changed; refresh before correcting")
+            elif (record.status == target and record.review and record.review["note"] == payload.note
                     and record.review.get("identity_override") == payload.identity_override):
                 return serialize(record)
             if record.status != payload.expected_status:
                 raise HTTPException(409, "Observation changed; refresh before reviewing")
-            if record.status in ("human_confirmed", "human_rejected"):
-                raise HTTPException(409, "Human decision is final in this phase")
-            if payload.identity_override is not None and payload.identity_override not in identity_overrides(record):
+            if not correction and record.status in ("human_confirmed", "human_rejected"):
+                raise HTTPException(409, "Use the versioned correction endpoint to revise a human decision")
+            allowed_identity = (record.domain == "bird" and record.scientific_name in OTJE_SPECIES) if correction else payload.identity_override in identity_overrides(record)
+            if payload.identity_override is not None and not allowed_identity:
                 raise HTTPException(422, "Identity override is not available for this observation")
             now = datetime.now(timezone.utc)
             if action == "confirm":
@@ -172,12 +190,32 @@ def review(engine, settings, identity, action, payload):
                     record.storage_key = key
                 record.evidence_kind = "permanent"
                 record.cleanup_after = None
+            elif correction:
+                # Corrections preserve canonical evidence; cancel any prior rejection expiry.
+                if record.audio and record.evidence_kind != "deleted":
+                    record.evidence_kind = "permanent"
+                record.cleanup_after = None
             else:
                 record.evidence_kind = "delete_pending"
                 record.cleanup_after = now + timedelta(days=record.policy["review_days"])
+            history = list(previous_review.get("history", []))
+            event = {
+                "observation_id": record.id, "revision": version + 1,
+                "old_status": previous_status, "old_identity": previous_identity,
+                "new_status": target, "new_identity": payload.identity_override,
+                "at": now.isoformat(), "actor": payload.actor if correction else None,
+                "note": payload.note,
+            }
+            if previous_review and not history:
+                # Preserve original legacy review metadata, even though its old state is unknown.
+                event["previous_review"] = previous_review
+            if correction:
+                event.update(request_id=str(payload.request_id), request_hash=request_hash)
+            history.append(event)
             record.status = target
             record.review = {"action": action, "note": payload.note, "at": now.isoformat(),
                              "reason": "human_confirmation" if action == "confirm" else "human_rejection"}
+            record.review.update(revision=version + 1, history=history)
             if payload.identity_override is not None:
                 record.review["identity_override"] = payload.identity_override
             record.review_due_at = None
