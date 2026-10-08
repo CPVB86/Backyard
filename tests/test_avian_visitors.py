@@ -162,8 +162,37 @@ def test_collage_is_served_and_contains_no_generator_asset_copies(client):
     page = client.get("/avian-visitors/")
     assert page.status_code == 200 and "Recent gehoord" in page.text
     static = Path(__file__).parents[1] / "app/modules/avian_visitors/static"
-    assert not [path for path in static.rglob("*") if path.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp", ".json"}]
+    images = [path.name for path in static.rglob("*") if path.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp", ".json"}]
+    assert images == ["nest.webp"]
     assert client.get("/api/avian-visitors/recent", headers={"Authorization": "Bearer wrong"}).status_code == 401
+
+
+def test_atlas_search_uses_full_catalog_names_and_real_observation_counts(client):
+    now = datetime.now(timezone.utc)
+    with Session(client.app.state.engine) as session:
+        session.add_all([
+            Species(domain="bird", scientific_name="Corvus corone", common_name_nl="Zwarte kraai",
+                    source="waarneming.nl", source_species_id=901, source_url="https://waarneming.nl/species/901/",
+                    source_metadata={}, wikipedia_title_en="Carrion Crow", imported_at=now, updated_at=now),
+            Species(domain="bird", scientific_name="Corvus splendens", common_name_nl="Huiskraai",
+                    source="waarneming.nl", source_species_id=902, source_url="https://waarneming.nl/species/902/",
+                    source_metadata={}, imported_at=now, updated_at=now),
+            Species(domain="bird", scientific_name="Corvus ossifragus", common_name_nl="Viskraai",
+                    source="waarneming.nl", source_species_id=903, source_url="https://waarneming.nl/species/903/",
+                    source_metadata={}, imported_at=now, updated_at=now),
+        ])
+        session.commit()
+    add(client, "Corvus corone", "Carrion Crow", now - timedelta(minutes=5), event="crow")
+
+    found = client.get("/api/avian-visitors/search?q=KRAAI").json()["results"]
+    assert {item["common_name_nl"] for item in found} == {"Zwarte kraai", "Huiskraai", "Viskraai"}
+    assert next(item for item in found if item["scientific_name"] == "Corvus corone")["observation_count"] == 1
+    assert client.get("/api/avian-visitors/search?q=corone&limit=1").json()["results"][0]["scientific_name"] == "Corvus corone"
+
+    detail = client.get("/api/avian-visitors/detail/Corvus%20splendens?locale=nl").json()
+    assert detail["identity"]["common_name"] == "Huiskraai"
+    assert detail["observations"]["total"] == 0
+    assert "presentation" not in detail
 
 
 def test_presentation_uses_original_view_geometry_and_mask_packer(client):

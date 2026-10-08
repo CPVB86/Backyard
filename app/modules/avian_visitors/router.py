@@ -8,6 +8,13 @@ from app.modules.avian_visitors import service
 router = APIRouter(prefix="/api/avian-visitors", tags=["avian-visitors"])
 
 
+@router.get("/search")
+def search(request: Request,
+           q: Annotated[str, Query(min_length=1, max_length=100)],
+           limit: Annotated[int, Query(ge=1, le=8)] = 8):
+    return {"query": q, "results": service.search(request.app.state.engine, q, limit)}
+
+
 @router.get("/detail/{scientific_name:path}")
 def detail(request: Request,
            scientific_name: Annotated[str, Path(min_length=1, max_length=255)],

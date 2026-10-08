@@ -202,4 +202,19 @@ def test_collage_label_typography_uses_original_caveat_font():
 
 def test_avian_module_contains_no_copied_central_assets():
     forbidden = {".png", ".jpg", ".jpeg", ".webp", ".wav", ".sqlite", ".db"}
-    assert not [path for path in STATIC.rglob("*") if path.suffix.lower() in forbidden]
+    assert [path.name for path in STATIC.rglob("*") if path.suffix.lower() in forbidden] == ["nest.webp"]
+
+
+def test_atlas_search_and_original_empty_nest_are_wired_without_generation():
+    html = (STATIC / "index.html").read_text(encoding="utf-8")
+    css = (STATIC / "avian-visitors.css").read_text(encoding="utf-8")
+    script = (STATIC / "avian-visitors.js").read_text(encoding="utf-8")
+    detail = (STATIC / "avian-detail.js").read_text(encoding="utf-8")
+    assert 'id="atlasSearch" type="search"' in html and 'role="combobox"' in html
+    assert 'setTimeout(function(){searchController=' in script and '},180)' in script
+    assert 'limit=8' in script and 'event.key==="ArrowDown"' in script and 'event.key==="Escape"' in script
+    assert 'detail.open(button.dataset.scientificName,atlasSearch)' in script
+    assert 'src="./nest.webp"' in script and 'image.src="./nest.webp"' in detail
+    assert 'Nog niet in onze tuin gehoord' in detail
+    assert '.atlas-search' in css and (STATIC / "nest.webp").is_file()
+    assert "generate" not in script
