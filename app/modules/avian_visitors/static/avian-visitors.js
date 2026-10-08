@@ -58,7 +58,7 @@
     if(pose==="perched"&&!perched)pose=flight?"flight":null;if(pose==="flight"&&!flight)pose=perched?"perched":null;
     return pose?{pose:pose,data:item.assets[pose]}:null;
   }
-  function tuning(n){return{packingBudgetFrac:n<=4?.46:n<=12?.40:n<=24?.34:.28,countExp:.65,minTileAreaFrac:n<=8?.0100:n<=20?.0075:.0055,ellipseAspectBias:2.1,postScaleMax:n<=4?1.75:n<=12?1.60:n<=25?1.42:1};}
+  function tuning(n){return{packingBudgetFrac:n<=4?.46:n<=12?.40:n<=24?.34:.28,countExp:n<=25?.52:.65,minTileAreaFrac:n<=8?.0100:n<=20?.0075:.0055,ellipseAspectBias:2.1,postScaleMax:n<=4?2.40:n<=12?2.10:n<=25?1.75:1};}
   var GRID_STRIDE=4,COLLAGE_PAD=3;
   function maskPack(tiles,W,H,xBias,yBias,pad){
     var GW=Math.ceil(W/GRID_STRIDE)+2,GH=Math.ceil(H/GRID_STRIDE)+2,grid=new Uint8Array(GW*GH);

@@ -184,16 +184,20 @@ def test_collage_gets_a_taller_canvas_and_expands_successful_small_packs():
     assert '.stage.is-collage .static-head small{opacity:1;max-height:30px;margin-top:7px;transform:none}' in css
     assert '.stage.is-collage .static-head h1{font-size:clamp(24px,3.2vw,40px);letter-spacing:.06em;transform:none}' in css
     assert '@media(min-width:701px) and (max-width:900px)' in css
-    assert 'function maskPack(' in script and 'countExp:.65' in script
-    assert 'postScaleMax:n<=4?1.75:n<=12?1.60:n<=25?1.42:1' in script
+    assert '.gcollage{flex:1 1 auto;width:100%;max-width:1600px' in css
+    assert 'function maskPack(' in script
+    assert 'countExp:n<=25?.52:.65' in script
+    assert 'postScaleMax:n<=4?2.40:n<=12?2.10:n<=25?1.75:1' in script
     assert 'if(!placed.some(function(t){return t.x<-1000;}))b=expandPacked(' in script
 
 
-def test_collage_label_typography_uses_late_editorial_serif_override():
+def test_collage_label_typography_uses_original_caveat_font():
     css = (STATIC / "avian-visitors.css").read_text(encoding="utf-8")
-    assert '--avian-display:ui-serif,"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif' in css
-    assert css.rfind('.gtile-label text{fill:var(--ink-2)') > css.find('"Segoe Print"')
-    assert 'stroke-width:.72px' in css and 'letter-spacing:.025em' in css
+    assert '@font-face{font-family:Hand;src:url("./fonts/Caveat.ttf")' in css
+    assert 'font-family:Hand,cursive;font-style:normal;font-weight:600' in css
+    assert 'stroke-width:.72px' in css and 'letter-spacing:0' in css
+    assert (STATIC / "fonts" / "Caveat.ttf").is_file()
+    assert (STATIC / "fonts" / "OFL-Caveat.txt").is_file()
 
 
 def test_avian_module_contains_no_copied_central_assets():
