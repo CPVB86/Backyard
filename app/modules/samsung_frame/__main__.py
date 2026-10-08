@@ -5,7 +5,7 @@ import json
 import logging
 from pathlib import Path
 import sys
-from samsungtvws.art import SamsungTVArt
+from .transport import BoundedArt
 from samsungtvws.rest import SamsungTVRest
 from .config import load_settings, resolve_path
 from .image import generate
@@ -13,7 +13,7 @@ from .service import FrameService
 from .storage import locked, private_parent, write_private
 
 
-class PrivateArt(SamsungTVArt):
+class PrivateArt(BoundedArt):
     """Persist pairing without the upstream token logging or non-atomic writes."""
     def __init__(self, settings, token_path):
         self.private_token_path = token_path
@@ -39,8 +39,10 @@ def main():
     commands.add_parser("generate", help="Generate configured samsung-frame.png")
     upload = commands.add_parser("upload", help="Upload and verify; then delete previous own artwork")
     upload.add_argument("--resume", action="store_true", help="Resume the journal, without another upload")
+    commands.add_parser("recover", help="Finish existing pending/cleanup transaction without reading or uploading an image")
     commands.add_parser("status", help="Read journal and live TV status (no artwork changes)")
     args = parser.parse_args()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     art = None
     try:
         settings = load_settings(args.environment_file)
@@ -65,8 +67,10 @@ def main():
             identity = device.get("id")
             if not isinstance(identity, str) or not identity:
                 raise RuntimeError("TV did not provide device.id; ownership cannot be verified")
-            service = FrameService(art, state_path, identity)
-            if args.command == "upload":
+            service = FrameService(art, state_path, identity, activation_timeout=settings.samsung_frame_timeout)
+            if args.command == "recover":
+                print(json.dumps({"activated": service.recover(), "matte": "none", "uploaded": False}))
+            elif args.command == "upload":
                 print(json.dumps({"activated": service.upload(image_path, resume=args.resume),
                                   "matte": "none"}))
             else:
@@ -94,8 +98,8 @@ def main():
                 print(json.dumps({"connected": False, "managed": journal}, indent=2))
             except (OSError, ValueError) as error:
                 print(f"Journal read failed: {error}", file=sys.stderr)
-        if args.command == "upload":
-            print("No cleanup after failed activation. Inspect status; use upload --resume only for a journaled upload.", file=sys.stderr)
+        if args.command in ("upload", "recover"):
+            print("Transaction retained. Inspect status and run recover; never edit owned IDs or re-upload pending artwork.", file=sys.stderr)
         return 1
     finally:
         if art is not None:
