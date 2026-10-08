@@ -5,6 +5,7 @@ import json
 import logging
 from pathlib import Path
 import sys
+import time
 from .transport import BoundedArt
 from samsungtvws.rest import SamsungTVRest
 from .config import load_settings, resolve_path
@@ -31,18 +32,20 @@ class PrivateArt(BoundedArt):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Manual Samsung Frame Art Mode")
+    parser = argparse.ArgumentParser(description="Samsung Frame Art Mode upload and synchronization")
     parser.add_argument("--environment-file", type=Path,
-                        help="Existing production EnvironmentFile (e.g. /etc/backyard/backyard.env)")
+                        help="Optional configuration override; default is Backyard project .env")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("connect", help="Test Art API connection and pairing")
     commands.add_parser("generate", help="Generate configured samsung-frame.png")
     upload = commands.add_parser("upload", help="Upload and verify; then delete previous own artwork")
     upload.add_argument("--resume", action="store_true", help="Resume the journal, without another upload")
+    commands.add_parser("sync", help="Recover or upload changed PNG once (used by timer)")
     commands.add_parser("recover", help="Finish existing pending/cleanup transaction without reading or uploading an image")
     commands.add_parser("status", help="Read journal and live TV status (no artwork changes)")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    started = time.monotonic()
     art = None
     try:
         settings = load_settings(args.environment_file)
@@ -70,6 +73,9 @@ def main():
             service = FrameService(art, state_path, identity, activation_timeout=settings.samsung_frame_timeout)
             if args.command == "recover":
                 print(json.dumps({"activated": service.recover(), "matte": "none", "uploaded": False}))
+            elif args.command == "sync":
+                result = service.sync(image_path)
+                print(json.dumps({"current": result, "matte": "none", "action": service.last_action}))
             elif args.command == "upload":
                 print(json.dumps({"activated": service.upload(image_path, resume=args.resume),
                                   "matte": "none"}))
@@ -98,10 +104,11 @@ def main():
                 print(json.dumps({"connected": False, "managed": journal}, indent=2))
             except (OSError, ValueError) as error:
                 print(f"Journal read failed: {error}", file=sys.stderr)
-        if args.command in ("upload", "recover"):
+        if args.command in ("upload", "recover", "sync"):
             print("Transaction retained. Inspect status and run recover; never edit owned IDs or re-upload pending artwork.", file=sys.stderr)
         return 1
     finally:
+        logging.info("Samsung command=%s duration=%.2fs", args.command, time.monotonic()-started)
         if art is not None:
             art.close()
 

@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     max_audio_bytes: int = Field(default=8 * 1024 * 1024, ge=1024, le=64 * 1024 * 1024)
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
 
-    # Optional manual Samsung CLI; no API/ML runtime imports.
+    # Samsung CLI/timer; no API/ML runtime imports.
     samsung_frame_host: str = ""
     samsung_frame_token: SecretStr | None = None
     samsung_frame_token_path: Path = Path("data/samsung_frame/token")
@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     samsung_frame_image_path: Path = Path("data/samsung_frame/samsung-frame.png")
     samsung_frame_timeout: float = Field(default=60, ge=1, le=300)
 
-    # Standalone export; no automatic TV upload.
+    # Standalone export and separately scheduled Samsung synchronization.
     avian_export_hours: int = Field(default=24, ge=1, le=1000000)
     avian_export_max_upscale: float = Field(default=1.5, ge=1, le=2)
     avian_export_chromium_path: Path | None = None

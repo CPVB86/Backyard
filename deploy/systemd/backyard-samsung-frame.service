@@ -1,5 +1,7 @@
 [Unit]
-Description=Backyard one-shot Avian collage PNG export
+Description=Backyard synchronize changed Avian PNG to Samsung Art Mode
+Wants=network-online.target
+After=network-online.target backyard-collage-export.service
 RequiresMountsFor=/home/cpvb86/Backyard
 
 [Service]
@@ -8,7 +10,7 @@ User=cpvb86
 WorkingDirectory=/home/cpvb86/Backyard
 # Settings loads /home/cpvb86/Backyard/.env, exactly like the manual CLI.
 Environment=PYTHONUNBUFFERED=1
-ExecStart=/home/cpvb86/Backyard/.venv/bin/python -m app.modules.avian_collage_exporter
+ExecStart=/home/cpvb86/Backyard/.venv/bin/python -m app.modules.samsung_frame sync
 TimeoutStartSec=10min
 TimeoutStopSec=15s
 KillMode=control-group
@@ -19,4 +21,4 @@ ProtectSystem=full
 PrivateTmp=yes
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=backyard-collage-export
+SyslogIdentifier=backyard-samsung-frame

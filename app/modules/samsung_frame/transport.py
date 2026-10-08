@@ -8,11 +8,50 @@ from samsungtvws.art import SamsungTVArt
 from samsungtvws.exceptions import ConnectionFailure, ResponseError
 
 
+class RetryableUploadError(RuntimeError):
+    """Proven failure before any image bytes were attempted."""
+
+
+class UploadSocket:
+    # samsungtvws 3.0.6 sends length header, JSON header, then image bytes.
+    def __init__(self, socket, art):
+        self.socket = socket
+        self.art = art
+        self.writes = 0
+
+    def sendall(self, data):
+        self.writes += 1
+        if self.writes >= 3:
+            # Mark before send: a partial write may already have reached the TV.
+            self.art._upload_started = True
+        return self.socket.sendall(data)
+
+    def __getattr__(self, name):
+        return getattr(self.socket, name)
+
+
 class BoundedArt(SamsungTVArt):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._request_deadline = None
         self._setter_requests = {}
+        self._upload_started = False
+
+    def upload(self, file, **kwargs):
+        self._upload_started = False
+        try:
+            return super().upload(file, **kwargs)
+        except Exception as exc:
+            if not self._upload_started:
+                raise RetryableUploadError(f"No image bytes sent: {type(exc).__name__}: {exc}") from exc
+            raise
+
+    def _open_d2d_socket(self, conn_info):
+        return UploadSocket(super()._open_d2d_socket(conn_info), self)
+
+    def _upload_ws_binary_send_image(self, **kwargs):
+        self._upload_started = True
+        return super()._upload_ws_binary_send_image(**kwargs)
 
     def _send_setter(self, request, **params):
         request_id = self._new_request_uuid()

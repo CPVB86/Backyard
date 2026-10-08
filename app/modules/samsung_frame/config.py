@@ -1,4 +1,4 @@
-"""Use existing Backyard settings and its production EnvironmentFile parser."""
+"""Project .env is the default for manual commands and services; explicit overrides remain supported."""
 import os
 from pathlib import Path
 from app.core.config import ROOT, Settings

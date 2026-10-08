@@ -222,3 +222,82 @@ def test_commit_activation_failure_keeps_old_and_durable_pending(tmp_path):
     art.delete.assert_not_called()
     journal = FrameService(art, service.path, "tv-1").state
     assert journal["current"] == "MY_old" and journal["pending"] == "MY_new"
+
+
+def test_sync_skips_identical_png_after_restart(tmp_path):
+    service, art, image = setup_upload(tmp_path)
+    assert service.sync(image)=="MY_new"
+    resumed=FrameService(art,service.path,"tv-1")
+    assert resumed.sync(image)=="MY_new" and resumed.last_action=="unchanged"
+    assert art.upload.call_count==1 and art.select_image.call_count==1
+    art.delete.assert_called_once_with("MY_old")
+
+
+def test_sync_changed_png_replaces_only_previous_managed_id(tmp_path):
+    service,art,image=setup_upload(tmp_path)
+    service.sync(image)
+    Image.new("RGB",(3840,2160),"green").save(image)
+    art.upload.return_value="MY_newer"
+    art.available.return_value.append({"content_id":"MY_newer","matte_id":"none"})
+    art.get_current.return_value={"content_id":"MY_newer","matte_id":"none"}
+    resumed=FrameService(art,service.path,"tv-1")
+    assert resumed.sync(image)=="MY_newer"
+    assert art.upload.call_count==2
+    assert [call.args[0] for call in art.delete.call_args_list]==["MY_old","MY_new"]
+    assert resumed.last_action=="uploaded"
+
+
+def test_sync_recovers_pending_hash_without_uploading_latest_file(tmp_path):
+    import hashlib
+    service,art,image=setup_upload(tmp_path)
+    digest=hashlib.sha256(image.read_bytes()).hexdigest()
+    service.state.update(pending="MY_new",pending_sha256=digest)
+    service.save()
+    Image.new("RGB",(3840,2160),"green").save(image)
+    resumed=FrameService(art,service.path,"tv-1")
+    assert resumed.sync(image)=="MY_new" and resumed.last_action=="recovered"
+    art.upload.assert_not_called()
+    assert resumed.state["current_sha256"]==digest
+
+
+def test_pre_transfer_failure_is_safely_retryable_on_next_run(tmp_path):
+    from app.modules.samsung_frame.transport import RetryableUploadError
+    service,art,image=setup_upload(tmp_path)
+    art.upload.side_effect=RetryableUploadError("No image bytes sent: connection refused")
+    with pytest.raises(RuntimeError,match="connection refused"):
+        service.sync(image)
+    resumed=FrameService(art,service.path,"tv-1")
+    assert resumed.state["upload_attempt"] is None and resumed.state["current"]=="MY_old"
+    art.delete.assert_not_called()
+    art.upload.side_effect=None
+    assert resumed.sync(image)=="MY_new"
+    assert art.upload.call_count==2
+
+
+@pytest.mark.parametrize("failed_write,retryable", [(1,True),(3,False)])
+def test_transport_distinguishes_header_failure_from_partial_image(monkeypatch,failed_write,retryable):
+    from app.modules.samsung_frame.transport import BoundedArt,RetryableUploadError
+    from samsungtvws.art import SamsungTVArt
+    art=BoundedArt("192.0.2.1",timeout=1)
+    art.get_api_version=Mock(return_value="5.0.1.0")
+    art._send_art_request=Mock(return_value={"conn_info":{"ip":"192.0.2.1","port":1234,"key":"test"}})
+    socket=Mock()
+    socket.sendall.side_effect=[None]*(failed_write-1)+[OSError("connection dropped")]
+    monkeypatch.setattr(SamsungTVArt,"_open_d2d_socket",lambda self,info:socket)
+    with pytest.raises(RetryableUploadError if retryable else OSError,match="connection dropped"):
+        art.upload(b"image bytes",matte="none",portrait_matte="none")
+    assert art._upload_started is (not retryable)
+
+
+def test_export_and_upload_units_use_project_config_and_shifted_persistent_timers():
+    units=ROOT/"deploy/systemd"
+    for name,module in [("backyard-collage-export","app.modules.avian_collage_exporter"),
+                        ("backyard-samsung-frame","app.modules.samsung_frame sync")]:
+        service=(units/(name+".service")).read_text()
+        timer=(units/(name+".timer")).read_text()
+        assert "WorkingDirectory=/home/cpvb86/Backyard" in service
+        assert "/home/cpvb86/Backyard/.venv/bin/python -m "+module in service
+        assert "EnvironmentFile=" not in service and "/etc/backyard" not in service
+        assert "Persistent=true" in timer and "WantedBy=timers.target" in timer
+    assert "*:00,15,30,45:00 Europe/Amsterdam" in (units/"backyard-collage-export.timer").read_text()
+    assert "*:02,17,32,47:00 Europe/Amsterdam" in (units/"backyard-samsung-frame.timer").read_text()

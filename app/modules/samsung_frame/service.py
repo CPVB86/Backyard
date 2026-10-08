@@ -8,6 +8,7 @@ import re
 from pathlib import Path
 from PIL import Image
 from .storage import save_state
+from .transport import RetryableUploadError
 
 _LOG = logging.getLogger(__name__)
 
@@ -20,14 +21,18 @@ def owned_id(value):
 
 class FrameService:
     def __init__(self, art, state_path: Path, identity: str, *, activation_timeout=60, poll_interval=1):
+        self.last_action = None
         self.art = art
         self.activation_timeout = activation_timeout
         self.poll_interval = poll_interval
         self.path = state_path
         self.state = {"version": 1, "tv": identity, "current": None,
-                      "pending": None, "previous": None, "upload_attempt": None}
+                      "pending": None, "previous": None, "upload_attempt": None,
+                      "current_sha256": None, "pending_sha256": None}
         if state_path.exists():
             state = json.loads(state_path.read_text(encoding="utf-8"))
+            state.setdefault("current_sha256", None)
+            state.setdefault("pending_sha256", None)
             state.setdefault("upload_attempt", None)  # Read existing version-1 journals.
             if set(state) != set(self.state) or state["version"] != 1 or state["tv"] != identity:
                 raise ValueError("Artwork journal invalid or belongs to a different TV; refusing upload/deletion")
@@ -43,6 +48,10 @@ class FrameService:
                 raise ValueError("Invalid upload attempt in artwork journal")
             if state["pending"] and state["previous"]:
                 raise ValueError("Conflicting pending and previous IDs in artwork journal")
+            for key in ("current_sha256", "pending_sha256"):
+                digest = state[key]
+                if digest is not None and (not isinstance(digest, str) or not re.fullmatch(r"[a-f0-9]{64}", digest)):
+                    raise ValueError("Invalid image SHA-256 in artwork journal")
             self.state = state
 
     def save(self):
@@ -107,6 +116,8 @@ class FrameService:
         if self.state["pending"]:
             self.state["previous"] = self.state["current"]
             self.state["current"] = candidate
+            self.state["current_sha256"] = self.state["pending_sha256"]
+            self.state["pending_sha256"] = None
             self.state["pending"] = None
             self.step("commit-activation", self.save)  # No deletion if persistence fails.
         previous = self.state["previous"]
@@ -125,10 +136,11 @@ class FrameService:
                     raise RuntimeError(f"Previous artwork still present after deletion: {previous}")
             self.state["previous"] = None
             self.step("commit-cleanup", self.save)
+        self.last_action = "recovered"
         _LOG.info("Samsung transaction complete current=%s", candidate)
         return candidate
 
-    def upload(self, image_path: Path, *, resume=False):
+    def upload(self, image_path: Path, *, resume=False, only_changed=False):
         # Never begin another upload while a known transaction needs recovery.
         if resume or self.state["pending"] or self.state["previous"] or self.state["upload_attempt"]:
             return self.recover()
@@ -137,14 +149,33 @@ class FrameService:
             if image.format != "PNG" or image.size != (3840, 2160):
                 raise ValueError("Expected a PNG of exactly 3840 x 2160 pixels")
             image.verify()
+        digest = hashlib.sha256(data).hexdigest()
+        if only_changed and self.state["current"] and self.state["current_sha256"] == digest:
+            self.last_action = "unchanged"
+            _LOG.info("Samsung PNG unchanged; skip upload content_id=%s sha256=%s", self.state["current"], digest)
+            return self.state["current"]
         # Persist intent before network I/O. Ambiguous failure blocks duplicate retry.
-        self.state["upload_attempt"] = {"sha256": hashlib.sha256(data).hexdigest()}
+        self.state["upload_attempt"] = {"sha256": digest}
         self.step("record-upload-intent", self.save)
-        content_id = owned_id(self.step("upload", self.art.upload, data,
-                                       file_type="png", matte="none", portrait_matte="none"))
+        try:
+            content_id = owned_id(self.step("upload", self.art.upload, data,
+                                           file_type="png", matte="none", portrait_matte="none"))
+        except RuntimeError as exc:
+            if isinstance(exc.__cause__, RetryableUploadError):
+                self.state["upload_attempt"] = None
+                self.step("record-safe-retry", self.save)
+                _LOG.info("Samsung upload failed before image transfer; next timer run may retry")
+            raise
         if not content_id or content_id in (self.state["current"], self.state["previous"]):
             raise RuntimeError(f"Upload did not return a new personal content ID: {content_id!r}")
         self.state["pending"] = content_id
+        self.state["pending_sha256"] = digest
         self.state["upload_attempt"] = None
         self.step("record-pending", self.save)
-        return self.recover()
+        result = self.recover()
+        self.last_action = "uploaded"
+        return result
+
+    def sync(self, image_path: Path):
+        """One timer run: recover first or upload changed bytes; never both."""
+        return self.upload(image_path, only_changed=True)

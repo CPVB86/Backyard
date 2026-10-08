@@ -3,7 +3,8 @@
 Zelfstandige eenmalige export binnen CPVB86/Backyard, voor Samsung The Frame
 50LS03F. Uitvoer exact 3840 × 2160 PNG (16:9), standaard
 `/home/cpvb86/Backyard/data/samsung_frame/samsung-frame.png`.
-Geen nieuwe Backyard-installatie, API-endpoint, uploadtimer of TV-aanroep.
+Geen nieuwe Backyard-installatie of API-endpoint. De exporter zelf doet geen TV-aanroep;
+de afzonderlijke Samsung-timer verzorgt de upload.
 
 ## Hergebruik en compositie
 
@@ -49,7 +50,7 @@ sudo apt-get update
 sudo apt-get install -y chromium tzdata
 .venv/bin/python -m pip install -r requirements-collage-export.txt
 .venv/bin/python -m pip check
-sudoedit /etc/backyard/backyard.env
+sudoedit /home/cpvb86/Backyard/.env
 ```
 
 Voeg alleen onderstaande velden toe; behoud alle bestaande API-, database-,
@@ -64,12 +65,11 @@ BACKYARD_AVIAN_EXPORT_TIMEOUT=180
 
 Het uitgangspad komt uit de bestaande `BACKYARD_SAMSUNG_FRAME_IMAGE_PATH`.
 Relatieve paden blijven relatief aan de Backyard-root. Dezelfde configuratielader
-als Samsung wordt gebruikt: shellomgeving > expliciet productie-environmentbestand
-> root `.env` > defaults. Export gebruikt de bestaande database in SQLite read-only
+als Samsung wordt gebruikt: shellomgeving > project-`.env` > defaults. Export gebruikt de bestaande database in SQLite read-only
 modus; maakt/migreert geen database en heeft geen API-token voor HTTP nodig.
 
 ```bash
-.venv/bin/python -m app.modules.avian_collage_exporter --environment-file /etc/backyard/backyard.env
+.venv/bin/python -m app.modules.avian_collage_exporter
 .venv/bin/python -c 'from PIL import Image; im=Image.open("data/samsung_frame/samsung-frame.png"); print(im.format, im.size)'
 ```
 
@@ -93,8 +93,8 @@ Invoke-Item "$HOME/Downloads/samsung-frame.png"
 Bij een aangepast outputpad gebruik je dat pad. Er is geen onbeveiligde
 webserver toegevoegd die token/artworkjournal of andere data zou publiceren.
 Bekijk de vogels, namen, dichtheid, kwaliteit en timestamp eerst zelf.
-Na jouw visuele beoordeling kan de bestaande Samsung-CLI deze PNG direct
-handmatig uploaden; de uploadlogica en `matte="none"` blijven ongewijzigd.
+De Samsung-CLI kan deze PNG direct handmatig synchroniseren met `sync`.
+De afzonderlijke Samsung-timer gebruikt hetzelfde commando en `matte="none"`.
 
 ## Veilig vervangen, fouten en logging
 
@@ -119,32 +119,15 @@ gelijktijdig renderen/uploaden. Bij een bezette lock faalt de nieuwe export
 zonder het bestaande bestand te wijzigen. De service heeft een harde
 10-minutengrens; een gecrashte/gestopte renderer wordt door systemd opgeruimd.
 
-## Service en timer — pas installeren/activeren na afbeeldinggoedkeuring
+## Service en timer
 
-Bestanden worden alleen meegeleverd; in deze oplevering is **niets gestart,
-geïnstalleerd of enabled op de Pi**. Timer iedere kwartiergrens in
-Europe/Amsterdam (:00, :15, :30, :45), zonder random delay, nauwkeurigheid 1s.
-systemd start geen tweede instantie als de service nog loopt. `Persistent=false`
-voorkomt extra inhaalexports bij boot. Geen afhankelijkheid van een Samsung-upload.
-
-Voer onderstaande commando's pas uit nadat je de afbeelding hebt goedgekeurd:
-
-```bash
-cd /home/cpvb86/Backyard
-sudo install -m 0644 deploy/systemd/backyard-collage-export.service /etc/systemd/system/
-sudo install -m 0644 deploy/systemd/backyard-collage-export.timer /etc/systemd/system/
-sudo systemd-analyze verify /etc/systemd/system/backyard-collage-export.service /etc/systemd/system/backyard-collage-export.timer
-systemd-analyze calendar '*-*-* *:00,15,30,45:00 Europe/Amsterdam'
-sudo systemctl daemon-reload
-sudo systemctl enable --now backyard-collage-export.timer
-systemctl list-timers backyard-collage-export.timer
-journalctl -u backyard-collage-export.service -n 30 --no-pager
-```
-
-Stoppen later: `sudo systemctl disable --now backyard-collage-export.timer`.
-De timer activeert uitsluitend de exporter; nooit Samsung-upload.
-Zie [systemd timer-semantiek](https://manpages.debian.org/trixie/systemd/systemd.timer.5.en.html)
-en [Playwright browserinstallatie](https://playwright.dev/python/docs/browsers).
+De kwartiertimer is nu onderdeel van de automatische Avian → Samsung-keten.
+Configuratie voor exporter en Samsung komt uit de project-.env; services hebben
+bewust geen apart EnvironmentFile zodat dezelfde Python .env-parser als bij
+handmatige CLI-commando's wordt gebruikt. Export op :00/:15/:30/:45 en Samsung
+sync op :02/:17/:32/:47, in Europe/Amsterdam. Beide timers zijn Persistent=true
+en gaan na boot automatisch verder zodra je ze enabled hebt.
+Zie [installatie, activatie en monitoring](AVIAN_SAMSUNG_AUTOMATION.md).
 
 ## Technische verificatie
 
