@@ -17,8 +17,9 @@ AUTH = {"Authorization": "Bearer backyard-test-token"}
 
 
 class Generator:
-    def __init__(self, poses):
+    def __init__(self, poses, identities=True):
         self.poses = poses
+        self.identities = identities
 
     def lookup(self, domain, scientific_name):
         assets = {}
@@ -28,6 +29,13 @@ class Generator:
                 "dimensions": [420, 300], "mask": {"w": 2, "h": 2, "bits": "8A=="},
                 "pose": pose, "sha256": "a" * 64,
             }
+        if scientific_name == "Gallus gallus" and self.identities:
+            for asset_id, pose in (("otje_perched", "perched"), ("otje_flight", "flight")):
+                assets[asset_id] = {
+                    "path": Path("unused.png"), "file": asset_id + ".png", "content_type": "image/png",
+                    "dimensions": [500, 410], "mask": {"w": 3, "h": 2, "bits": "/A=="},
+                    "pose": pose, "sha256": "b" * 64,
+                }
         missing = [pose for pose in ("perched", "flight") if pose not in assets]
         return {
             "domain": domain, "scientific_name": scientific_name,
@@ -211,6 +219,9 @@ def test_explicit_otje_identity_is_local_presentation_over_unchanged_species_dat
     assert otje["scientific_name"] == "Gallus gallus" and otje["common_name_en"] == "Red Junglefowl"
     assert set(otje["assets"]) == {"perched", "flight"}
     assert {pose: data["url"].rsplit("/", 1)[-1] for pose, data in otje["assets"].items()} == {
+        "perched": "otje_perched", "flight": "otje_flight"}
+    assert otje["assets"]["perched"]["mask"] == {"w": 3, "h": 2, "bits": "/A=="}
+    assert {pose: data["url"].rsplit("/", 1)[-1] for pose, data in normal["assets"].items()} == {
         "perched": "perched", "flight": "flight"}
     assert next(item for item in recent["species"] if item["scientific_name"] == "Parus major")["common_name"] == "Great Tit"
 
@@ -242,14 +253,20 @@ def test_explicit_otje_identity_is_local_presentation_over_unchanged_species_dat
     assert datetime.fromisoformat(detail["observations"]["first_observed_at"]) == otje_at
     assert detail["audio"]["url"].startswith("/api/observations/")
     assert datetime.fromisoformat(detail["audio"]["timestamp"]) == otje_at
-    assert detail["generator"]["assets"]["perched"]["identity_file"] == "otje.png"
-    assert detail["generator"]["assets"]["flight"]["identity_file"] == "otje-2.png"
+    assert detail["generator"]["assets"]["perched"]["url"].endswith("/otje_perched")
+    assert detail["generator"]["assets"]["flight"]["url"].endswith("/otje_flight")
 
     fallback = client.get("/api/avian-visitors/detail/Gallus%20gallus?locale=nl&identity=unknown").json()
     assert "presentation" not in fallback and "local_content" not in fallback
     assert fallback["identity"]["common_name"] == "Bankivahoen"
     assert fallback["observations"]["total"] == 2
     assert fallback["encyclopedia"]["wikipedia_nl_url"] == detail["encyclopedia"]["wikipedia_nl_url"]
+
+    client.app.state.generator = Generator({"Gallus gallus": ("perched", "flight")}, identities=False)
+    safe_fallback = client.get("/api/avian-visitors/recent?hours=24&locale=nl").json()
+    fallback_otje = next(item for item in safe_fallback["species"] if item["identity_id"] == "otje")
+    assert {pose: data["url"].rsplit("/", 1)[-1] for pose, data in fallback_otje["assets"].items()} == {
+        "perched": "perched", "flight": "flight"}
 
 
 def test_stats_and_lifelist_only_use_accepted_birds_and_group_by_identity(client, monkeypatch):

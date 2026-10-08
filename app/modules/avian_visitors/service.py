@@ -82,14 +82,23 @@ def _species(rows, generator, locale: str, *, assets: bool) -> list[dict]:
         }
         if assets:
             generated = public_status(generator.lookup("bird", row.scientific_name))
+            pose_assets = _pose_assets(generated["assets"], profile)
             item.update({
                 "generator_status": generated["status"],
                 "generation": generated.get("generation"),
                 "missing_assets": generated["missing_assets"],
-                "assets": {pose: generated["assets"][pose]
-                           for pose in ("perched", "flight") if pose in generated["assets"]},
+                "assets": pose_assets,
             })
         result.append(item)
+    return result
+
+
+def _pose_assets(assets, profile=None):
+    result = {pose: assets[pose] for pose in ("perched", "flight") if pose in assets}
+    if profile:
+        for pose, asset_id in profile["asset_ids"].items():
+            if asset_id in assets:
+                result[pose] = assets[asset_id]
     return result
 
 
@@ -103,6 +112,7 @@ def detail(engine, settings, generator, scientific_name: str, locale: str, ident
     )
     if result is None:
         return None
+    result["generator"]["assets"] = _pose_assets(result["generator"]["assets"], profile)
     if profile:
         result["presentation"] = {
             "id": profile["id"], "display_name": profile["display_name"],
@@ -111,9 +121,6 @@ def detail(engine, settings, generator, scientific_name: str, locale: str, ident
         result["local_content"] = {
             "summary_nl": profile["summary_nl"], "fact_nl": profile["fact_nl"],
         }
-        for pose, asset in result["generator"]["assets"].items():
-            if pose in profile["images"]:
-                asset["identity_file"] = profile["images"][pose]
     return result
 
 

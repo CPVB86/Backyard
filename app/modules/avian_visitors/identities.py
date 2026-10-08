@@ -10,6 +10,7 @@ PROFILES = {
             "Gallus sonneratii", "Gallus lafayettii", "Gallus varius",
         }),
         "images": {"perched": "otje.png", "flight": "otje-2.png"},
+        "asset_ids": {"perched": "otje_perched", "flight": "otje_flight"},
         "summary_nl": (
             "De barnevelder is een middelzwaar kippenras dat zijn oorsprong heeft in het "
             "Nederlandse Barneveld. Het ras ontstond door het inkruisen van legkippen met "

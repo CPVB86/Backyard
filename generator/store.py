@@ -113,6 +113,28 @@ class AssetStore:
             return self.lookup(domain, name)
         return None
 
+    def register_existing(self, domain, scientific_name, asset_id, filename, pose):
+        scientific_name = scientific_name.strip()
+        adapter = self.adapter(domain)
+        if adapter is None or not hasattr(adapter, "register_existing"):
+            raise UnsupportedDomain("This domain cannot register existing assets")
+        adapter.validate_species(scientific_name)
+        if not re.fullmatch(r"[a-z][a-z0-9_-]{0,63}", asset_id):
+            raise ValueError("Invalid asset id")
+        if Path(filename).name != filename:
+            raise ValueError("Asset filename must not contain a path")
+        directory = self.directory(domain, scientific_name)
+        path = (directory / filename).resolve()
+        if not path.is_relative_to(directory):
+            raise ValueError("Asset path escapes species storage")
+        manifest = self.manifest(domain, scientific_name)
+        current = manifest["assets"].get(asset_id)
+        if current is not None and current.get("file") != filename:
+            raise GenerationConflict("Asset id is already registered to another file")
+        manifest["assets"][asset_id] = adapter.register_existing(path, pose)
+        write_json(directory / "manifest.json", manifest)
+        return self.lookup(domain, scientific_name)
+
     @contextmanager
     def generation_lock(self):
         self.root.mkdir(parents=True, exist_ok=True)

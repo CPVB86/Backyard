@@ -195,6 +195,20 @@ def test_manifest_cannot_escape_species_storage(tmp_path):
         store.lookup("bird", "Testus example")
 
 
+def test_register_existing_identity_asset_builds_valid_mask_and_stays_species_scoped(tmp_path):
+    store = AssetStore(tmp_path)
+    directory = store.directory("bird", "Testus example")
+    directory.mkdir(parents=True)
+    save_cutout(png(), directory / "otje.png")
+    result = store.register_existing("bird", "Testus example", "otje_perched", "otje.png", "perched")
+    asset = result["assets"]["otje_perched"]
+    assert asset["path"] == directory / "otje.png"
+    assert asset["dimensions"] and asset["mask"]["bits"]
+    assert store.resolve_key("bird", species_key("Testus example"))["assets"]["otje_perched"]["sha256"] == asset["sha256"]
+    with pytest.raises(ValueError, match="must not contain a path"):
+        store.register_existing("bird", "Testus example", "escaped", "../otje.png", "perched")
+
+
 def test_legacy_nonbird_preserved_but_not_served_as_bird(tmp_path):
     archived = json.loads((ASSETS/"legacy-nonbirds.json").read_text())
     assert "Phoca vitulina" in archived

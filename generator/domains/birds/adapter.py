@@ -67,6 +67,22 @@ class Birds:
         return {pose: dict(metadata, path=ASSETS / metadata["file"])
                 for pose, metadata in poses.items() if self.valid(ASSETS / metadata["file"], metadata)}
 
+    def register_existing(self, path, pose):
+        if pose not in self.required_assets or not path.is_file() or path.suffix.lower() != ".png":
+            raise ValueError("Existing bird asset must be a PNG with a supported pose")
+        dims, silhouettes = masks.build_tables(path.parent, only={path.stem})
+        from PIL import Image
+        with Image.open(path) as image:
+            rgba = image.convert("RGBA")
+            pixel_dimensions = list(image.size)
+            if rgba.getchannel("A").getextrema()[0] > 0 or not rgba.getchannel("A").getbbox():
+                raise ValueError("Existing output has no transparent background or visible subject")
+        data = path.read_bytes()
+        return {"asset_type":"illustration", "pose":pose, "file":path.name, "slug":path.stem,
+                "dimensions":dims[path.stem], "mask":silhouettes[path.stem],
+                "pixel_dimensions":pixel_dimensions, "sha256":hashlib.sha256(data).hexdigest(),
+                "size_bytes":len(data), "content_type":"image/png", "source":"Backyard Generator/local"}
+
     def generate(self, scientific_name, common_name, pose, directory, options):
         self.validate_species(scientific_name)
         number = self.required_assets.index(pose) + 1
