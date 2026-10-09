@@ -501,3 +501,12 @@ WordPress deelt het antwoord per paginarender, zonder blijvende tellingencache.
 
 Uitrollen: git pull --ff-only en sudo systemctl restart backyard-api; daarna plugin
 bijwerken. Gerichte tests: `python -m pytest tests/test_presentation.py -q`.
+
+De presentatie-API ondersteunt aanvullend `identity=otje` voor `birds`.
+Deze filter vereist een bestaande expliciete Otje-markering; geen automatische
+soortmapping. Geaccepteerde Otje-records onder meerdere effectieve soorten worden
+samengevoegd tot één presentatie met gezamenlijke count/first_seen/last_seen en
+stabiele identity-species_id. De laatste effectieve soort bepaalt soortlinks en
+assetlookup. Statistieken zijn gefilterd; biologische unique_species blijft het
+aantal verschillende effectieve soorten. Het antwoord echoot identity zodat een
+consumer niet per ongeluk ongefilterde data van een oude API presenteert.

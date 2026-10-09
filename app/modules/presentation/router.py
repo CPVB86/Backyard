@@ -9,9 +9,12 @@ router = APIRouter(prefix="/api/presentation", tags=["presentation"])
 @router.get("/{module}")
 def presentation(request: Request, module: Literal["birds", "bats"],
                  period: Literal["today", "24h", "7d", "30d", "all"] = "all",
-                 timezone: str = Query(default="Europe/Amsterdam", max_length=100)):
+                 timezone: str = Query(default="Europe/Amsterdam", max_length=100),
+                 identity: Literal["otje"] | None = None):
+    if identity is not None and module != "birds":
+        raise HTTPException(422, "Identity is only available for birds")
     try:
         parse_timezone(timezone)
     except (ZoneInfoNotFoundError, ValueError):
         raise HTTPException(422, "Unknown timezone") from None
-    return snapshot(request.app.state.engine, module, period, timezone)
+    return snapshot(request.app.state.engine, module, period, timezone, identity_filter=identity)

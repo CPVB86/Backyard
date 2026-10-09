@@ -21,7 +21,7 @@ def parse_timezone(name):
     return ZoneInfo(name)
 
 
-def snapshot(engine, module, period, timezone_name="Europe/Amsterdam", *, now=None):
+def snapshot(engine, module, period, timezone_name="Europe/Amsterdam", *, now=None, identity_filter=None):
     domain = {"birds": "bird", "bats": "bat"}[module]
     end = now or datetime.now(timezone.utc)
     zone = parse_timezone(timezone_name)
@@ -31,6 +31,9 @@ def snapshot(engine, module, period, timezone_name="Europe/Amsterdam", *, now=No
     scientific = species_expression()
     identity = _identity_expression() if domain == "bird" else literal(None)
     accepted = [Observation.domain == domain, Observation.status.in_(ACCEPTED_STATUSES), Observation.start_at <= end]
+
+    if identity_filter is not None:
+        accepted.append(identity == identity_filter)
 
     def aggregate(session, since):
         query = select(scientific.label("scientific_name"), identity.label("identity"),
@@ -68,6 +71,15 @@ def snapshot(engine, module, period, timezone_name="Europe/Amsterdam", *, now=No
                 "assets": profile["asset_ids"] if profile else {"perched": "perched", "flight": "flight"}})
         # One canonical tie-breaker, shared by every field and client.
         species.sort(key=lambda row: (row["scientific_name"], row["identity"] or ""))
+        if identity_filter is not None and species:
+            # One local individual may have evidence under several recognized species.
+            # Keep the latest effective species for links/assets, aggregate all marked evidence.
+            representative = max(species, key=lambda row: row["last_seen"])
+            species = [dict(representative,
+                species_id=sha256(f"{domain}|identity|{identity_filter}".encode()).hexdigest(),
+                count=sum(row["count"] for row in species),
+                first_seen=min(row["first_seen"] for row in species),
+                last_seen=max(row["last_seen"] for row in species))]
         rankings = {
             "last": sorted(species, key=lambda row: row["last_seen"], reverse=True),
             "first": sorted(species, key=lambda row: row["first_seen"]),
@@ -78,7 +90,7 @@ def snapshot(engine, module, period, timezone_name="Europe/Amsterdam", *, now=No
         firsts = {}
         for row in lifetime:
             firsts[row.scientific_name] = min(firsts.get(row.scientific_name, row.first_seen), row.first_seen)
-        return {"module": module, "period": period, "timezone": timezone_name,
+        return {"module": module, "period": period, "timezone": timezone_name, "identity": identity_filter,
             "window_start": start, "window_end": end, "species": species,
             "rankings": {key: [row["species_id"] for row in values[:10]] for key, values in rankings.items()},
             "stats": {"total_observations": sum(row.count for row in rows), "unique_species": len(names),
