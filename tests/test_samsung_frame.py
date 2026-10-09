@@ -59,7 +59,7 @@ def test_failure_never_deletes_old(tmp_path, failure):
     elif failure == "current":
         art.get_current.return_value["content_id"] = "MY_old"
     elif failure == "mode":
-        art.get_artmode.return_value = "off"
+        art.get_artmode.return_value = "unknown"
     elif failure == "persist":
         service.save = Mock(side_effect=OSError("disk full"))
     with pytest.raises((RuntimeError, OSError)):
@@ -127,7 +127,7 @@ def test_delayed_activation_skips_redundant_artmode_setter(tmp_path):
         {"content_id": "MY_new", "matte_id": "none"}]
     assert service.upload(image) == "MY_new"
     art.set_artmode.assert_not_called()
-    art.select_image.assert_called_once_with("MY_new", show=True)
+    art.select_image.assert_called_once_with("MY_new", show=False)
     art.delete.assert_called_once_with("MY_old")
 
 
@@ -301,3 +301,78 @@ def test_export_and_upload_units_use_project_config_and_shifted_persistent_timer
         assert "Persistent=true" in timer and "WantedBy=timers.target" in timer
     assert "*:00,15,30,45:00 Europe/Amsterdam" in (units/"backyard-collage-export.timer").read_text()
     assert "*:02,17,32,47:00 Europe/Amsterdam" in (units/"backyard-samsung-frame.timer").read_text()
+
+
+@pytest.mark.parametrize("mode", ["on", "off"])
+def test_sync_selects_without_forcing_display_in_either_mode(tmp_path, mode):
+    service, art, image = setup_upload(tmp_path)
+    art.get_artmode.return_value = mode
+    assert service.sync(image) == "MY_new"
+    art.select_image.assert_called_once_with("MY_new", show=False)
+    art.set_artmode.assert_not_called()
+    assert service.presentation == ("art" if mode == "on" else "background")
+    art.delete.assert_called_once_with("MY_old")
+
+
+def test_background_sync_repeatedly_replaces_only_backyard_art(tmp_path):
+    service, art, image = setup_upload(tmp_path)
+    art.get_artmode.return_value = "off"
+    art.available.return_value.append({"content_id": "MY_personal", "matte_id": "none"})
+    service.sync(image)
+    Image.new("RGB", (3840, 2160), "blue").save(image)
+    art.upload.return_value = "MY_latest"
+    art.available.return_value.append({"content_id": "MY_latest", "matte_id": "none"})
+    art.get_current.return_value = {"content_id": "MY_latest", "matte_id": "none"}
+    resumed = FrameService(art, service.path, "tv-1")
+    assert resumed.sync(image) == "MY_latest"
+    assert resumed.presentation == "background"
+    assert [call.args[0] for call in art.delete.call_args_list] == ["MY_old", "MY_new"]
+    assert {item["content_id"] for item in art.available.return_value} == {"MY_latest", "MY_personal", "SAM_other"}
+    # Entering Art Mode later does not upload an identical image again.
+    art.get_artmode.return_value = "on"
+    assert FrameService(art, service.path, "tv-1").sync(image) == "MY_latest"
+    assert art.upload.call_count == 2
+    art.set_artmode.assert_not_called()
+    assert all(call.kwargs == {"show": False} for call in art.select_image.call_args_list)
+
+
+def test_background_selection_not_confirmed_keeps_old_and_recovers_without_upload(tmp_path):
+    service, art, image = setup_upload(tmp_path)
+    art.get_artmode.return_value = "off"
+    art.get_current.return_value = {"content_id": "MY_old", "matte_id": "none"}
+    with pytest.raises(RuntimeError, match="deadline exceeded"):
+        service.sync(image)
+    art.delete.assert_not_called()
+    assert FrameService(art, service.path, "tv-1").state["pending"] == "MY_new"
+    art.get_current.return_value = {"content_id": "MY_new", "matte_id": "none"}
+    resumed = FrameService(art, service.path, "tv-1")
+    assert resumed.sync(tmp_path / "missing.png") == "MY_new"
+    assert art.upload.call_count == 1
+    art.set_artmode.assert_not_called()
+
+
+def test_mode_change_during_selection_does_not_force_mode_or_block_cleanup(tmp_path):
+    service, art, image = setup_upload(tmp_path)
+    art.get_artmode.side_effect = ["on", "off", "off"]
+    assert service.sync(image) == "MY_new"
+    assert service.presentation == "background"
+    art.select_image.assert_called_once_with("MY_new", show=False)
+    art.set_artmode.assert_not_called()
+    art.delete.assert_called_once_with("MY_old")
+
+
+def test_2025_d2d_upload_and_selection_have_no_display_or_mode_command(monkeypatch):
+    from app.modules.samsung_frame.transport import BoundedArt
+    from samsungtvws.art import SamsungTVArt
+    art = BoundedArt("192.0.2.1", timeout=1)
+    art.get_api_version = Mock(return_value="5.0.1.0")
+    art._send_art_request = Mock(return_value={"conn_info": {"ip": "192.0.2.1", "port": 1234, "key": "test"}})
+    art._wait_for_d2d = Mock(return_value={"content_id": "MY_new"})
+    monkeypatch.setattr(SamsungTVArt, "_open_d2d_socket", lambda self, info: Mock())
+    assert art.upload(b"image bytes", matte="none", portrait_matte="none") == "MY_new"
+    art.select_image("MY_new", show=False)
+    payloads = [call.args[0] for call in art._send_art_request.call_args_list]
+    assert [payload["request"] for payload in payloads] == ["send_image", "select_image"]
+    assert payloads[0]["matte_id"] == payloads[0]["portrait_matte_id"] == "none"
+    assert "show" not in payloads[0]
+    assert payloads[1] == {"request": "select_image", "content_id": "MY_new", "show": False}

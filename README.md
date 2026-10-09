@@ -436,11 +436,13 @@ De CSV hoort in de genegeerde map `import/`; de runtime leest alleen de database
 ## Samsung The Frame
 
 De zelfstandige `app.modules.samsung_frame` CLI uploadt een 3840 × 2160 PNG
-met verplicht `matte="none"`, verifieert activatie en verwijdert pas daarna
+met verplicht `matte="none"`, verifieert selectie en verwijdert pas daarna
 het vorige eigen artwork. Token en content-ID worden persistent opgeslagen.
 Gebruik de bestaande `/home/cpvb86/Backyard`-installatie en `.venv`;
 zie [installatie, configuratie en testcommando's](docs/SAMSUNG_FRAME.md).
 De aparte sync-timer verwerkt alleen nieuwe PNG-bytes en hervat bekende transacties veilig.
+Tijdens tv-kijken uploadt/selecteert hij op de achtergrond voor de volgende Art
+Mode-sessie, zonder moduswissel; selectie gebruikt altijd `show=False`.
 API, detector en WordPress-contracten worden niet aangepast.
 
 ## Avian Collage Exporter

@@ -75,7 +75,8 @@ def main():
                 print(json.dumps({"activated": service.recover(), "matte": "none", "uploaded": False}))
             elif args.command == "sync":
                 result = service.sync(image_path)
-                print(json.dumps({"current": result, "matte": "none", "action": service.last_action}))
+                print(json.dumps({"current": result, "matte": "none", "action": service.last_action,
+                                  "presentation": service.presentation}))
             elif args.command == "upload":
                 print(json.dumps({"activated": service.upload(image_path, resume=args.resume),
                                   "matte": "none"}))

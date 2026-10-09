@@ -9,8 +9,13 @@ Gebruik uitsluitend de bestaande installatie:
 
 De exporter maakt op :00/:15/:30/:45 een atomische 3840 × 2160 PNG.
 Een onafhankelijke Samsung-sync start op :02/:17/:32/:47, vergelijkt de SHA-256
-met de laatst succesvol geactiveerde afbeelding en uploadt uitsluitend nieuw
+met de laatst succesvol geselecteerde afbeelding en uploadt uitsluitend nieuw
 beeld. De bestaande collage-data, renderer en matte=none-upload worden hergebruikt.
+Tijdens tv-kijken uploadt/selecteert Samsung op de achtergrond met show=False;
+Art Mode wordt nooit geactiveerd. De gekozen collage is bestemd voor de volgende
+Art Mode-sessie. Als Art Mode al aan staat, wordt hetzelfde artwork geselecteerd
+voor weergave. Ook bij een moduswissel tijdens de sync is er geen show=True-call.
+Zie [protocolcontrole en praktijktest op de Frame 2025](SAMSUNG_FRAME.md#onderzocht-gedrag-op-de-frame-2025).
 De timestamp verandert per export; ook bij hetzelfde vogelbestand is dat nieuw
 beeld. Bij exportfalen blijft de vorige PNG staan en wordt die niet opnieuw
 geüpload als haar hash al current is.
@@ -118,12 +123,12 @@ Dit verwijdert geen PNG, hashes, token of tv-artworks.
   eigen instantie. De uploader is geordend na een eventueel lopende export,
   maar start niet zelf nogmaals een export. Bij drukte/fout volgt de volgende
   geplande poging; er is geen snelle retry-loop.
-- Alleen een succesvol geactiveerde PNG krijgt current_sha256. Pending_sha256
+- Alleen een bevestigd geselecteerde PNG krijgt current_sha256. Pending_sha256
   volgt de werkelijk geüploade bytes, ook als Avian ondertussen een nieuwere
   PNG maakt. Herstel leest/uploadt geen nieuw bestand in dezelfde transactie.
 - Upload/selectie/matte/opslagfalen verwijderen de vorige afbeelding niet.
-  Cleanup verwijdert alleen de vorige beheerde MY_-ID, na activatiebevestiging
-  en extra active/matte=none/Art Mode-controle. Andere persoonlijke foto's en
+  Cleanup verwijdert alleen de vorige beheerde MY_-ID, na selectiebevestiging
+  en extra content-ID/matte=none/Art Mode-statuscontrole (on of off). Andere persoonlijke foto's en
   Samsung-artworks blijven buiten de administratie en delete-calls.
 - Offline/verbinding/pairingproblemen worden bij de volgende timerrun opnieuw
   geprobeerd. Een upload die aantoonbaar vóór image-bytes faalt, wist veilig
@@ -136,7 +141,7 @@ Dit verwijdert geen PNG, hashes, token of tv-artworks.
   geen eigendom veilig bewijzen. Oude hashloze upload_attempt-markers blijven
   eveneens geblokkeerd. Dit voorkomt dubbele upload en vreemde deletes.
 - Logs tonen render-/commandoduur, foutstap en sync-resultaat uploaded,
-  recovered of unchanged; tokens worden niet gelogd.
+  recovered of unchanged plus presentatie art/background; tokens worden niet gelogd.
 
 De twee nieuwe diensten lezen de root-.env via dezelfde Python Settings als
 handmatige commando's. Zij hebben bewust geen EnvironmentFile met afwijkende

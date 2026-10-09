@@ -1,4 +1,4 @@
-"""Fail-closed upload journal: activate and verify before deleting one owned ID."""
+"""Fail-closed upload journal: verify selection before deleting one owned ID."""
 import io
 import hashlib
 import logging
@@ -22,6 +22,7 @@ def owned_id(value):
 class FrameService:
     def __init__(self, art, state_path: Path, identity: str, *, activation_timeout=60, poll_interval=1):
         self.last_action = None
+        self.presentation = None
         self.art = art
         self.activation_timeout = activation_timeout
         self.poll_interval = poll_interval
@@ -74,11 +75,13 @@ class FrameService:
     def activate(self, content_id):
         self.step("verify-matte", self.verify_matte, content_id)
         mode = self.step("read-artmode", self.art.get_artmode)
-        if mode != "on":
-            self.step("enable-artmode", self.art.set_artmode, True)
-        else:
-            _LOG.info("Samsung Art Mode already on; skip redundant setter")
-        self.step("select", self.art.select_image, content_id, show=True)
+        if mode not in ("on", "off"):
+            raise RuntimeError(f"Unknown Art Mode status; refusing selection: {mode!r}")
+        # show=False selects the next Art Mode artwork without forcing display.
+        # Use it even when mode is on: a user can start watching between the
+        # getter and setter. Never send a power/mode command or show=True.
+        _LOG.info("Samsung selecting content_id=%s show=False art_mode=%s", content_id, mode)
+        self.step("select", self.art.select_image, content_id, show=False)
         deadline = time.monotonic() + self.activation_timeout
         current = None
         while True:
@@ -98,9 +101,12 @@ class FrameService:
                         raise RuntimeError(f"Activation deadline exceeded before Art Mode confirmation for {content_id}")
                     self.art.timeout = min(remaining, 5)
                     mode = self.step("verify-artmode", self.art.get_artmode)
-                    if mode == "on":
-                        _LOG.info("Samsung activation confirmed content_id=%s matte=none", content_id)
-                        return
+                    if mode not in ("on", "off"):
+                        raise RuntimeError(f"Unknown Art Mode status after selection: {mode!r}")
+                    self.presentation = "art" if mode == "on" else "background"
+                    _LOG.info("Samsung selection confirmed content_id=%s matte=none presentation=%s",
+                              content_id, self.presentation)
+                    return
             finally:
                 self.art.timeout = old_timeout
             time.sleep(min(self.poll_interval, max(0, deadline - time.monotonic())))
@@ -126,8 +132,9 @@ class FrameService:
             active = self.step("recheck-before-delete", self.art.get_current)
             if active.get("content_id") != candidate or active.get("matte_id") != "none":
                 raise RuntimeError(f"Active artwork changed before cleanup: {active!r}")
-            if self.step("recheck-artmode-before-delete", self.art.get_artmode) != "on":
-                raise RuntimeError("Art Mode changed before cleanup; previous artwork retained")
+            mode = self.step("recheck-artmode-before-delete", self.art.get_artmode)
+            if mode not in ("on", "off"):
+                raise RuntimeError(f"Unknown Art Mode status before cleanup: {mode!r}; previous artwork retained")
             entries = self.step("list-before-delete", self.art.available)
             if any(item.get("content_id") == previous for item in entries):
                 if self.step("delete-previous", self.art.delete, previous) is not True:
