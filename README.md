@@ -474,3 +474,30 @@ Upload de gewijzigde WordPress-pluginbestanden en sla een periode op. De volgend
 export gebruikt de keuze; timers, layout en Samsung-upload blijven ongewijzigd.
 Handmatig controleren kan met `sudo systemctl start backyard-collage-export`
 en `journalctl -u backyard-collage-export -n 30 --no-pager`.
+
+## Gedeelde WordPress-presentatiegegevens
+
+`GET /api/presentation/{module}` (module `birds` of `bats`) vereist bestaande
+Bearer-auth. Query: `period=today|24h|7d|30d|all` (standaard all) en `timezone`
+(IANA-zone of vaste offset zoals +02:00, standaard Europe/Amsterdam).
+
+Het antwoord bevat `species`, `rankings` en `stats`, plus periode/tijdzone/window.
+Alleen auto_accepted en human_confirmed tellen mee; de bestaande effectieve soort
+na correctie en bestaande Otje-profielen worden hergebruikt. Geen nieuwe opslag.
+Selecties last/first/most/rarest/random bevatten maximaal 10 stabiele species_ids;
+random wordt eenmaal per snapshot bepaald. Gelijke rangwaarden worden op soortnaam
+en lokale identiteit geordend. species_ids zijn hashes van domain/soort/identiteit.
+Soortdatums en aantallen horen bij de periode. Catalogusvelden leveren NL-namen,
+Wikipedia- en waarneming.nl-links; assets bevatten bestaande Generator-assetnamen,
+geen generatieopdrachten. De consumer gebruikt zijn bestaande veilige image-proxy.
+
+Statistieken: total_observations, unique_species, today_observations, today_species,
+last_activity, new_species, active_days. today_* kijkt altijd naar vandaag in de
+gevraagde tijdzone; new_species telt soorten waarvan de allereerste geaccepteerde
+waarneming in de periode valt. Lokale identiteiten tellen niet als extra biologische
+soorten. Een lege module geeft lege lijsten, null voor last_activity en nul-tellingen.
+Een SQLite-readtransactie houdt de snapshot consistent tijdens correcties.
+WordPress deelt het antwoord per paginarender, zonder blijvende tellingencache.
+
+Uitrollen: git pull --ff-only en sudo systemctl restart backyard-api; daarna plugin
+bijwerken. Gerichte tests: `python -m pytest tests/test_presentation.py -q`.
