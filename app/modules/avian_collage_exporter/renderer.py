@@ -13,7 +13,8 @@ from PIL import Image
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import create_engine
 from app.core.config import ROOT
-from app.modules.avian_visitors.service import recent
+from app.modules.avian_visitors.service import recent, lifelist
+from .settings import export_hours
 from app.modules.samsung_frame.config import resolve_path
 from app.modules.samsung_frame.storage import locked
 from generator.store import AssetStore
@@ -38,7 +39,9 @@ def snapshot(settings, now):
         database.as_uri() + "?mode=ro", uri=True, timeout=5))
     store = AssetStore(settings.resolved_storage_root / "generator")
     try:
-        value = recent(engine, store, settings.avian_export_hours, "nl", now=now)
+        hours = export_hours(settings)
+        value = (lifelist(engine, store, "nl", now=now) if hours is None
+                 else recent(engine, store, hours, "nl", now=now))
     finally:
         engine.dispose()
     if not value["species"]:

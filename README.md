@@ -451,3 +451,24 @@ Generator-afbeeldingen en gedeelde silhouette-packing. Schrijft atomisch naar
 het bestaande Samsung-imagepad. Een aparte Samsung-sync start twee minuten later.
 Zie [installatie, handmatige export en bekijken](docs/AVIAN_COLLAGE_EXPORT.md).
 Gebruik voor beide timers dezelfde project-.env; zie [automatisering activeren en volgen](docs/AVIAN_SAMSUNG_AUTOMATION.md).
+
+## Samsung Frame-collageperiode vanuit WordPress
+
+WordPress → Backyard → Instellingen → Samsung Frame biedt 1 uur, 12 uur,
+24 uur (standaard), 7 dagen en alle waarnemingen. De beveiligde endpoints
+`GET /api/avian-collage/settings` en `POST /api/avian-collage/settings` gebruiken
+bestaande Bearer-auth. POST ontvangt `{"period":"24h"}`; toegestane waarden zijn
+`1h`, `12h`, `24h`, `7d`, `all`.
+
+De Pi bewaart de instelling atomair in
+`<BACKYARD_STORAGE_ROOT>/avian_export/settings.json`. API en exporter moeten
+hetzelfde storage-root en dezelfde servicegebruiker gebruiken. Elke export leest
+dit bestand lokaal; WordPress is daarvoor niet nodig. Zonder bestand blijft de
+bestaande `BACKYARD_AVIAN_EXPORT_HOURS` gelden (standaard 24). Een opgeslagen
+keuze heeft voorrang. Alleen geaccepteerde waarnemingen tellen mee, ook bij `all`.
+
+Uitrollen: `git pull --ff-only` op de Pi, daarna `sudo systemctl restart backyard-api`.
+Upload de gewijzigde WordPress-pluginbestanden en sla een periode op. De volgende
+export gebruikt de keuze; timers, layout en Samsung-upload blijven ongewijzigd.
+Handmatig controleren kan met `sudo systemctl start backyard-collage-export`
+en `journalctl -u backyard-collage-export -n 30 --no-pager`.
