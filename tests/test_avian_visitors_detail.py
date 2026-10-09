@@ -176,6 +176,7 @@ def test_postcard_desktop_and_mobile_layout_contracts_avoid_internal_clipping():
 def test_collage_gets_a_taller_canvas_and_expands_successful_small_packs():
     css = (STATIC / "avian-visitors.css").read_text(encoding="utf-8")
     script = (STATIC / "avian-visitors.js").read_text(encoding="utf-8")
+    layout = (STATIC / "collage-layout.js").read_text(encoding="utf-8")
     assert 'stage.classList.toggle("is-collage",state.view===0)' in script
     assert '@media(min-width:901px)' in css
     assert '.stage.is-collage #v0{padding:154px 32px 0}' in css
@@ -185,10 +186,10 @@ def test_collage_gets_a_taller_canvas_and_expands_successful_small_packs():
     assert '.stage.is-collage .static-head h1{font-size:clamp(24px,3.2vw,40px);letter-spacing:.06em;transform:none}' in css
     assert '@media(min-width:701px) and (max-width:900px)' in css
     assert '.gcollage{flex:1 1 auto;width:100%;max-width:1600px' in css
-    assert 'function maskPack(' in script
-    assert 'countExp:n<=25?.52:.65' in script
-    assert 'postScaleMax:n<=4?2.40:n<=12?2.10:n<=25?1.75:1' in script
-    assert 'if(!placed.some(function(t){return t.x<-1000;}))b=expandPacked(' in script
+    assert 'function maskPack(' in layout
+    assert 'countExp:n<=25?.52:.65' in layout
+    assert 'postScaleMax:n<=4?2.40:n<=12?2.10:n<=25?1.75:1' in layout
+    assert 'if(!placed.some(function(t){return t.x<-1000;}))b=expandPacked(' in layout
 
 
 def test_collage_label_typography_uses_original_caveat_font():
@@ -214,7 +215,10 @@ def test_atlas_search_and_original_empty_nest_are_wired_without_generation():
     assert 'setTimeout(function(){searchController=' in script and '},180)' in script
     assert 'limit=8' in script and 'event.key==="ArrowDown"' in script and 'event.key==="Escape"' in script
     assert 'detail.open(button.dataset.scientificName,atlasSearch)' in script
-    assert 'src="./nest.webp"' in script and 'image.src="./nest.webp"' in detail
+    assert 'atlasStampMarkup(item,stampIndex,"./nest.webp",issue)' in script
+    assert 'image.src="./nest.webp"' in detail
+    assert 'ATLAS_STAMP_ISSUES=["field","mono","bundespost","mexico","nzplate","editorial","minimal"]' in script
+    assert 'ATLAS_STAMP_GENERA={Corvus:"mono"' in script
     assert 'Nog niet in onze tuin gehoord' in detail
     assert '.atlas-search' in css and (STATIC / "nest.webp").is_file()
     assert "generate" not in script

@@ -90,6 +90,23 @@
   function applyChart(){var timeline=state.chart==="timeline";document.getElementById("statsTimeline").hidden=!timeline;document.getElementById("statsHeatmap").hidden=timeline;select(document.getElementById("chartPick"),"chart",state.chart);}
 
   function atlasAsset(item,preferred){if(!item.assets)return null;return item.assets[preferred]||item.assets[preferred==="perched"?"flight":"perched"]||null;}
+  /* Atlas issue selection restored from AvianVisitors' original stamp album
+     (9868f3e): families keep a stable graphic language; unknown genera get a
+     deterministic issue instead of every species sharing one card design. */
+  var ATLAS_STAMP_ISSUES=["field","mono","bundespost","mexico","nzplate","editorial","minimal"];
+  var ATLAS_STAMP_GENERA={Corvus:"mono",Coloeus:"mono",Pica:"mono",Garrulus:"mono",Columba:"minimal",Streptopelia:"minimal",Turdus:"mexico",Erithacus:"mexico",Fringilla:"editorial",Spinus:"editorial",Chloris:"editorial",Carduelis:"editorial",Coccothraustes:"editorial",Parus:"nzplate",Cyanistes:"nzplate",Poecile:"nzplate",Aegithalos:"nzplate",Dendrocopos:"bundespost",Dryocopus:"bundespost",Picus:"bundespost",Dryobates:"bundespost"};
+  var ATLAS_STAMP_AR={field:.78,mono:.76,bundespost:.84,mexico:1.5,nzplate:.8,editorial:.52,minimal:1};
+  function atlasStampIssue(scientificName){var genus=String(scientificName||"").split(" ")[0];return ATLAS_STAMP_GENERA[genus]||ATLAS_STAMP_ISSUES[hash(scientificName)%ATLAS_STAMP_ISSUES.length];}
+  function atlasStampMarkup(item,index,source,issue){
+    var name=esc(item.common_name),sci=esc(item.scientific_name),numberText=String(index).padStart(2,"0"),src=esc(source),family=esc(String(item.scientific_name||"").split(" ")[0]);
+    if(issue==="mono")return'<div class="heritage-stamp hs-mono"><span class="hs-mask" style="--src:url(\''+src+'\')"></span><b class="hs-number">'+numberText+'</b><h2>'+name+'</h2><em>'+sci+'</em><small>VOGEL BEZOEKEN</small></div>';
+    if(issue==="bundespost")return'<div class="heritage-stamp hs-bundespost"><span class="hs-mask" style="--src:url(\''+src+'\')"></span><b class="hs-number"><i>Nº</i>'+numberText+'</b><span class="hs-edge">VOGEL BEZOEKEN</span><footer><h2>'+name+'</h2><em>'+sci+'</em></footer></div>';
+    if(issue==="mexico")return'<div class="heritage-stamp hs-mexico"><span class="hs-mask" style="--src:url(\''+src+'\')"></span><h2>'+name+'</h2><em>'+sci+'</em><b class="hs-number">Nº '+numberText+'</b><span class="hs-seal">VOGEL<br>BEZOEKEN</span></div>';
+    if(issue==="nzplate")return'<div class="heritage-stamp hs-nzplate"><header><strong>Vogel<br>Bezoeken</strong><b>Nº '+numberText+'</b></header><div class="hs-art"><img src="'+src+'" alt=""></div><footer><h2>'+name+'</h2><em>'+sci+'</em></footer></div>';
+    if(issue==="editorial")return'<div class="heritage-stamp hs-editorial"><h2>'+name+'</h2><em>'+sci+'</em><b>Nº '+numberText+'</b><span>'+family+'</span><div class="hs-pattern" style="--src:url(\''+src+'\')"></div></div>';
+    if(issue==="minimal")return'<div class="heritage-stamp hs-minimal"><i></i><span class="hs-mask" style="--src:url(\''+src+'\')"></span><h2>'+name+'</h2><b>Nº '+numberText+'</b><footer>VOGEL BEZOEKEN<em>'+sci+'</em></footer></div>';
+    return'<div class="heritage-stamp hs-field"><h2>'+name+'</h2><div class="hs-art"><img src="'+src+'" alt=""></div><b>'+numberText+'</b><footer>VOGEL BEZOEKEN · '+family+'</footer></div>';
+  }
   function drainAtlasAssets(){while(atlasLoads<2&&atlasLoadQueue.length){var task=atlasLoadQueue.shift();atlasLoads++;Promise.resolve().then(task).then(atlasAssetDone,atlasAssetDone);}}
   function atlasAssetDone(){atlasLoads--;drainAtlasAssets();}
   function queueAtlasAsset(task){atlasLoadQueue.push(task);drainAtlasAssets();}
@@ -102,10 +119,9 @@
     else if(state.sort==="count")items.sort(function(a,b){return b.count-a.count||a.common_name.localeCompare(b.common_name,state.locale);});
     else items.sort(function(a,b){return new Date(b.first_observed_at)-new Date(a.first_observed_at)||b.scientific_name.localeCompare(a.scientific_name);});
     items.forEach(function(item,index){
-      var issue=hash(item.scientific_name)%5+1,card=document.createElement("article");card.className="stamp-card issue-"+issue;card.dataset.scientificName=item.scientific_name;card.tabIndex=0;card.setAttribute("role","button");card.setAttribute("aria-label",item.common_name+", "+item.count+" waarnemingen");
-      card.innerHTML='<div class="stamp"><div class="stamp-inner"><p class="stamp-issue">VOGELBEZOEKEN</p><b class="stamp-number">'+String(accession[item.scientific_name]).padStart(2,"0")+'</b><div class="stamp-art"></div><footer class="stamp-caption"><h2>'+esc(item.common_name)+'</h2><em>'+esc(item.scientific_name)+'</em><span>'+number(item.count)+'×</span></footer></div></div>';
-      var art=card.querySelector(".stamp-art"),preferred="perched",asset=atlasAsset(item,preferred);
-      function nest(){art.innerHTML='<img class="ready nest-fallback" src="./nest.webp" alt="Leeg vogelnest; illustratie niet beschikbaar">';}function paint(next){art.replaceChildren();if(!next){nest();return Promise.resolve();}var image=document.createElement("img");image.alt="";art.appendChild(image);return loadAsset(next.url,image).catch(nest);}
+      var issue=atlasStampIssue(item.scientific_name),card=document.createElement("article");card.className="stamp-card heritage-stamp-card";card.dataset.scientificName=item.scientific_name;card.dataset.issue=issue;card.style.setProperty("--stamp-ar",ATLAS_STAMP_AR[issue]);card.tabIndex=0;card.setAttribute("role","button");card.setAttribute("aria-label",item.common_name+", "+item.count+" waarnemingen");
+      var preferred="perched",asset=atlasAsset(item,preferred),stampIndex=accession[item.scientific_name];
+      function nest(){card.innerHTML=atlasStampMarkup(item,stampIndex,"./nest.webp",issue);card.classList.add("uses-nest");}function paint(next){if(!next){nest();return Promise.resolve();}var image=document.createElement("img");return loadAsset(next.url,image).then(function(){if(generation===atlasGeneration&&card.isConnected)card.innerHTML=atlasStampMarkup(item,stampIndex,image.src,issue);}).catch(nest);}
       if(asset)queueAtlasAsset(function(){return generation===atlasGeneration&&card.isConnected?paint(asset):Promise.resolve();});else nest();
       card.title="Open soortdetail";card.addEventListener("click",function(){detail.open(item.scientific_name,card,item.identity_id);});card.addEventListener("keydown",function(event){if(event.key==="Enter"||event.key===" "){event.preventDefault();detail.open(item.scientific_name,card,item.identity_id);}});
       grid.appendChild(card);

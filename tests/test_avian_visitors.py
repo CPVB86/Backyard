@@ -212,7 +212,8 @@ def test_presentation_uses_original_view_geometry_and_mask_packer(client):
     assert "function maskPack(" in layout and "function tuning(" in layout
     assert "x=-99999" in layout
     assert "var columns=" not in js
-    assert "radial-gradient" not in css
+    collage_css = css.split("/* Original AvianVisitors stamp-album language", 1)[0]
+    assert "radial-gradient" not in collage_css
 
 
 def test_existing_bundled_generator_assets_are_exposed(client):
