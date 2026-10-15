@@ -47,9 +47,14 @@ if [ ! -e "$HOME/backyard-birds-go/config/config.yaml" ]; then
 fi
 ```
 
-Vergelijk in het voorbeeld `device`, samplerate en overlap met je bestaande
-`BACKYARD_MONITOR_DEVICE/RATE/OVERLAP`. Voor deze Pi is de vogelmicrofoon
-`plughw:CARD=Device,DEV=0`, 48000 Hz. VleermicUSB384k blijft uitsluitend voor bats.
+Vergelijk samplerate en overlap met `BACKYARD_MONITOR_RATE/OVERLAP`.
+Go/malgo selecteert een geenumereerde apparaatnaam of device-ID; neem niet blind
+de arecord/ALSA PCM-string uit BACKYARD_MONITOR_DEVICE over. Voor deze Pi gebruikt
+Go `USB PnP Sound Device`, 48000 Hz. Python behoudt
+`plughw:CARD=Device,DEV=0` voor terugval. Bij meerdere gelijknamige microfoons
+selecteer je een stabiele USB-identiteit via Go. VleermicUSB384k blijft voor bats.
+Controleer na starten ook `/proc/asound/Device/pcm0c/sub0/status`: `closed` betekent
+dat de vogelcapture niet geopend is, ook als de bridge gezond rapporteert.
 Controleer ook Go threshold tegen policy review_lower (huidig 0.60), en de locatie.
 
 Voeg met `sudoedit /etc/backyard/backyard.env` deze regels toe. Behoud de bestaande
@@ -170,3 +175,5 @@ Releasecontracten:
 - https://github.com/tphakala/birdnet-go/blob/20261014/internal/api/v2/detections/detections.go
 - https://github.com/tphakala/birdnet-go/blob/20261014/internal/analysis/processor/processor.go
 - https://github.com/tphakala/birdnet-go/blob/20261014/internal/conf/config.yaml
+
+Device-matching: https://github.com/tphakala/birdnet-go/blob/20261014/internal/audiocore/capture.go

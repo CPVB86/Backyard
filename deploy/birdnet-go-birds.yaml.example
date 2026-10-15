@@ -31,7 +31,8 @@ realtime:
   audio:
     sources:
       - name: BackyardBirds
-        device: "plughw:CARD=Device,DEV=0"
+        # Go/malgo matches an enumerated name or device ID, not an arbitrary arecord PCM.
+        device: "USB PnP Sound Device"
         samplerate: 48000
         models: [birdnet]
     export:
