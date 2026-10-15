@@ -84,9 +84,11 @@ nano "$HOME/backyard-bats-go/config/config.yaml"
 
 Replace `device` with the tested `$BAT_DEVICE`. Check coordinates (the example
 uses the supplied garden coordinates). Keep WAV, mono, no normalization,
-export length=6, precapture=0, extended capture disabled. These settings keep
+export length=10, precapture=4, extended capture disabled. These settings keep
 native ultrasound, preserve verified clip timing, and fit Backyard's existing
-9-second event / 8 MiB audio limits. Do not change them during the first test.
+9-second event / 8 MiB audio limits: Go requires at least 10 seconds of
+export audio; its reported event span is length minus precapture, here 6
+seconds. A 10-second mono PCM16 clip at 384 kHz is about 7.68 MB. Do not change them during the first test.
 The model uses its own upstream signal preparation; do not manually slow down
 or downsample the recording sent to inference.
 

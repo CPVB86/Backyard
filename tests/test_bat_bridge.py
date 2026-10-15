@@ -172,3 +172,22 @@ def test_detail_and_list_fields_produce_same_ingest_payload():
     detail = dict(item, weather={'temperature': 12}, verified='correct',
                   isNewSpecies=True, comments=[{'entry': 'changed later'}])
     assert payload_for(item, audio(), Policy(), 'test') == payload_for(detail, audio(), Policy(), 'test')
+
+
+def test_go_minimum_export_length_fits_existing_ingest_limits(api):
+    from pathlib import Path
+    example = Path('deploy/birdnet-go-bats.yaml.example').read_text(encoding='utf-8')
+    assert 'length: 10' in example and 'precapture: 4' in example
+    item = record()
+    item['endTime'] = '2026-10-15T20:00:06+02:00'
+    wav = audio(384000, 10)
+    payload = payload_for(item, wav, Policy(), 'export-test')
+    assert payload['candidates'][0]['end_sample'] == 6 * 384000
+    assert payload['clip_end_sample'] == 10 * 384000
+    response = api.post('/api/observations', json=payload)
+    assert response.status_code == 201, response.text
+    identity = response.json()['id']
+    uploaded = api.put(f'/api/observations/{identity}/audio', content=wav,
+                       headers={'Content-Type': 'audio/wav'})
+    assert uploaded.status_code == 201, uploaded.text
+    assert uploaded.json()['audio']['duration_seconds'] == 10

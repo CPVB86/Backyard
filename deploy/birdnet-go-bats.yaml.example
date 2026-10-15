@@ -26,8 +26,8 @@ realtime:
       path: /data/clips
       type: wav
       ultrasonictype: wav
-      length: 6
-      precapture: 0
+      length: 10
+      precapture: 4
       gain: 0
       normalization:
         enabled: false
