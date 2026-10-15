@@ -1,4 +1,4 @@
-"""BirdNET-Go bat-only HTTP producer; capture/inference stay in BirdNET-Go.
+"""BirdNET-Go bat CLI and shared bounded bridge; capture/inference stay in Go.
 
 No models, observation DB, species policy or audio spool in this process.
 The upstream API exposes aggregate events, NOT individual inference windows.
@@ -35,10 +35,10 @@ def utc(value):
     return stamp.astimezone(timezone.utc)
 
 
-def payload_for(record, wav, policy, instance):
+def payload_for(record, wav, policy, instance, *, domain="bat", plausibility=None, model_version=None):
     """Preserve upstream timing; never invent support windows or bat geography."""
-    if record.get('modelType') != 'bat':
-        raise ValueError('Only explicit BirdNET-Go bat model detections are supported')
+    if domain not in ('bird', 'bat') or record.get('modelType') != domain:
+        raise ValueError('Expected an explicit matching BirdNET-Go model type')
     identity = record['id']
     if type(identity) is not int or identity <= 0:
         raise ValueError('Invalid upstream detection ID')
@@ -47,9 +47,10 @@ def payload_for(record, wav, policy, instance):
     with wave.open(io.BytesIO(wav), 'rb') as stream:
         rate, frames = stream.getframerate(), stream.getnframes()
         if (stream.getnchannels() != 1 or stream.getsampwidth() != 2
-                or stream.getcomptype() != 'NONE' or not 96000 <= rate <= 384000
+                or stream.getcomptype() != 'NONE'
+                or not ((96000 <= rate <= 384000) if domain == 'bat' else rate in (32000, 44100, 48000, 96000))
                 or not 0 < frames / rate <= 30):
-            raise ValueError('Need original ultrasonic mono PCM16 WAV, 96..384 kHz, <=30s')
+            raise ValueError('Need original mono PCM16 WAV at a supported domain sample rate, <=30s')
         if len(stream.readframes(frames + 1)) != frames * 2:
             raise ValueError('Truncated upstream audio')
     start, end = utc(record['beginTime']), utc(record['endTime'])
@@ -60,20 +61,20 @@ def payload_for(record, wav, policy, instance):
     candidate = RawCandidate(
         candidate_id=event_id, window_id='aggregate:' + event_id,
         source='birdnet-go:' + instance, stream_id=event_id,
-        domain='bat', scientific_name=record['scientificName'],
+        domain=domain, scientific_name=record['scientificName'],
         common_name=record['commonName'], confidence=record['confidence'],
         sample_rate=rate, start_sample=0, end_sample=event_frames,
-        utc_anchor=start.isoformat(), model_version='BattyBirdNET-via-BirdNET-Go',
-        plausibility={'state': 'unknown', 'provider': 'unavailable',
+        utc_anchor=start.isoformat(), model_version=model_version or 'BattyBirdNET-via-BirdNET-Go',
+        plausibility=plausibility if plausibility is not None else {'state': 'unknown', 'provider': 'unavailable',
                       'reason': 'bat_geo_season_provider_not_configured'},
         metadata={'upstream_detection': {key: record[key] for key in (
                       'id', 'modelType', 'scientificName', 'commonName', 'confidence',
-                      'beginTime', 'endTime', 'date', 'time', 'timestamp', 'clipName', 'unlikely')
+                      'beginTime', 'endTime', 'date', 'time', 'timestamp', 'clipName', 'unlikely', 'source')
                       if key in record}, 'upstream_instance': instance,
                   'evidence_unit': 'aggregate_detector_event',
                   'inference_window_count': None,
                   'clip_start_source': 'BirdNET-Go BeginTime',
-                  'ultrasonic_original': True})
+                  'ultrasonic_original': domain == 'bat'})
     validate_event([candidate], policy)
     return {'event_id': event_id, 'policy_fingerprint': policy.fingerprint,
             'candidates': [asdict(candidate)], 'clip_start_sample': 0,
@@ -136,29 +137,40 @@ def save_state(path, state):
 
 
 class Bridge:
-    def __init__(self, upstream, downstream, policy, state_path, instance, start_date):
+    def __init__(self, upstream, downstream, policy, state_path, instance, start_date,
+                 *, domain="bat", build_payload=payload_for, runtime_status=None, not_before=None):
         if not instance or len(instance) > 100 or not all(c.isalnum() or c in '-_' for c in instance):
             raise ValueError('Use a stable instance ID of 1..100 letters/digits/-/_')
+        if domain not in ("bird", "bat"):
+            raise ValueError("Invalid bridge domain")
+        self.domain, self.build_payload = domain, build_payload
+        self.runtime_status = runtime_status
         self.upstream, self.downstream, self.policy = upstream, downstream, policy
         self.path, self.instance = Path(state_path), instance
         if self.path.exists() and self.path.stat().st_size > 2 * 1024 * 1024:
             raise ValueError('Oversized bridge checkpoint')
         self.state = (json.loads(self.path.read_text(encoding='utf-8')) if self.path.exists()
-                      else {'instance': instance, 'date': start_date, 'done': [], 'pending': None})
+                      else {'instance': instance, 'date': start_date, 'done': [], 'pending': None,
+                            'domain': domain, 'not_before': not_before})
+        if self.state.get('domain', 'bat') != domain:
+            raise ValueError('Domain differs from checkpoint')
         if self.state['instance'] != instance:
             raise ValueError('Instance differs from checkpoint; do not reuse upstream database IDs')
         date.fromisoformat(self.state['date'])
 
     def deliver(self, record):
         key = str(record['id'])
-        if key in self.state['done'] or record.get('modelType') != 'bat':
+        if key in self.state['done'] or record.get('modelType') != self.domain:
+            return False
+        cutoff = self.state.get('not_before')
+        if cutoff and utc(record['beginTime']) < utc(cutoff):
             return False
         if len(self.state['done']) >= MAX_EVENTS:
             raise ValueError('Daily checkpoint limit reached')
         wav = self.upstream.audio(record['id'])
         pending = self.state['pending']
         if pending is None:
-            payload = payload_for(record, wav, self.policy, self.instance)
+            payload = self.build_payload(record, wav, self.policy, self.instance)
             self.state['pending'] = {
                 'record': payload['candidates'][0]['metadata']['upstream_detection'],
                 'payload': payload, 'sha256': hashlib.sha256(wav).hexdigest()}
@@ -177,7 +189,7 @@ class Bridge:
         self.state['done'].append(key)
         self.state['pending'] = None
         save_state(self.path, self.state)
-        print(json.dumps({'event': 'bat_imported', 'upstream_id': record['id'],
+        print(json.dumps({'event': self.domain + '_imported', 'upstream_id': record['id'],
                           'observation_id': result.get('id'),
                           'classification': result.get('classification')}), flush=True)
         return True
@@ -197,10 +209,13 @@ class Bridge:
             save_state(self.path, self.state)
         self.state['last_poll_at'] = time.time()
         self.state['phase'] = 'running'
+        if self.runtime_status is not None:
+            self.state['geo'] = self.runtime_status()
         save_state(self.path, self.state)
-        print(json.dumps({'event': 'bat_bridge_status', 'date': day, 'imported': count,
-                          'phase': 'running', 'plausibility': 'unknown',
-                          'reason': 'bat_geo_season_provider_not_configured'}), flush=True)
+        print(json.dumps({'event': self.domain + '_bridge_status', 'date': day,
+                          'imported': count, 'phase': 'running',
+                          **({'plausibility': 'unknown', 'reason': 'bat_geo_season_provider_not_configured'}
+                             if self.domain == 'bat' else {'geo': self.state.get('geo')})}), flush=True)
         return count
 
 

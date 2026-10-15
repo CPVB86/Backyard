@@ -1,0 +1,33 @@
+[Unit]
+Description=Backyard BirdNET-Go bird observation bridge
+Wants=backyard-api.service network-online.target
+After=backyard-api.service network-online.target backyard-birdnet-go.service backyard-detector.service
+RequiresMountsFor=/home/cpvb86/Backyard
+Requires=backyard-birdnet-go.service
+Conflicts=backyard-detector.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=exec
+User=cpvb86
+WorkingDirectory=/home/cpvb86/Backyard
+EnvironmentFile=/etc/backyard/backyard.env
+Environment=PYTHONUNBUFFERED=1
+Environment=TZ=Europe/Amsterdam
+ExecStartPre=/home/cpvb86/Backyard/.venv-detector/bin/python -m operations.wait_api --timeout 60 --check-policy
+ExecStart=/home/cpvb86/Backyard/.venv-detector/bin/python -m detector.bird_go_bridge
+Restart=on-failure
+RestartSec=30s
+TimeoutStopSec=30s
+UMask=0027
+NoNewPrivileges=yes
+ProtectSystem=full
+PrivateTmp=yes
+MemoryAccounting=yes
+CPUAccounting=yes
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=backyard-birds
+
+[Install]
+WantedBy=multi-user.target

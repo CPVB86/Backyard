@@ -55,48 +55,55 @@ def warnings(report, stale_seconds=90):
     geo = report.get("geo", {})
     if not geo.get("active") or geo.get("status") != "ready" or geo.get("error"):
         notes.append("Geo plausibility unavailable: " + str(geo.get("error") or geo.get("status", "missing status")))
-    for unit in UNITS:
+    for unit in (("backyard-api.service", "backyard-birdnet-go.service", "backyard-birds.service")
+                 if report.get("bird_source") == "go" else UNITS):
         state = report.get("services", {}).get(unit, {})
         if state.get("ActiveState") != "active" or state.get("SubState") != "running":
             notes.append(unit + " is not active/running")
         if state.get("UnitFileState") != "enabled":
             notes.append(unit + " is not enabled for boot")
-        if state.get("User") != "cpvb86":
+        if unit != "backyard-birdnet-go.service" and state.get("User") != "cpvb86":
             notes.append(unit + " is not configured as cpvb86")
     if "error" in report.get("api_health", {}):
         notes.append("API health unavailable")
     journal = report.get("journal", {})
     latest = journal.get("latest")
-    if "error" in journal:
-        notes.append("Journal unavailable: cannot assess the previous night")
-    if not latest:
-        notes.append("No detector status samples: startup, permissions or missing history")
+    if report.get("bird_source") != "go":
+        if "error" in journal:
+            notes.append("Journal unavailable: cannot assess the previous night")
+        if not latest:
+            notes.append("No detector status samples: startup, permissions or missing history")
+        else:
+            if report["timestamp"] - latest["timestamp"] > stale_seconds:
+                notes.append("Latest detector metrics are stale")
+            current = report.get("services", {}).get("backyard-detector.service", {}).get("InvocationID")
+            if current != latest["invocation"]:
+                notes.append("Latest metrics belong to a different service invocation")
+            if latest["metrics"].get("phase") != "running":
+                notes.append("Latest detector status is not running")
+            if latest["metrics"].get("windows_processed", 0) == 0:
+                notes.append("No inference windows processed in latest detector status")
+            if latest["metrics"].get("realtime_ratio", 0) >= 1:
+                notes.append("Average inference is not keeping up with incoming audio")
+        if (journal.get("history_starts_late_by_seconds") or 0) > stale_seconds:
+            notes.append("Status history starts after requested interval; full-duration coverage is not proven")
+        if journal.get("max_sample_gap_seconds", 0) > stale_seconds:
+            notes.append("Historical gap between status samples; uninterrupted monitoring is not proven")
+        totals = journal.get("observed_counter_deltas", {})
+        for key in ("capture_gaps", "alsa_overruns", "ring_overruns", "windows_dropped",
+                    "inference_timeouts", "policy_batches_dropped", "clips_dropped",
+                    "clips_expired", "uploads_failed", "uploads_dropped", "http_failures"):
+            if totals.get(key, 0):
+                notes.append(f"Observed {key}={totals[key]} in requested interval")
+        if journal.get("detector_invocations_seen", 0) > 1 or journal.get("api_invocations_seen", 0) > 1:
+            notes.append("Multiple service invocations observed; inspect restarts and downtime")
+        if any(journal.get(k) for k in ("record_limit_reached", "invalid_records", "oversized_records", "journal_notice")):
+            notes.append("Journal report may be incomplete; inspect limits/invalid records/notices")
     else:
-        if report["timestamp"] - latest["timestamp"] > stale_seconds:
-            notes.append("Latest detector metrics are stale")
-        current = report.get("services", {}).get("backyard-detector.service", {}).get("InvocationID")
-        if current != latest["invocation"]:
-            notes.append("Latest metrics belong to a different service invocation")
-        if latest["metrics"].get("phase") != "running":
-            notes.append("Latest detector status is not running")
-        if latest["metrics"].get("windows_processed", 0) == 0:
-            notes.append("No inference windows processed in latest detector status")
-        if latest["metrics"].get("realtime_ratio", 0) >= 1:
-            notes.append("Average inference is not keeping up with incoming audio")
-    if (journal.get("history_starts_late_by_seconds") or 0) > stale_seconds:
-        notes.append("Status history starts after requested interval; full-duration coverage is not proven")
-    if journal.get("max_sample_gap_seconds", 0) > stale_seconds:
-        notes.append("Historical gap between status samples; uninterrupted monitoring is not proven")
-    totals = journal.get("observed_counter_deltas", {})
-    for key in ("capture_gaps", "alsa_overruns", "ring_overruns", "windows_dropped",
-                "inference_timeouts", "policy_batches_dropped", "clips_dropped",
-                "clips_expired", "uploads_failed", "uploads_dropped", "http_failures"):
-        if totals.get(key, 0):
-            notes.append(f"Observed {key}={totals[key]} in requested interval")
-    if journal.get("detector_invocations_seen", 0) > 1 or journal.get("api_invocations_seen", 0) > 1:
-        notes.append("Multiple service invocations observed; inspect restarts and downtime")
-    if any(journal.get(k) for k in ("record_limit_reached", "invalid_records", "oversized_records", "journal_notice")):
-        notes.append("Journal report may be incomplete; inspect limits/invalid records/notices")
+        bird = report.get("birds", {})
+        if bird.get("phase") != "running" or bird.get("stale", True):
+            notes.append("Bird Go bridge is unavailable, retrying or stale")
+        notes.append("Go bridge status does not prove capture/inference; inspect BirdNET-Go pipeline stats")
     if "error" in report.get("database", {}):
         notes.append("Database inventory unavailable")
     check = report.get("database", {}).get("quick_check")
@@ -161,6 +168,26 @@ def collect(settings, environment, hours=24, check_db=False, now=None):
     report["audio"] = attempt(lambda: audio_inventory(settings.resolved_storage_root, since))
     report["system"] = attempt(lambda: system_inventory(settings.resolved_storage_root))
     report["geo"] = geo_report(environment, report["journal"], report["services"], now)
+    report["bird_source"] = "python"
+    if environment.get("BACKYARD_GO_BIRD_INSTANCE"):
+        from operations.bats import bridge_status
+        for unit in ("backyard-birdnet-go.service", "backyard-birds.service"):
+            report["services"][unit] = attempt(lambda unit=unit: service_status(unit))
+        report["birds"] = bridge_status(environment, now, domain="bird")
+        if report["services"]["backyard-birdnet-go.service"].get("ActiveState") == "active":
+            report["bird_source"] = "go"
+            report["geo"] = dict(report["birds"].get("geo", {}))
+            expected = geo_configuration(True, environment.get("BACKYARD_MONITOR_LATITUDE"),
+                                         environment.get("BACKYARD_MONITOR_LONGITUDE"))
+            if (expected["error"] or
+                    (report["geo"].get("latitude"), report["geo"].get("longitude")) !=
+                    (expected["latitude"], expected["longitude"])):
+                report["geo"].update(active=False, error="Go bridge location differs from environment; restart bridge")
+            if report["geo"].get("week") != birdnet_week(report["at"]):
+                report["geo"].update(active=False, error="Go bridge seasonal period is stale")
+            if report["birds"].get("stale", True):
+                report["geo"].update(active=False, error="Go bird bridge status is stale")
+
     interval = float(environment.get("BACKYARD_MONITOR_STATUS_SECONDS", "30"))
     report["warnings"] = warnings(report, max(90, 3 * interval))
     if environment.get("BACKYARD_BAT_INSTANCE"):
@@ -186,6 +213,9 @@ def print_report(report):
               "| CPU ns:", state.get("CPUUsageNSec","?"), "| tasks:", state.get("TasksCurrent","?"))
         if "error" in state:
             print(" ", state["error"])
+    print("Bird source:", report.get("bird_source", "python"))
+    if "birds" in report:
+        print("Bird Go bridge:", json.dumps(report["birds"]))
     print("API health:", json.dumps(report["api_health"]))
     print("Geo/provider:", json.dumps(report.get("geo", {})))
     if "bats" in report:

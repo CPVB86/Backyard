@@ -1,0 +1,17 @@
+[Unit]
+Description=Backyard BirdNET-Go bird capture (exclusive with Python detector)
+Requires=docker.service
+After=docker.service network-online.target backyard-detector.service
+Conflicts=backyard-detector.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/docker start --attach backyard-birds-go
+ExecStop=/usr/bin/docker stop --time 25 backyard-birds-go
+Restart=on-failure
+RestartSec=30s
+TimeoutStopSec=40s
+
+[Install]
+WantedBy=multi-user.target

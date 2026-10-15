@@ -14,6 +14,8 @@ De policyfase hoeft daarvoor niet eerst apart handmatig geaccepteerd te worden.
 
 Voor de Vleermic en BattyBirdNET naast de bestaande vogelmonitor: zie
 [BATS_VLEERMIC.md](docs/BATS_VLEERMIC.md) voor capture, Pi-installatie, ingest en verificatie.
+Voor de optionele Go-vogelbron en expliciete Python-terugval: zie
+[BIRDS_BIRDNET_GO.md](docs/BIRDS_BIRDNET_GO.md).
 
 ## Local development / demo mode
 

@@ -1,0 +1,56 @@
+# Pinned BirdNET-Go 20261014. Separate bird container, never Vleermic.
+# Built-in acoustic model is V2.4, unlike the original Python acoustic 3.0.
+# Backyard retains its existing geo 3.0 and observation policy.
+main:
+  name: Backyard Birds
+models:
+  enabled: [birdnet]
+birdnet:
+  locale: en
+  threads: 2
+  sensitivity: 1.0
+  threshold: 0.60
+  overlap: 1.5
+  latitude: 51.94893335927945
+  longitude: 5.909442769368905
+  rangefilter:
+    threshold: 0.0
+    passunmappedspecies: true
+realtime:
+  dynamicthreshold:
+    enabled: false
+  falsepositivefilter:
+    level: 0
+  daylightfilter:
+    enabled: false
+  dogbarkfilter:
+    enabled: false
+  privacyfilter:
+    enabled: true
+    confidence: 0.05
+  audio:
+    sources:
+      - name: BackyardBirds
+        device: "plughw:CARD=Device,DEV=0"
+        samplerate: 48000
+        models: [birdnet]
+    export:
+      enabled: true
+      path: /data/clips
+      type: wav
+      length: 10
+      precapture: 4
+      gain: 0
+      normalization:
+        enabled: false
+      retention:
+        policy: usage
+        maxusage: "70%"
+        minclips: 0
+  extendedcapture:
+    enabled: false
+webserver:
+  enabled: true
+  port: "8080"
+security:
+  privatemode: false
