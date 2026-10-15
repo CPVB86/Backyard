@@ -87,6 +87,12 @@ nodig. De nieuwe vogelbridge gebruikt bestaande `.venv-detector` dependencies.
 
 ## Omschakelen en controleren
 
+Voer eerst alle voorbereiding hierboven uit; alleen git pull installeert geen
+container of systemd-units. De Python-terugval leest geen environment-bestand en
+werkt ook als de nieuwe Go-units/container nog niet bestaan. Een onbereikbare
+Docker-daemon is geen bewijs dat capture gestopt is: dan stopt de tool met een fout.
+
+
 ```bash
 sudo .venv/bin/python -m operations.bird_source go --apply
 sudo systemctl status backyard-birdnet-go backyard-birds backyard-detector --no-pager -l

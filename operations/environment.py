@@ -5,7 +5,7 @@ import shlex
 
 
 def read_environment(path):
-    with Path(path).open(encoding="utf-8") as source:
+    with Path(path).open(encoding="utf-8-sig") as source:
         text = source.read(65537)
     if len(text) > 65536:
         raise ValueError("Environment file exceeds 64 KiB")
@@ -15,6 +15,7 @@ def read_environment(path):
         if not line or line.startswith("#") or line.startswith(";"):
             continue
         key, separator, value = line.partition("=")
+        key = key.strip()
         if not separator or not re.fullmatch(r"[A-Z_][A-Z0-9_]*", key):
             raise ValueError(f"Invalid environment assignment at line {number}")
         # Do not execute shell syntax or interpret environment substitutions.

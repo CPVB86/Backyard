@@ -98,26 +98,28 @@ def test_bat_checkpoint_cannot_be_reused_for_birds(tmp_path):
 
 
 def test_fallback_stops_both_go_parts_before_starting_python():
-    run=Mock(return_value='false')
+    run=Mock(side_effect=fallback_output)
     python_fallback(run)
     assert [c.args for c in run.call_args_list] == [
+        ('systemctl','show','--property=LoadState','--value','backyard-birds.service'),
         ('systemctl','disable','--now','backyard-birds.service'),
+        ('systemctl','show','--property=LoadState','--value','backyard-birdnet-go.service'),
         ('systemctl','disable','--now','backyard-birdnet-go.service'),
+        ('docker','ps','-a','--filter','name=^/backyard-birds-go$','--format','{{.Names}}'),
         ('docker','inspect','--format','{{.State.Running}}','backyard-birds-go'),
         ('systemctl','enable','--now','backyard-detector.service'),
         ('systemctl','is-active','--quiet','backyard-detector.service')]
 
 
 def test_go_start_failure_restores_python_without_touching_bats():
-    run=Mock(side_effect=lambda *args: 'false' if '{{.State.Running}}' in args else 'no')
+    run=Mock(side_effect=fallback_output)
     with pytest.raises(RuntimeError, match='Python detector restored'):
         switch_to_go({},run=run,wait_ready=Mock(side_effect=RuntimeError('not ready')))
     calls=[c.args for c in run.call_args_list]
-    assert calls[-5:] == [('systemctl','disable','--now','backyard-birds.service'),
-        ('systemctl','disable','--now','backyard-birdnet-go.service'),
-        ('docker','inspect','--format','{{.State.Running}}','backyard-birds-go'),
-        ('systemctl','enable','--now','backyard-detector.service'),
-        ('systemctl','is-active','--quiet','backyard-detector.service')]
+    fallback = Mock(side_effect=fallback_output)
+    python_fallback(fallback)
+    expected = [c.args for c in fallback.call_args_list]
+    assert calls[-len(expected):] == expected
     assert not any('backyard-bats' in str(c) for c in calls)
 
 
@@ -152,7 +154,7 @@ def test_rollback_failure_is_not_reported_as_success():
     def run(*args):
         if args == ('systemctl','enable','--now','backyard-detector.service'):
             raise OSError('Python could not start')
-        return 'false' if '{{.State.Running}}' in args else 'no'
+        return fallback_output(*args)
     with pytest.raises(OSError, match='Python could not start'):
         switch_to_go({}, run=run, wait_ready=Mock(side_effect=RuntimeError('Go failed')))
 
@@ -180,7 +182,46 @@ def test_systemd_go_services_conflict_with_python_and_capture_is_supervised():
 
 
 def test_fallback_refuses_to_start_python_if_go_still_captures():
-    run = Mock(return_value='true')
+    run = Mock(side_effect=lambda *args: 'true' if '{{.State.Running}}' in args else fallback_output(*args))
     with pytest.raises(RuntimeError, match='not confirmed stopped'):
         python_fallback(run)
     assert not any('backyard-detector.service' in call.args for call in run.call_args_list)
+
+
+def fallback_output(*args):
+    if '{{.Names}}' in args:
+        return 'backyard-birds-go'
+    if '{{.State.Running}}' in args:
+        return 'false'
+    if 'show' in args:
+        return 'loaded'
+    return 'no'
+
+
+def test_fallback_before_go_installation():
+    run = Mock(side_effect=lambda *args: 'not-found' if 'show' in args else '')
+    python_fallback(run)
+    calls = [c.args for c in run.call_args_list]
+    assert not any('disable' in c or 'inspect' in c for c in calls)
+    assert calls[-2] == ('systemctl','enable','--now','backyard-detector.service')
+
+
+def test_python_cli_never_reads_environment(monkeypatch):
+    from contextlib import nullcontext
+    import operations.bird_source as source
+    monkeypatch.setattr(source.os, 'geteuid', lambda: 0, raising=False)
+    monkeypatch.setattr(source, 'exclusive_monitor', lambda _: nullcontext())
+    reader = Mock(side_effect=ValueError('Invalid line 1'))
+    fallback = Mock()
+    monkeypatch.setattr(source, 'read_environment', reader)
+    monkeypatch.setattr(source, 'python_fallback', fallback)
+    source.main(['python','--apply'])
+    reader.assert_not_called()
+    fallback.assert_called_once()
+
+
+def test_environment_bom_and_assignment_whitespace(tmp_path):
+    from operations.environment import read_environment
+    path = tmp_path/'env'
+    path.write_text('\ufeff# configuration\nBACKYARD_GO_BIRD_URL = http://127.0.0.1:8082\n', encoding='utf-8')
+    assert read_environment(path) == {'BACKYARD_GO_BIRD_URL':'http://127.0.0.1:8082'}

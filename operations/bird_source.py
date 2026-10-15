@@ -20,12 +20,19 @@ def command(*args):
 
 
 def python_fallback(run=command):
-    # Stop importer first, then release ALSA, then start the original producer.
-    run('systemctl', 'disable', '--now', BRIDGE)
-    run('systemctl', 'disable', '--now', CAPTURE)
-    running = run('docker', 'inspect', '--format', '{{.State.Running}}', 'backyard-birds-go')
-    if running != 'false':
-        raise RuntimeError('Go container is not confirmed stopped; Python not started to avoid microphone conflict')
+    # Partial installation is normal; absent units/container need no stopping.
+    # A failed inspection is NOT evidence that capture stopped.
+    for unit in (BRIDGE, CAPTURE):
+        load = run('systemctl', 'show', '--property=LoadState', '--value', unit)
+        if load != 'not-found':
+            run('systemctl', 'disable', '--now', unit)
+    containers = run('docker', 'ps', '-a', '--filter', 'name=^/backyard-birds-go$', '--format', '{{.Names}}')
+    if containers:
+        if containers != 'backyard-birds-go':
+            raise RuntimeError('Unexpected container inspection result; Python not started')
+        running = run('docker', 'inspect', '--format', '{{.State.Running}}', 'backyard-birds-go')
+        if running != 'false':
+            raise RuntimeError('Go container is not confirmed stopped; Python not started to avoid microphone conflict')
     run('systemctl', 'enable', '--now', PYTHON)
     run('systemctl', 'is-active', '--quiet', PYTHON)
 
@@ -92,11 +99,14 @@ def main(argv=None):
         return
     if not hasattr(os, 'geteuid') or os.geteuid() != 0:
         raise SystemExit('Run --apply on the Pi with sudo')
-    environment = read_environment(args.environment_file)
     with exclusive_monitor('/run/lock/backyard-bird-source.lock'):
         if args.source == 'python':
             python_fallback()
         else:
+            try:
+                environment = read_environment(args.environment_file)
+            except ValueError as error:
+                raise SystemExit(str(error) + "; no services switched. Do not share environment values.") from None
             switch_to_go(environment)
     print('Bird source: ' + args.source + '. Verify microphone/inference and an actual observation in the logs.')
 
