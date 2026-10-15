@@ -46,13 +46,13 @@ def inspect_wav(data):
                 wav.getframerate(), wav.getnchannels(), wav.getsampwidth(), wav.getnframes()
             )
             if (wav.getcomptype() != "NONE" or channels not in (1, 2)
-                    or width not in (1, 2, 3, 4) or not 8000 <= rate <= 192000
+                    or width not in (1, 2, 3, 4) or not 8000 <= rate <= 384000
                     or not 0 < frames / rate <= 60):
                 raise ValueError("Unsupported PCM parameters")
             if len(wav.readframes(frames + 1)) != frames * channels * width:
                 raise ValueError("Incomplete PCM data")
     except (wave.Error, EOFError, ValueError, OverflowError, struct.error):
-        raise HTTPException(422, "Expected complete PCM WAV: 1-2 channels, 8-192 kHz, duration >0 and <=60 seconds") from None
+        raise HTTPException(422, "Expected complete PCM WAV: 1-2 channels, 8-384 kHz, duration >0 and <=60 seconds") from None
     return dict(
         content_type="audio/wav", codec="pcm", sample_rate=rate, channels=channels,
         sample_width=width, duration_seconds=frames / rate, size_bytes=len(data),

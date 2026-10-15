@@ -1,4 +1,4 @@
-"""Short-file diagnostics only; production continuous capture is future work."""
+"""Short-file diagnostics only; not a production capture loop."""
 from array import array
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -28,8 +28,8 @@ def inspect_audio(path: Path) -> AudioInfo:
         rate, channels, frames = stream.getframerate(), stream.getnchannels(), stream.getnframes()
         if stream.getsampwidth() != 2 or stream.getcomptype() != "NONE":
             raise ValueError("Diagnostiek vereist PCM signed 16-bit WAV")
-        if channels not in (1, 2) or not 8000 <= rate <= 96000 or not 0 < frames / rate <= 60:
-            raise ValueError("Verwacht 1-2 kanalen, 8-96 kHz en maximaal 60 seconden")
+        if channels not in (1, 2) or not 8000 <= rate <= 384000 or not 0 < frames / rate <= 60:
+            raise ValueError("Verwacht 1-2 kanalen, 8-384 kHz en maximaal 60 seconden")
         raw = stream.readframes(frames + 1)
         if len(raw) != frames * channels * 2:
             raise ValueError("Onvolledige WAV-samples")
@@ -54,7 +54,7 @@ def capture(path, *, device, rate=48000, channels=1, duration=6):
     """One bounded recording; owns only a newly created file, removes it on error."""
     if not device or device.startswith("-"):
         raise ValueError("Geef een expliciet ALSA-device uit arecord -L op")
-    if rate not in (8000, 16000, 32000, 44100, 48000, 96000) or channels not in (1, 2):
+    if rate not in (8000, 16000, 32000, 44100, 48000, 96000, 192000, 256000, 384000) or channels not in (1, 2):
         raise ValueError("Ongeldige sample rate of kanalen")
     if not isinstance(duration, int) or not 1 <= duration <= 30:
         raise ValueError("Duur moet 1-30 hele seconden zijn")

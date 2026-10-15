@@ -1,0 +1,45 @@
+# BirdNET-Go 20261014, dedicated Vleermic instance.
+# Copy to ~/backyard-bats-go/config/config.yaml and replace DEVICE first.
+# Install BattyBirdNET Europe using the model gallery, then enable ONLY bat.
+main:
+  name: Backyard Bats
+birdnet:
+  latitude: 51.94893335927945
+  longitude: 5.909442769368905
+  threads: 2
+  locale: en
+models:
+  directory: /data/models
+bat:
+  locale: en
+  threshold: 0.8
+  nighttimeonly: true
+realtime:
+  audio:
+    sources:
+      - name: Vleermic
+        device: "hw:CARD=REPLACE_WITH_VLEERMIC_CARD,DEV=0"
+        samplerate: 384000
+        models: [bat]
+    export:
+      enabled: true
+      path: /data/clips
+      type: wav
+      ultrasonictype: wav
+      length: 6
+      precapture: 0
+      gain: 0
+      normalization:
+        enabled: false
+      retention:
+        policy: usage
+        maxusage: "70%"
+        minclips: 0
+  extendedcapture:
+    enabled: false
+webserver:
+  enabled: true
+  port: "8080"
+# Container publishes only 127.0.0.1:8081; access setup via an SSH tunnel.
+security:
+  privatemode: false

@@ -12,6 +12,9 @@ Voor 24/7 bedrijf: volg [OPERATIONS.md](docs/OPERATIONS.md) voor systemd-install
 automatische boot/crash recovery, reboot-test en de gecombineerde dag/nacht-duurtest.
 De policyfase hoeft daarvoor niet eerst apart handmatig geaccepteerd te worden.
 
+Voor de Vleermic en BattyBirdNET naast de bestaande vogelmonitor: zie
+[BATS_VLEERMIC.md](docs/BATS_VLEERMIC.md) voor capture, Pi-installatie, ingest en verificatie.
+
 ## Local development / demo mode
 
 Python 3.11+. De foundation is door de gebruiker geverifieerd op Raspberry Pi 5,

@@ -52,7 +52,10 @@ def parser():
     live.add_argument("--pause", type=bounded_float(0, 60), default=0.5)
     for command in (cap, live):
         command.add_argument("--device", required=True, help="Exacte ALSA-naam uit arecord -L")
-        command.add_argument("--rate", type=int, choices=(8000, 16000, 32000, 44100, 48000, 96000), default=48000)
+        rates = (8000, 16000, 32000, 44100, 48000, 96000)
+        if command is cap:
+            rates += (192000, 256000, 384000)
+        command.add_argument("--rate", type=int, choices=rates, default=48000)
         command.add_argument("--channels", type=int, choices=(1, 2), default=1)
         command.add_argument("--duration", type=positive_duration, default=6)
     for command in (analyze, live):

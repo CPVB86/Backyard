@@ -94,7 +94,7 @@ class RawCandidate:
             raise ValueError("Invalid confidence")
         if any(type(value) is not int for value in (self.sample_rate, self.start_sample, self.end_sample)):
             raise ValueError("Sample coordinates must be integers")
-        if not 8000 <= self.sample_rate <= 192000 or not 0 <= self.start_sample < self.end_sample:
+        if not 8000 <= self.sample_rate <= 384000 or not 0 <= self.start_sample < self.end_sample:
             raise ValueError("Invalid sample range")
         if self.end_sample - self.start_sample > 30 * self.sample_rate:
             raise ValueError("Candidate window exceeds 30s")

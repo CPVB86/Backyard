@@ -20,7 +20,7 @@ class CandidateInput(BaseModel):
     scientific_name: Name
     common_name: Name
     confidence: float = Field(ge=0, le=1, allow_inf_nan=False, strict=True)
-    sample_rate: int = Field(ge=8000, le=192000, strict=True)
+    sample_rate: int = Field(ge=8000, le=384000, strict=True)
     start_sample: int = Field(ge=0, strict=True)
     end_sample: int = Field(gt=0, strict=True)
     utc_anchor: Name

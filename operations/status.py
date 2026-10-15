@@ -146,7 +146,7 @@ def collect(settings, environment, hours=24, check_db=False, now=None):
             return action()
         except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
             return {"error": str(error)[:500]}
-    for unit in UNITS:
+    for unit in UNITS + (("backyard-bats.service",) if environment.get("BACKYARD_BAT_INSTANCE") else ()):
         report["services"][unit] = attempt(lambda unit=unit: service_status(unit))
     report["api_health"] = attempt(lambda: check_health(
         environment.get("BACKYARD_MONITOR_API_URL", "http://127.0.0.1:8010"),
@@ -163,6 +163,14 @@ def collect(settings, environment, hours=24, check_db=False, now=None):
     report["geo"] = geo_report(environment, report["journal"], report["services"], now)
     interval = float(environment.get("BACKYARD_MONITOR_STATUS_SECONDS", "30"))
     report["warnings"] = warnings(report, max(90, 3 * interval))
+    if environment.get("BACKYARD_BAT_INSTANCE"):
+        from operations.bats import bridge_status
+        report["bats"] = bridge_status(environment, now)
+        state = report["services"].get("backyard-bats.service", {})
+        if state.get("ActiveState") != "active" or state.get("SubState") != "running":
+            report["warnings"].append("backyard-bats.service is not active/running")
+        if report["bats"].get("phase") != "running" or report["bats"].get("stale", True):
+            report["warnings"].append("Bat bridge is unavailable, retrying or stale; inspect its journal")
     report["health_summary"] = "ATTENTION" if report["warnings"] else "CURRENTLY_OK"
     report["note"] = "CURRENTLY_OK is not proof of 24h coverage. Check journal sessions, timestamps, restarts, sampled losses and disk growth."
     return report
@@ -180,6 +188,8 @@ def print_report(report):
             print(" ", state["error"])
     print("API health:", json.dumps(report["api_health"]))
     print("Geo/provider:", json.dumps(report.get("geo", {})))
+    if "bats" in report:
+        print("Bat bridge:", json.dumps(report["bats"]))
     journal = report["journal"]
     latest = journal.get("latest")
     print("Latest detector metrics:", latest["at"] if latest else "UNAVAILABLE")
