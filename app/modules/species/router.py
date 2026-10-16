@@ -5,6 +5,14 @@ from app.modules.species import service
 router = APIRouter(prefix="/api/species", tags=["species"])
 
 
+@router.get("/search")
+def species_search(request: Request, domain: Literal["bird", "bat"],
+                   q: Annotated[str, Query(min_length=1, max_length=100)],
+                   limit: Annotated[int, Query(ge=1, le=20)] = 8):
+    from app.modules.avian_visitors.service import search
+    return {"query": q, "results": search(request.app.state.engine, q, limit, domain)}
+
+
 @router.get("/{domain}/{scientific_name:path}")
 def species_detail(request: Request, domain: Literal["bird", "bat"],
                    scientific_name: Annotated[str, Path(min_length=1, max_length=255)],

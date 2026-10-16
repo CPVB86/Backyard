@@ -47,8 +47,8 @@ def _identity_expression():
     )
 
 
-def search(engine, query: str, limit: int = 8) -> list[dict]:
-    """Search the bird catalog and known observation names without generating assets."""
+def search(engine, query: str, limit: int = 8, domain: str = "bird") -> list[dict]:
+    """Search the selected domain catalog and known observation names without generating assets."""
     term = query.strip()
     if not term:
         return []
@@ -65,13 +65,13 @@ def search(engine, query: str, limit: int = 8) -> list[dict]:
     with Session(engine) as session:
         observed_names = list(session.scalars(
             select(species_expression()).where(
-                Observation.domain == "bird", Observation.status.in_(ACCEPTED_STATUSES),
+                Observation.domain == domain, Observation.status.in_(ACCEPTED_STATUSES),
                 name_expression().ilike(contains, escape="\\")).distinct()))
         if observed_names:
             name_matches.append(Species.scientific_name.in_(observed_names))
         rows = list(session.execute(
             select(Species.common_name_nl, Species.scientific_name)
-            .where(Species.domain == "bird", or_(*name_matches))
+            .where(Species.domain == domain, or_(*name_matches))
             .order_by(priority, Species.common_name_nl.asc(), Species.scientific_name.asc())
             .limit(limit)))
         scientific_names = [row.scientific_name for row in rows]
@@ -80,7 +80,7 @@ def search(engine, query: str, limit: int = 8) -> list[dict]:
             count_rows = session.execute(
                 select(species_expression(), func.count(Observation.id),
                        func.max(Observation.start_at))
-                .where(Observation.domain == "bird", Observation.status.in_(ACCEPTED_STATUSES),
+                .where(Observation.domain == domain, Observation.status.in_(ACCEPTED_STATUSES),
                        species_expression().in_(scientific_names))
                 .group_by(species_expression()))
             counts = {row[0]: (row[1], row[2]) for row in count_rows}

@@ -99,7 +99,7 @@ def serialize(record):
         },
         "review_capabilities": {"identity_overrides": identity_overrides(record)},
         "correction_capabilities": {
-            "actions": ["confirm", "reject"] if record.domain == "bird" else [],
+            "actions": ["confirm", "reject"] if record.domain in ("bird", "bat") else [],
             "identity_overrides": ["otje"] if record.domain == "bird" and effective_species(record) in OTJE_SPECIES else [],
         },
     }

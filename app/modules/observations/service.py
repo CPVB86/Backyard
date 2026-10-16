@@ -162,8 +162,8 @@ def review(engine, settings, identity, action, payload, *, correction=False):
             version = review_version(record)
             request_hash = None
             if correction:
-                if record.domain != "bird":
-                    raise HTTPException(422, "Corrections currently support bird observations only")
+                if record.domain not in ("bird", "bat"):
+                    raise HTTPException(422, "Corrections support bird and bat observations only")
                 request_values = payload.model_dump(mode="json")
                 if "scientific_name_override" not in payload.model_fields_set:
                     request_values.pop("scientific_name_override")  # Preserve legacy retry hashes.
@@ -188,7 +188,7 @@ def review(engine, settings, identity, action, payload, *, correction=False):
                     known = session.scalar(select(Species.id).where(
                         Species.domain == record.domain, Species.scientific_name == target_species))
                     if known is None:
-                        raise HTTPException(422, "Target species must exist in the bird species catalog")
+                        raise HTTPException(422, "Target species must exist in the observation domain species catalog")
             allowed_identity = (record.domain == "bird" and target_species in OTJE_SPECIES) if correction else payload.identity_override in identity_overrides(record)
             if payload.identity_override is not None and not allowed_identity:
                 raise HTTPException(422, "Identity override is not available for this observation")

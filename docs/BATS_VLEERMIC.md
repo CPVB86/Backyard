@@ -27,7 +27,8 @@ existing policy, including high confidence. Their original audio is retained;
 confirm/reject use existing routes. Accepted totals/Atlas change only after
 confirmation. `/api/observations/review` deliberately does not turn `unknown`
 into human-review work. Inspect `/api/observations?domain=bat` to manage these
-initial detections. This change does not alter policy or the WordPress UI.
+initial detections. The WordPress Bats review module now uses these open-status queries without altering policy.
+Versioned corrections also support bats; see OBSERVATION_CORRECTIONS_API.md.
 
 Go exposes aggregate events, not all inference windows. Each event is one
 candidate; metadata explicitly says `aggregate_detector_event` and leaves

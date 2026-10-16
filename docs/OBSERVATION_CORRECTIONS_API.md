@@ -227,3 +227,23 @@ Geen schema- of datamigratie. Opslag blijft in Observation.review; event-ID, aud
 originele velden en raw candidates veranderen niet. Deployment blijft git pull
 --ff-only en herstart van uitsluitend backyard-api.service. Geen automatische
 historische correcties; alleen expliciete beheeracties via dit endpoint.
+
+
+## Bats
+
+Hetzelfde `/api/observations/{id}/correct`-contract geldt voor `domain=bat`.
+`correction_capabilities.actions` bevat confirm/reject; identity_overrides blijft
+leeg. Een soortoverride moet in species_catalog binnen hetzelfde domein bestaan.
+Otje blijft uitsluitend voor geschikte vogels. Versiecontrole, idempotentie,
+auditgeschiedenis en oorspronkelijke detectie/audio blijven ongewijzigd.
+
+De beveiligde cataloguszoekroute is
+`GET /api/species/search?domain=bat&q=Myotis&limit=8` (bird of bat, limiet 1–20).
+Responses: `{"query":"Myotis","results":[{"scientific_name":"...",
+"common_name_nl":"...","observation_count":0,"last_observed_at":null}]}`.
+De bestaande Avian bird-search blijft compatibel.
+
+WordPress Bats Review vraagt open statussen op via `/api/observations?domain=bat&status=...`
+en telt via `/api/observations/count?domain=bat&status=...`, voor pending_review en
+review_recommended. `/review` blijft uitsluitend human_review selecteren: unknown
+BattyBirdNET-plausibiliteit wordt niet opnieuw geclassificeerd.
