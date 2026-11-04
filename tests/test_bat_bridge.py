@@ -1,7 +1,7 @@
 """Contract fixtures match BirdNET-Go 20261014's v2 detection response."""
 import io
 import json
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 import wave
 
 import pytest
@@ -121,6 +121,51 @@ def test_changed_audio_on_retry_fails_closed(api, tmp_path):
     with pytest.raises(OSError): bridge.deliver(record())
     upstream.audio.return_value = audio(192000)
     with pytest.raises(ValueError, match='changed'): bridge.deliver(record())
+
+
+def test_terminal_retention_outcome_does_not_reupload(tmp_path):
+    upstream, downstream = Mock(), Mock()
+    upstream.audio.return_value = audio()
+    downstream.request.return_value = {'id': 'existing', 'status': 'auto_accepted',
+                                      'audio_available': False, 'audio_retention': {'terminal': True}}
+    bridge = Bridge(upstream, downstream, Policy(), tmp_path / 'state.json', 'test', '2026-10-15')
+    assert bridge.deliver(record()) is True
+    assert [call.args[0] for call in downstream.request.call_args_list] == ['POST']
+
+
+def test_missing_source_is_audited_then_next_event_continues(tmp_path):
+    upstream, downstream = Mock(), Mock()
+    def read(identity):
+        if identity == 42:
+            raise RuntimeError('BirdNET-Go HTTP 404')
+        return audio()
+    upstream.audio.side_effect = read
+    upstream.records.return_value = [record(), record(43)]
+    downstream.request.return_value = {'status': 'discarded'}
+    bridge = Bridge(upstream, downstream, Policy(), tmp_path / 'state.json', 'test',
+                    '2026-10-15', quarantine_after=300)
+    for now in (0, 150):
+        with patch('detector.bat_bridge.time.time', return_value=now):
+            with pytest.raises(RuntimeError, match='404'):
+                bridge.once('2026-10-15')
+    with patch('detector.bat_bridge.time.time', return_value=301):
+        assert bridge.once('2026-10-15') == 1  # next event only
+    assert bridge.state['quarantined_count'] == 1
+    audit = json.loads((tmp_path / 'source-quarantine/test-42.json').read_text())
+    assert audit['imported'] is False and audit['record']['id'] == 42
+    assert downstream.request.call_count == 1
+
+
+def test_transient_source_failure_does_not_quarantine(tmp_path):
+    upstream, downstream = Mock(), Mock()
+    upstream.audio.side_effect = OSError('temporary network failure')
+    bridge = Bridge(upstream, downstream, Policy(), tmp_path / 'state.json', 'test',
+                    '2026-10-15', quarantine_after=0)
+    for _ in range(3):
+        with pytest.raises(OSError):
+            bridge.deliver(record())
+    assert 'quarantined_count' not in bridge.state
+    downstream.request.assert_not_called()
 
 
 def test_skip_birds_and_complete_daily_checkpoint(tmp_path):

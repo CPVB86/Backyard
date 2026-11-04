@@ -57,6 +57,8 @@ def attach_audio(engine, settings, detection_id, data):
                 if record.audio.sha256 != info["sha256"]:
                     raise HTTPException(409, "Detection already has different audio")
                 if record.audio.status != "available":
+                    if settings.audio_retention_enabled:
+                        return serialize(record), False
                     raise HTTPException(409, "Audio no longer available; automatic restoration disabled")
                 path = storage.audio_path(settings.resolved_storage_root, record.audio.storage_key)
                 if not path.is_file():
@@ -68,6 +70,16 @@ def attach_audio(engine, settings, detection_id, data):
 
             date = record.timestamp
             key = f"birds/audio/{date.year:04d}/{date.month:02d}/{date.day:02d}/{record.id}.wav"
+            if settings.audio_retention_enabled:
+                from app.modules.observations.retention import can_publish
+                if not can_publish(settings, len(data)):
+                    logger.warning("Audio not stored: storage pressure legacy_detection_id=%s", str(detection_id))
+                    record.audio = BirdAudio(detection_id=record.id, storage_key=key,
+                                             status="storage_pressure", **info)
+                    session.flush()
+                    result = serialize(record)
+                    session.commit()
+                    return result, False
             path, created = storage.publish(
                 settings.resolved_storage_root, key, data, info["sha256"]
             )
@@ -80,6 +92,11 @@ def attach_audio(engine, settings, detection_id, data):
             result = serialize(record)
             session.commit()
             owned_path = None
+            if settings.audio_retention_enabled:
+                from app.modules.observations.retention import reconcile
+                reconcile(engine, settings, apply=True)
+                session.expire_all()
+                result = serialize(require_detection(session, detection_id))
             return result, True
     finally:
         if owned_path is not None:

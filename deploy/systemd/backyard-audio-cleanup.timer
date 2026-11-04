@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Backyard audio retention every five minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitInactiveSec=5min
+Unit=backyard-audio-cleanup.service
+
+[Install]
+WantedBy=timers.target

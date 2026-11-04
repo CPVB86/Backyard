@@ -18,6 +18,12 @@ class Settings(BaseSettings):
     storage_root: Path = Path("data")
     max_audio_bytes: int = Field(default=8 * 1024 * 1024, ge=1024, le=64 * 1024 * 1024)
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
+    audio_retention_enabled: bool = False
+    audio_review_days: int = Field(default=14, ge=1, le=365)
+    audio_trash_hours: int = Field(default=24, ge=1, le=168)
+    audio_retention_max_bytes: int = Field(default=3 * 1024**3, ge=1024)
+    audio_trash_max_bytes: int = Field(default=256 * 1024**2, ge=0)
+    audio_min_free_bytes: int = Field(default=8 * 1024**3, ge=0)
 
     # Samsung CLI/timer; no API/ML runtime imports.
     samsung_frame_host: str = ""

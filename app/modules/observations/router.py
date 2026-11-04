@@ -72,6 +72,8 @@ def review_records(request, domain):
         Observation.decision["classification"].as_string() == "human_review",
         Observation.decision["policy_version"].as_string() != VERSION,
         Observation.decision["policy_version"].as_string().is_(None)))
+    if request.app.state.settings.audio_retention_enabled:
+        statement = statement.where(Observation.audio["status"].as_string() == "available")
     with Session(request.app.state.engine) as session:
         for row in session.scalars(statement.order_by(Observation.start_at.desc(), Observation.id.desc())):
             if category(row) == "human_review":
@@ -84,6 +86,8 @@ def selected_review_records(request, domain, identity_override=None):
         return
     from app.modules.observations.schemas import identity_overrides
     statement = filtered(select(Observation), domain, ["pending_review", "review_recommended"])
+    if request.app.state.settings.audio_retention_enabled:
+        statement = statement.where(Observation.audio["status"].as_string() == "available")
     with Session(request.app.state.engine) as session:
         for row in session.scalars(statement.order_by(Observation.start_at.desc(), Observation.id.desc())):
             if identity_override in identity_overrides(row):
@@ -116,6 +120,45 @@ def observation_count(request: Request, domain: Literal["bird", "bat"] | None = 
         return {"count": session.scalar(statement)}
 
 
+@router.get("/species-audio")
+def species_audio(request: Request, domain: Literal["bird", "bat"], scientific_name: str):
+    from app.modules.observations.effective import species_expression
+    statement = select(Observation).where(
+        Observation.domain == domain, species_expression() == scientific_name,
+        Observation.audio["status"].as_string() == "available",
+        Observation.evidence_kind != "deleted")
+    groups = {"accepted": None, "review": None}
+    ranks = {}
+    with Session(request.app.state.engine) as session:
+        rows = list(session.scalars(statement))
+        rows.sort(key=lambda r: (r.status == "human_confirmed", r.start_at, r.id), reverse=True)
+        for row in rows:
+            if row.status == "human_rejected":
+                continue
+            group = "accepted" if row.status in ("auto_accepted", "human_confirmed") else "review"
+            if groups[group] is None:
+                groups[group] = {"observation_id": row.id, "timestamp": row.start_at,
+                                 "status": row.status, "source_kind": "observation",
+                                 "audio_url": f"/api/observations/{row.id}/audio"}
+                ranks[group] = (row.status == "human_confirmed", row.start_at, row.id)
+        if domain == "bird":
+            from app.modules.birds.models import BirdDetection, BirdAudio
+            legacy = session.scalars(select(BirdDetection).where(
+                BirdDetection.scientific_name == scientific_name,
+                BirdDetection.verification_status != "rejected",
+                BirdDetection.audio.has(BirdAudio.status == "available")))
+            for row in legacy:
+                group = "accepted" if row.verification_status == "confirmed" else "review"
+                rank = (row.verification_status == "confirmed", row.timestamp, row.id)
+                if group not in ranks or rank > ranks[group]:
+                    ranks[group] = rank
+                    groups[group] = {"observation_id": row.id, "timestamp": row.timestamp,
+                                     "status": "human_confirmed" if group == "accepted" else "pending_review",
+                                     "source_kind": "legacy",
+                                     "audio_url": f"/api/birds/detections/{row.id}/audio"}
+    return {"domain": domain, "scientific_name": scientific_name, **groups}
+
+
 @router.get("/{identity}")
 def detail(request: Request, identity: UUID):
     with Session(request.app.state.engine) as session:
@@ -139,7 +182,8 @@ async def put_audio(request: Request, response: Response, identity: UUID):
 def get_audio(request: Request, identity: UUID):
     with Session(request.app.state.engine) as session:
         record = service.require(session, identity)
-        if not record.audio or record.evidence_kind == "deleted":
+        if (not record.audio or record.evidence_kind == "deleted"
+                or record.audio.get("status") != "available"):
             raise HTTPException(404, "Evidence unavailable")
         path = audio_path(request.app.state.settings.resolved_storage_root, record.storage_key)
         if not path.is_file():

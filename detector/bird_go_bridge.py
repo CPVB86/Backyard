@@ -97,7 +97,9 @@ def main(argv=None):
     with exclusive_monitor(monitor_lock), exclusive_monitor(str(state) + '.lock'):
         bridge = BirdBridge(upstream, downstream, policy, state, instance,
                             datetime.now().date().isoformat(), adapter=adapter,
-                            not_before=datetime.now(timezone.utc).isoformat())
+                            not_before=datetime.now(timezone.utc).isoformat(),
+                            quarantine_after=300 if os.environ.get('BACKYARD_AUDIO_RETENTION_ENABLED', '').lower()
+                                in ('1', 'true', 'yes') else None)
         # Persist the first activation boundary before any processing/restart.
         save_state(state, bridge.state)
         while not stop.is_set():

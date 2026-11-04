@@ -1,5 +1,9 @@
 # Backyard
 
+Voor begrensde audiobewaring (één soortvoorbeeld, review maximaal 14 dagen,
+trash en periodieke cleanup): [activering en controles](docs/AUDIO_RETENTION.md).
+Standaard uit; een code-update wist geen audio zonder expliciete activering.
+
 Lokale backend voor Ã©Ã©n tuin. Backyard bewaart detecties, observations en audio; de
 continue BirdNET-monitor is een HTTP-producer. AvianVisitors en WordPress worden API-consumers.
 De losse diagnostische BirdNET-tools staan in [detector/](docs/DETECTOR_TEST.md).

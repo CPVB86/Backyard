@@ -36,7 +36,9 @@ def database_inventory(path, since, check=False):
             "created_since_by_status": counts("status", recent, args),
             "created_since_by_domain": counts("domain", recent, args),
             "audio_metadata_available": db.execute(
-                "SELECT COUNT(*) FROM observations WHERE audio IS NOT NULL AND evidence_kind != 'deleted'").fetchone()[0],
+                "SELECT COUNT(*) FROM observations WHERE json_extract(audio, '$.status') = 'available' AND evidence_kind != 'deleted'").fetchone()[0],
+            "audio_by_state": counts("json_extract(audio, '$.status')"),
+            "audio_retention_reasons": counts("json_extract(audio, '$.retention_reason')"),
             "audio_uploaded_since": db.execute(
                 "SELECT COUNT(*) FROM observations WHERE json_extract(audio, '$.created_at') >= ?",
                 (cutoff.isoformat(),)).fetchone()[0],

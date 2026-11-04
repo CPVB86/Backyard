@@ -15,7 +15,9 @@ def bridge_status(environment, now, *, domain="bat"):
         return {'phase': state.get('phase', 'starting'), 'scan_date': state['date'],
                 'last_poll_at': state.get('last_poll_at'),
                 'stale': now - state.get('last_poll_at', 0) > 180,
-                'completed_on_scan_date': len(state['done']),
+                'completed_on_scan_date': max(0, len(state['done']) - len(state.get('quarantined_today', []))),
+                'quarantined_on_scan_date': len(state.get('quarantined_today', [])),
+                'quarantined_total': state.get('quarantined_count', 0),
                 'pending_upload': bool(state.get('pending')),
                 'last_error_type': state.get('last_error_type'),
                 **({'geo_active': False, 'plausibility': 'unknown'} if domain == 'bat'

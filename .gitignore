@@ -29,3 +29,7 @@ logs/*
 
 # Operator-supplied catalog import data; runtime truth is the database.
 /import/
+
+# Local evidence-retention rollout backups and isolated verification output.
+/retention-backups/
+/.test-retention*/

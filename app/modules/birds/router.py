@@ -103,7 +103,8 @@ async def upload_audio(request: Request, response: Response, detection_id: UUID)
         detection_id, data,
     )
     response.status_code = 201 if created else 200
-    response.headers["Location"] = result.audio_url
+    if result.audio_url:
+        response.headers["Location"] = result.audio_url
     return result
 
 

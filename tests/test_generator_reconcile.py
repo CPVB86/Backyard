@@ -124,6 +124,10 @@ def test_targeted_cli_only_woodpigeon_readonly_database(setup, monkeypatch, caps
     monkeypatch.setattr(Scheduler, "start", Mock(side_effect=AssertionError("CLI must not start another worker")))
     monkeypatch.setattr(openai_images, "generate_png", Mock(side_effect=AssertionError("CLI must not generate")))
     before = hashlib.sha256(settings.resolved_database_path.read_bytes()).digest()
+    # The standalone CLI imports environment values into its process. Register
+    # them with monkeypatch so this test cannot alter later Samsung/config tests.
+    monkeypatch.setenv("BACKYARD_DATABASE_PATH", settings.resolved_database_path.as_posix())
+    monkeypatch.setenv("BACKYARD_STORAGE_ROOT", tmp_path.as_posix())
     main(["--environment-file", str(env), "--domain", "bird", "--scientific-name", "Columba palumbus"])
     result = json.loads(capsys.readouterr().out)
     assert [row["scientific_name"] for row in result["species"]] == ["Columba palumbus"]

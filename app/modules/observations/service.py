@@ -112,6 +112,10 @@ def attach_audio(engine, settings, identity, data):
         with Session(engine) as session:
             session.execute(text("BEGIN IMMEDIATE"))
             record = require(session, identity)
+            if settings.audio_retention_enabled and record.evidence_kind == "deleted":
+                if record.audio and record.audio.get("sha256") != info["sha256"]:
+                    raise HTTPException(409, "Observation already has different evidence")
+                return serialize(record), False
             if record.status == "human_rejected" or record.evidence_kind in ("delete_pending", "deleted"):
                 raise HTTPException(409, "Rejected evidence cannot be uploaded")
             clip = record.clip
@@ -125,7 +129,22 @@ def attach_audio(engine, settings, identity, data):
                 if record.audio["sha256"] != info["sha256"]:
                     raise HTTPException(409, "Observation already has different evidence")
                 checked_audio(settings, record)
-                return serialize(record), False
+                result = serialize(record)
+                session.commit()
+                if settings.audio_retention_enabled:
+                    from app.modules.observations.retention import refreshed
+                    result = refreshed(engine, settings, identity)
+                return result, False
+            if settings.audio_retention_enabled:
+                from app.modules.observations.retention import can_publish, utcnow
+                if not can_publish(settings, len(data)):
+                    logger.warning("Audio not stored: storage pressure observation_id=%s", str(identity))
+                    record.audio = dict(info, status="deleted", retention_reason="storage_pressure",
+                                        deleted_at=utcnow().isoformat())
+                    record.evidence_kind = "deleted"
+                    result = serialize(record)
+                    session.commit()
+                    return result, False
             key = evidence_key(record, record.evidence_kind == "permanent")
             path, created = storage.publish(settings.resolved_storage_root, key, data, info["sha256"])
             if created:
@@ -136,6 +155,9 @@ def attach_audio(engine, settings, identity, data):
             result = serialize(record)
             session.commit()
             owned = None
+            if settings.audio_retention_enabled:
+                from app.modules.observations.retention import refreshed
+                result = refreshed(engine, settings, identity)
             return result, True
     finally:
         if owned:
@@ -195,7 +217,12 @@ def review(engine, settings, identity, action, payload, *, correction=False):
             now = datetime.now(timezone.utc)
             if action == "confirm":
                 _, data = checked_audio(settings, record)
-                if record.evidence_kind == "review":
+                if (record.evidence_kind == "review" or (settings.audio_retention_enabled
+                        and record.storage_key and record.storage_key.startswith("review/"))):
+                    if settings.audio_retention_enabled:
+                        from app.modules.observations.retention import can_publish
+                        if not can_publish(settings, len(data)):
+                            raise HTTPException(507, "Promotion needs space; existing review audio preserved")
                     key = evidence_key(record, True)
                     path, created = storage.publish(settings.resolved_storage_root, key, data, record.audio["sha256"])
                     if created:
@@ -204,6 +231,18 @@ def review(engine, settings, identity, action, payload, *, correction=False):
                     record.storage_key = key
                 record.evidence_kind = "permanent"
                 record.cleanup_after = None
+                if settings.audio_retention_enabled:
+                    record.audio = {k: v for k, v in record.audio.items()
+                                    if k not in ("retention_reason", "deleted_at")}
+                    record.audio = dict(record.audio, status="available")
+            elif settings.audio_retention_enabled:
+                if record.audio and record.evidence_kind != "deleted":
+                    record.evidence_kind = "delete_pending"
+                    record.cleanup_after = now + timedelta(hours=settings.audio_trash_hours)
+                    record.audio = dict(record.audio, status="trash", retention_reason="rejected")
+                else:
+                    record.evidence_kind = "deleted"
+                    record.cleanup_after = None
             elif correction:
                 # Corrections preserve canonical evidence; cancel any prior rejection expiry.
                 if record.audio and record.evidence_kind != "deleted":
@@ -246,6 +285,9 @@ def review(engine, settings, identity, action, payload, *, correction=False):
             cleanup_stale(engine, settings, identity)
         except OSError:
             logger.error("Promoted review copy cleanup pending")
+        if settings.audio_retention_enabled:
+            from app.modules.observations.retention import refreshed
+            result = refreshed(engine, settings, identity)
         return result
     finally:
         if owned:
@@ -267,6 +309,9 @@ def cleanup_stale(engine, settings, identity):
 
 def cleanup(engine, settings, *, apply=False, now=None, limit=100):
     """Only explicitly rejected evidence. Unreviewed evidence never expires."""
+    if settings.audio_retention_enabled:
+        from app.modules.observations.retention import reconcile
+        return reconcile(engine, settings, apply=apply, now=now, limit=limit)
     now = now or datetime.now(timezone.utc)
     report = []
     with Session(engine) as session:

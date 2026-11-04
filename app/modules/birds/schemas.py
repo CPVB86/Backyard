@@ -95,6 +95,7 @@ class DetectionResponse(BaseModel):
     audio_reference: str | None  # API URL, never the legacy arbitrary file reference.
     audio_url: str | None
     audio: AudioResponse | None
+    audio_retention: dict | None = None
 
 
 def serialize(record):
@@ -113,4 +114,6 @@ def serialize(record):
         raw_metadata=record.raw_metadata, verification_status=record.verification_status,
         created_at=record.created_at, audio_reference=url, audio_url=url,
         audio=AudioResponse.model_validate(audio) if audio is not None else None,
+        audio_retention={"state": audio.status if audio else "awaiting_upload",
+                         "terminal": bool(audio and audio.status != "available")},
     )

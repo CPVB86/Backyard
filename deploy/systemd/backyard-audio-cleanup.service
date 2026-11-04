@@ -1,0 +1,18 @@
+[Unit]
+Description=Backyard bounded audio retention
+After=backyard-api.service
+RequiresMountsFor=/home/cpvb86/Backyard
+
+[Service]
+Type=oneshot
+User=cpvb86
+WorkingDirectory=/home/cpvb86/Backyard
+EnvironmentFile=/etc/backyard/backyard.env
+ExecStart=/home/cpvb86/Backyard/.venv/bin/python -m app.core.cleanup_evidence --apply --limit 100 --max-batches 20
+TimeoutStartSec=240
+UMask=0027
+NoNewPrivileges=yes
+ProtectSystem=full
+PrivateTmp=yes
+StandardOutput=journal
+StandardError=journal

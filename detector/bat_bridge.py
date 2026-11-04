@@ -138,7 +138,8 @@ def save_state(path, state):
 
 class Bridge:
     def __init__(self, upstream, downstream, policy, state_path, instance, start_date,
-                 *, domain="bat", build_payload=payload_for, runtime_status=None, not_before=None):
+                 *, domain="bat", build_payload=payload_for, runtime_status=None, not_before=None,
+                 quarantine_after=None):
         if not instance or len(instance) > 100 or not all(c.isalnum() or c in '-_' for c in instance):
             raise ValueError('Use a stable instance ID of 1..100 letters/digits/-/_')
         if domain not in ("bird", "bat"):
@@ -147,6 +148,7 @@ class Bridge:
         self.runtime_status = runtime_status
         self.upstream, self.downstream, self.policy = upstream, downstream, policy
         self.path, self.instance = Path(state_path), instance
+        self.quarantine_after = quarantine_after
         if self.path.exists() and self.path.stat().st_size > 2 * 1024 * 1024:
             raise ValueError('Oversized bridge checkpoint')
         self.state = (json.loads(self.path.read_text(encoding='utf-8')) if self.path.exists()
@@ -158,6 +160,33 @@ class Bridge:
             raise ValueError('Instance differs from checkpoint; do not reuse upstream database IDs')
         date.fromisoformat(self.state['date'])
 
+    def source_failure(self, record, reason):
+        """Quarantine permanently unavailable NEW source evidence, never frozen uploads."""
+        if self.quarantine_after is None or self.state['pending']:
+            return False
+        key, now = str(record['id']), time.time()
+        failures = self.state.setdefault('source_errors', {})
+        error = failures.setdefault(key, {'first_at': now, 'attempts': 0})
+        error['attempts'] += 1
+        error['reason'] = reason
+        if error['attempts'] < 3 or now - error['first_at'] < self.quarantine_after:
+            save_state(self.path, self.state)
+            return False
+        audit = self.path.parent / 'source-quarantine' / f'{self.instance}-{key}.json'
+        save_state(audit, {'instance': self.instance, 'record': record,
+                          'reason': reason, 'first_at': error['first_at'], 'at': now,
+                          'imported': False})
+        # done means terminally handled, not necessarily imported. The separate
+        # durable audit and explicit counter distinguish losses from successful ingest.
+        self.state['done'].append(key)
+        self.state['quarantined_count'] = self.state.get('quarantined_count', 0) + 1
+        self.state.setdefault('quarantined_today', []).append(key)
+        del failures[key]
+        save_state(self.path, self.state)
+        print(json.dumps({'event': self.domain + '_source_quarantined', 'upstream_id': record['id'],
+                          'reason': reason, 'imported': False}), flush=True)
+        return True
+
     def deliver(self, record):
         key = str(record['id'])
         if key in self.state['done'] or record.get('modelType') != self.domain:
@@ -167,10 +196,28 @@ class Bridge:
             return False
         if len(self.state['done']) >= MAX_EVENTS:
             raise ValueError('Daily checkpoint limit reached')
-        wav = self.upstream.audio(record['id'])
+        try:
+            wav = self.upstream.audio(record['id'])
+        except RuntimeError as error:
+            if str(error) in ('BirdNET-Go HTTP 404', 'BirdNET-Go HTTP 410'):
+                if self.source_failure(record, 'source_audio_missing'):
+                    return False
+            raise
         pending = self.state['pending']
         if pending is None:
-            payload = self.build_payload(record, wav, self.policy, self.instance)
+            try:
+                payload = self.build_payload(record, wav, self.policy, self.instance)
+            except (ValueError, wave.Error, EOFError) as error:
+                if isinstance(error, (wave.Error, EOFError)) or str(error) in (
+                    'Expected a bounded original ultrasonic WAV',
+                    'Upstream event/clip timing mismatch; check export settings',
+                    'Truncated upstream audio',
+                    'Need original mono PCM16 WAV at a supported domain sample rate, <=30s',
+                ):
+                    if self.source_failure(record, 'source_audio_invalid'):
+                        return False
+                raise
+            self.state.get('source_errors', {}).pop(key, None)
             self.state['pending'] = {
                 'record': payload['candidates'][0]['metadata']['upstream_detection'],
                 'payload': payload, 'sha256': hashlib.sha256(wav).hexdigest()}
@@ -184,7 +231,8 @@ class Bridge:
                 raise ValueError('Upstream audio changed during retry')
         result = self.downstream.request('POST', '/api/observations',
                     json.dumps(payload, allow_nan=False).encode(), 'application/json')
-        if result.get('status') != 'discarded' and not result.get('audio_available'):
+        if (result.get('status') != 'discarded' and not result.get('audio_available')
+                and not result.get('audio_retention', {}).get('terminal', False)):
             self.downstream.request('PUT', f"/api/observations/{result['id']}/audio", wav, 'audio/wav')
         self.state['done'].append(key)
         self.state['pending'] = None
@@ -206,6 +254,7 @@ class Bridge:
         if day < today:
             self.state['date'] = (date.fromisoformat(day) + timedelta(days=1)).isoformat()
             self.state['done'] = []
+            self.state['quarantined_today'] = []
             save_state(self.path, self.state)
         self.state['last_poll_at'] = time.time()
         self.state['phase'] = 'running'
@@ -244,7 +293,9 @@ def main():
         signal.signal(sig, lambda *_: stop.set())
     with exclusive_monitor(str(args.state) + '.lock'):
         bridge = Bridge(upstream, downstream, policy, args.state,
-                        os.environ.get('BACKYARD_BAT_INSTANCE', 'pi-bats-1'), args.from_date.isoformat())
+                        os.environ.get('BACKYARD_BAT_INSTANCE', 'pi-bats-1'), args.from_date.isoformat(),
+                        quarantine_after=300 if os.environ.get('BACKYARD_AUDIO_RETENTION_ENABLED', '').lower()
+                            in ('1', 'true', 'yes') else None)
         if args.detection_id:
             if bridge.state['pending']:
                 bridge.deliver(bridge.state['pending']['record'])
