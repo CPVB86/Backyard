@@ -105,12 +105,27 @@ def test_bat_adapter_uses_own_asset_types_and_independent_storage(tmp_path):
     assert store.resolve_key("bat", species_key(SCI))["domain"] == "bat"
 
 
-def test_unconfigured_bat_does_not_invoke_birds(tmp_path):
+def test_confirmed_bat_generates_missing_poses_once(tmp_path, monkeypatch):
+    from generator.scheduler import Scheduler
+    name = "Pipistrellus pipistrellus"
+    paid = Mock(return_value=png())
+    monkeypatch.setattr(openai_images, "generate_png", paid)
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only")
     store = AssetStore(tmp_path)
-    assert store.lookup("bat", "Pipistrellus pipistrellus")["status"] == "not_configured"
-    with pytest.raises(UnsupportedDomain):
-        store.ensure("bat", "Pipistrellus pipistrellus", "Bat")
-    assert store.resolve_key("bat", species_key(SCI)) is None
+    scheduler = Scheduler(store)
+    scheduler.jobs.initialize()
+    row = {"domain":"bat", "scientific_name":name, "common_name":"Common pipistrelle"}
+    assert not scheduler.accepted(dict(row, status="unknown"))
+    assert not scheduler.run_one()
+    assert scheduler.accepted(dict(row, status="human_confirmed"))
+    assert scheduler.run_one()
+    result = store.resolve_key("bat", species_key(name))
+    assert result["status"] == "ready"
+    assert set(result["assets"]) == {"hanging", "flight"}
+    assert paid.call_count == 2
+    assert scheduler.accepted(dict(row, status="human_confirmed"))
+    assert not scheduler.run_one()
+    assert paid.call_count == 2
 
 
 def test_all_imported_files_and_metadata_are_intact():

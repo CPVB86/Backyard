@@ -5,9 +5,11 @@ Species assets belong to `(domain, scientific_name)`, independently of observati
 single-writer locking and persistent attempts. The domain adapter declares
 `required_assets`, identities, lookup, validation and generation. `bird` owns its
 perched/flight illustrations, photo/sketch types, prompts, segmentation and masks.
-`bat` is registered but not implemented (`not_configured`, generation HTTP 501).
-A future Bat adapter can declare completely different asset types; no bird-specific
-poses or image algorithms are embedded in the generic store/API.
+Bat illustrations use `hanging` and `flight`. Only accepted observations schedule
+work; unknown detections alone do not. On API restart, existing unconfigured
+jobs are recovered under the usual paid-attempt safeguards. For older accepted
+species without jobs use `generator.reconcile --all --domain bat` (may incur
+two image requests per missing species). No WordPress key is needed.
 
 Imported files are shipped in `generator/domains/birds/assets`. New output lives in
 `BACKYARD_STORAGE_ROOT/generator/<domain>/<sha256(scientific_name)>/` with raw

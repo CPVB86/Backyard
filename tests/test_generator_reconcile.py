@@ -118,6 +118,9 @@ def test_targeted_cli_only_woodpigeon_readonly_database(setup, monkeypatch, caps
     engine, worker, settings = setup
     add(engine)
     add(engine, name="Testus other", event="other")
+    # main() loads these into os.environ as it would in a separate CLI process.
+    monkeypatch.setenv("BACKYARD_DATABASE_PATH", str(settings.resolved_database_path))
+    monkeypatch.setenv("BACKYARD_STORAGE_ROOT", str(tmp_path))
     env = tmp_path/"production.env"
     env.write_text(f"BACKYARD_DATABASE_PATH={settings.resolved_database_path.as_posix()}\n"
                    f"BACKYARD_STORAGE_ROOT={tmp_path.as_posix()}\n", encoding="utf-8")

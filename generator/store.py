@@ -34,7 +34,8 @@ class AssetStore:
         self.jobs = Jobs(self.root / "jobs.sqlite3")
         if adapters is None:
             from generator.domains.birds.adapter import Birds
-            adapters = {"bird": Birds(), "bat": None}
+            from generator.domains.bats.adapter import Bats
+            adapters = {"bird": Birds(), "bat": Bats()}
         self.adapters = adapters
 
     def configuration_reason(self, domain):
