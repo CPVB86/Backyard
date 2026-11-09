@@ -29,3 +29,6 @@ logs/*
 
 # Operator-supplied catalog import data; runtime truth is the database.
 /import/
+
+# Private registration/audio recovery archives
+/reset-backups/

@@ -118,3 +118,13 @@ def test_explicit_otje_combines_marked_species_only(data):
     for target in ("bats?identity=otje", "birds?identity=unknown"):
         assert data.get("/api/presentation/"+target, headers=HEADERS).status_code == 422
     assert data.get("/api/presentation/birds?identity=otje", headers=HEADERS).json()["identity"] == "otje"
+
+
+def test_explicit_monitoring_start_is_separate_from_first_observation(data):
+    import json
+    root = data.app.state.settings.resolved_storage_root
+    (root / "monitoring-start.json").write_text(json.dumps({"started_at":"2026-11-08T23:00:00+00:00"}))
+    for domain in ("birds", "bats"):
+        result = data.get(f"/api/presentation/{domain}", headers=HEADERS)
+        assert result.status_code == 200
+        assert result.json()["monitoring_started_at"] == "2026-11-08T23:00:00+00:00"
