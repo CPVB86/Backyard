@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     max_audio_bytes: int = Field(default=8 * 1024 * 1024, ge=1024, le=64 * 1024 * 1024)
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
 
+    remote_bird_health_url: str = ""
+    remote_bat_health_url: str = ""
+
     # Samsung CLI/timer; no API/ML runtime imports.
     samsung_frame_host: str = ""
     samsung_frame_token: SecretStr | None = None

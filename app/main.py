@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from app.core.config import Settings
+from app.system_status import router as status_router
 from app.core.database import create_database, initialize_database
 from app.core.logging import configure_logging
 from app.modules.birds.router import router as birds_router
@@ -67,6 +68,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                     headers={"WWW-Authenticate": "Bearer"})
         return await call_next(request)
 
+    app.include_router(status_router)
     app.include_router(birds_router)
     app.include_router(observations_router)
     app.include_router(generator_router)
