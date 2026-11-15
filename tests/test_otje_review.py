@@ -110,8 +110,9 @@ def test_auto_accepted_not_offered_override(client):
     assert client.get(path).json()==item
 
 
-def test_new_strong_gallus_requires_review_without_automatic_identity(client):
-    item = create(client, name="Gallus gallus", score=.99)
+@pytest.mark.parametrize("name", ["Gallus gallus", "Porzana porzana", "Meleagris gallopavo"])
+def test_new_strong_gallus_requires_review_without_automatic_identity(client, name):
+    item = create(client, name=name, score=.99)
     assert item["status"] == "pending_review"
     assert item["classification"] == "human_review"
     assert item["review"] is None
