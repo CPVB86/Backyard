@@ -68,7 +68,8 @@ def detail(engine, settings, generator, domain, scientific_name, locale="nl", no
                          and audio_path(settings.resolved_storage_root, audio_record.storage_key).is_file())
         audio = {"observation_id": audio_record.id, "timestamp": audio_record.start_at,
                  "confidence": audio_record.best_confidence, "availability": available,
-                 "url": f"/api/observations/{audio_record.id}/audio" if available else None}
+                 "url": f"/api/observations/{audio_record.id}/audio-listen" if available else None,
+                 "original_url": f"/api/observations/{audio_record.id}/audio" if available else None}
     return {
         "identity": {"domain": domain, "scientific_name": scientific_name, "common_name": selected,
                      "common_name_nl": common_nl, "common_name_en": english,

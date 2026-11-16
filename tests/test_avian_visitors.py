@@ -284,7 +284,8 @@ def test_explicit_otje_identity_is_local_presentation_over_unchanged_species_dat
     assert detail["observations"]["total"] == 1
     assert detail["observations"]["highest_confidence"] == .972
     assert datetime.fromisoformat(detail["observations"]["first_observed_at"]) == otje_at
-    assert detail["audio"]["url"].startswith("/api/observations/")
+    assert detail["audio"]["url"].endswith("/audio-listen")
+    assert detail["audio"]["original_url"].endswith("/audio")
     assert datetime.fromisoformat(detail["audio"]["timestamp"]) == otje_at
     assert detail["generator"]["assets"]["perched"]["url"].endswith("/otje_perched")
     assert detail["generator"]["assets"]["flight"]["url"].endswith("/otje_flight")
