@@ -124,3 +124,18 @@ def test_shared_layout_adapts_counts_without_low_resolution_upscaling():
                     assert abs(tile['w']/tile['h']-1)<.001
         finally:
             browser.close()
+
+
+def test_snapshot_resolves_otje_from_canonical_store(config, tmp_path, monkeypatch):
+    settings, now = config
+    image = tmp_path / "otje.png"
+    Image.new("RGBA", (20, 30)).save(image)
+    url = "/api/generator/bird/canonical/otje_perched"
+    monkeypatch.setattr(renderer, "recent", lambda *a, **k: {"species": [{
+        "scientific_name": "Porzana porzana", "identity_id": "otje",
+        "assets": {"perched": {"url": url}}}]})
+    monkeypatch.setattr(renderer.AssetStore, "lookup", lambda self, domain, name: {
+        "assets": {"otje_perched": {"path": image}} if name == "Gallus gallus" else {}})
+    value, assets = renderer.snapshot(settings, now)
+    assert assets[url] == image
+    assert value["species"][0]["assets"]["perched"]["pixel_dimensions"] == [20, 30]

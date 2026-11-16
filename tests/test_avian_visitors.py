@@ -351,3 +351,16 @@ def test_stats_periods_and_empty_public_views(client):
     assert week["observation_count"] == 2 and week["timeline_granularity"] == "day"
     assert client.get("/api/avian-visitors/stats?locale=fr").status_code == 422
     assert client.get("/api/avian-visitors/lifelist?locale=fr").status_code == 422
+
+
+@pytest.mark.parametrize("name", ["Porzana porzana", "Meleagris gallopavo"])
+def test_otje_alias_uses_canonical_identity_assets(client, name):
+    add(client, name, name, datetime.now(timezone.utc), status="human_confirmed",
+        review={"action": "confirm", "identity_override": "otje"})
+    data = client.get("/api/avian-visitors/recent?hours=24&locale=nl").json()
+    item = next(row for row in data["species"] if row["scientific_name"] == name)
+    assert item["identity_id"] == "otje" and item["common_name"] == "Otje"
+    for pose in ("perched", "flight"):
+        assert item["assets"][pose]["url"].endswith(f"/{species_key('Gallus gallus')}/otje_{pose}")
+        assert item["assets"][pose]["mask"]
+    assert data["observation_count"] == 1

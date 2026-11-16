@@ -5,6 +5,7 @@ from observations.identities import OTJE_SPECIES
 PROFILES = {
     "otje": {
         "id": "otje",
+        "asset_species": "Gallus gallus",
         "display_name": "Otje",
         "subtitle": "Barnevelder",
         "source_species": OTJE_SPECIES,

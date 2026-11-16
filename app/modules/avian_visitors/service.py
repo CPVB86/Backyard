@@ -127,7 +127,7 @@ def _species(rows, generator, locale: str, *, assets: bool) -> list[dict]:
         }
         if assets:
             generated = public_status(generator.lookup("bird", row.scientific_name))
-            pose_assets = _pose_assets(generated["assets"], profile)
+            pose_assets = _pose_assets(generated["assets"], profile, generator)
             item.update({
                 "generator_status": generated["status"],
                 "generation": generated.get("generation"),
@@ -138,12 +138,14 @@ def _species(rows, generator, locale: str, *, assets: bool) -> list[dict]:
     return result
 
 
-def _pose_assets(assets, profile=None):
+def _pose_assets(assets, profile=None, generator=None):
     result = {pose: assets[pose] for pose in ("perched", "flight") if pose in assets}
     if profile:
+        # Identity assets have one canonical owner, independent of detector species.
+        identity_assets = public_status(generator.lookup("bird", profile["asset_species"]))["assets"] if generator else assets
         for pose, asset_id in profile["asset_ids"].items():
-            if asset_id in assets:
-                result[pose] = assets[asset_id]
+            if asset_id in identity_assets:
+                result[pose] = identity_assets[asset_id]
     return result
 
 
@@ -157,7 +159,7 @@ def detail(engine, settings, generator, scientific_name: str, locale: str, ident
     )
     if result is None:
         return None
-    result["generator"]["assets"] = _pose_assets(result["generator"]["assets"], profile)
+    result["generator"]["assets"] = _pose_assets(result["generator"]["assets"], profile, generator)
     if profile:
         result["presentation"] = {
             "id": profile["id"], "display_name": profile["display_name"],

@@ -14,6 +14,7 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy import create_engine
 from app.core.config import ROOT
 from app.modules.avian_visitors.service import recent, lifelist
+from app.modules.avian_visitors.identities import resolve
 from .settings import export_hours
 from app.modules.samsung_frame.config import resolve_path
 from app.modules.samsung_frame.storage import locked
@@ -49,6 +50,9 @@ def snapshot(settings, now):
     assets = {}
     for species in value["species"]:
         lookup = store.lookup("bird", species["scientific_name"])["assets"]
+        profile = resolve(species.get("identity_id"), species["scientific_name"])
+        if profile:
+            lookup = dict(lookup, **store.lookup("bird", profile["asset_species"])["assets"])
         for metadata in species["assets"].values():
             asset_id = metadata["url"].rsplit("/", 1)[-1]
             path = lookup[asset_id]["path"]
