@@ -166,3 +166,22 @@ def correct(request: Request, identity: UUID, payload: CorrectionInput):
     # individual assets remain available through the central Generator store.
     return service.review(request.app.state.engine, request.app.state.settings,
                           identity, payload.action, payload, correction=True)
+
+
+@router.get("/{identity}/audio-view")
+def audio_view(request: Request, response: Response, identity: UUID):
+    response.headers["Cache-Control"] = "private, no-store"
+    from .preview import preview
+    with Session(request.app.state.engine) as session:
+        record = service.require(session, identity)
+        value, _ = preview(record, request.app.state.settings.resolved_storage_root)
+        return value
+
+
+@router.get("/{identity}/audio-listen")
+def audio_listen(request: Request, identity: UUID):
+    from .preview import preview
+    with Session(request.app.state.engine) as session:
+        record = service.require(session, identity)
+        _, content = preview(record, request.app.state.settings.resolved_storage_root)
+        return Response(content, media_type="audio/wav", headers={"Cache-Control":"private, no-store"})

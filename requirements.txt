@@ -4,3 +4,6 @@ SQLAlchemy==2.0.54
 pydantic-settings==2.15.0
 # Existing AvianVisitors cutout validation and silhouette masks.
 Pillow>=10.0
+
+# Full-clip ultrasonic spectrogram FFT, bounded preview processing.
+numpy>=2.1,<3
