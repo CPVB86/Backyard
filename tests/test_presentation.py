@@ -107,7 +107,7 @@ def test_explicit_otje_combines_marked_species_only(data):
     row, = result["species"]
     assert row["name"] == "Otje" and row["count"] == 2
     assert row["first_seen"] == NOW-timedelta(hours=3) and row["last_seen"] == NOW
-    assert row["scientific_name"] == "Gallus domesticus" and row["assets"]["perched"] == "otje_perched"
+    assert row["scientific_name"] == "Gallus gallus" and row["assets"]["perched"] == "otje_perched"
     assert result["identity"] == "otje" and result["stats"]["total_observations"] == 2
     assert result["rankings"]["last"] == [row["species_id"]]
     today = snapshot(engine, "birds", "today", now=NOW, identity_filter="otje")

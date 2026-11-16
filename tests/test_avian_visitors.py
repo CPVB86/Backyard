@@ -358,9 +358,31 @@ def test_otje_alias_uses_canonical_identity_assets(client, name):
     add(client, name, name, datetime.now(timezone.utc), status="human_confirmed",
         review={"action": "confirm", "identity_override": "otje"})
     data = client.get("/api/avian-visitors/recent?hours=24&locale=nl").json()
-    item = next(row for row in data["species"] if row["scientific_name"] == name)
+    item = next(row for row in data["species"] if row["identity_id"] == "otje")
     assert item["identity_id"] == "otje" and item["common_name"] == "Otje"
     for pose in ("perched", "flight"):
         assert item["assets"][pose]["url"].endswith(f"/{species_key('Gallus gallus')}/otje_{pose}")
         assert item["assets"][pose]["mask"]
     assert data["observation_count"] == 1
+
+
+def test_aliases_display_one_otje_and_keep_unmarked_turkey(client):
+    now = datetime.now(timezone.utc)
+    for name in ("Gallus gallus", "Porzana porzana", "Meleagris gallopavo"):
+        add(client, name, name, now, status="human_confirmed", event=name,
+            review={"action": "confirm", "identity_override": "otje"})
+    add(client, "Meleagris gallopavo", "Turkey", now, event="unmarked")
+    for endpoint in ("recent?hours=24", "lifelist?", "stats?hours=24"):
+        data = client.get("/api/avian-visitors/" + endpoint).json()
+        otje = [r for r in data["species"] if r["identity_id"] == "otje"]
+        assert len(otje) == 1 and otje[0]["count"] == 3
+        assert data["observation_count"] == 4
+        assert len(data["species"]) == 2
+    detail = client.get("/api/avian-visitors/detail/Gallus%20gallus?identity=otje").json()
+    assert detail["observations"]["total"] == 3
+    snapshot = client.get("/api/presentation/birds?period=all").json()
+    assert len([r for r in snapshot["species"] if r["identity"] == "otje"]) == 1
+    with Session(client.app.state.engine) as session:
+        assert session.query(Observation).count() == 4
+        assert {r.scientific_name for r in session.query(Observation)} == {
+            "Gallus gallus", "Porzana porzana", "Meleagris gallopavo"}

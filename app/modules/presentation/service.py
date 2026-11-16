@@ -8,7 +8,7 @@ from sqlalchemy import select, func, literal
 from sqlalchemy.orm import Session
 from app.modules.observations.models import Observation
 from app.modules.observations.effective import species_expression, name_expression
-from app.modules.avian_visitors.service import _identity_expression, ACCEPTED_STATUSES
+from app.modules.avian_visitors.service import _identity_expression, display_species_expression, ACCEPTED_STATUSES
 from app.modules.avian_visitors.identities import resolve
 from app.core.species_names import localized_name
 from app.modules.species.models import Species
@@ -28,7 +28,7 @@ def snapshot(engine, module, period, timezone_name="Europe/Amsterdam", *, now=No
     today = end.astimezone(zone).replace(hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc)
     start = (today if period == "today" else None if period == "all"
              else end - timedelta(hours={"24h": 24, "7d": 168, "30d": 720}[period]))
-    scientific = species_expression()
+    scientific = display_species_expression() if domain == "bird" else species_expression()
     identity = _identity_expression() if domain == "bird" else literal(None)
     accepted = [Observation.domain == domain, Observation.status.in_(ACCEPTED_STATUSES), Observation.start_at <= end]
 

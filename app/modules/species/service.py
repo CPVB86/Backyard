@@ -8,6 +8,7 @@ from app.modules.observations.models import Observation
 from app.modules.observations.effective import species_expression, name_expression
 from app.modules.species.models import Species
 from generator.store import public_status
+from app.modules.avian_visitors.identities import resolve
 
 ACCEPTED = ("auto_accepted", "human_confirmed")
 LOCALES = ("nl", "en", "de")
@@ -37,7 +38,9 @@ def detail(engine, settings, generator, domain, scientific_name, locale="nl", no
     with Session(engine) as session:
         catalog = session.scalar(select(Species).where(
             Species.domain == domain, Species.scientific_name == scientific_name))
-        filters = (Observation.domain == domain, species_expression() == scientific_name,
+        profile = resolve(identity_override, scientific_name) if domain == "bird" else None
+        species_filter = species_expression().in_(profile["source_species"]) if profile else species_expression() == scientific_name
+        filters = (Observation.domain == domain, species_filter,
                    Observation.status.in_(ACCEPTED))
         if identity_override is not None:
             filters += (Observation.review["identity_override"].as_string() == identity_override,)
