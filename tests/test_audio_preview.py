@@ -78,3 +78,23 @@ def test_short_ultrasonic_pulse_is_visible_at_original_frequency():
     # 20 kHz of original 48 kHz Nyquist, around t=.5s.
     assert image[140:155,125:133,0].max()>100
     assert image[:,0,0].max()==0
+
+
+@pytest.mark.parametrize("domain", ["bird", "bat"])
+def test_quiet_signal_has_bright_peaks_and_silence_stays_black(domain):
+    import base64
+    import numpy as np
+    from PIL import Image
+    source = tone()
+    audio, meta = derive(source, domain)
+    pixels = np.array(Image.open(io.BytesIO(base64.b64decode(meta["spectrogram_png"]))))
+    assert pixels[:, :, 1].max() >= 240
+    assert meta["spectrogram_dbfs_max"] < 0
+    assert meta["spectrogram_dbfs_max"] - meta["spectrogram_dbfs_min"] == 60
+    silent = io.BytesIO()
+    with wave.open(silent, "wb") as wav:
+        wav.setnchannels(1); wav.setsampwidth(2); wav.setframerate(96000)
+        wav.writeframes(bytes(19200))
+    _, meta = derive(silent.getvalue(), domain)
+    pixels = np.array(Image.open(io.BytesIO(base64.b64decode(meta["spectrogram_png"]))))
+    assert not pixels.any()

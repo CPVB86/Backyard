@@ -14,7 +14,7 @@ from PIL import Image
 from app.modules.birds.storage import audio_path
 
 LOCK = threading.Lock()
-VERSION = "1"
+VERSION = "2"
 MAX_SOURCE = 8 * 1024 * 1024
 MAX_CACHE = 128 * 1024 * 1024
 
@@ -52,8 +52,17 @@ def derive(data, domain):
         pooled = bins.reshape(height, -1).max(axis=1)
         end_column = min(width, max(column + 1, (center + n//2) * width // count))
         spectrum[column:end_column] = np.maximum(spectrum[column:end_column], pooled)
-    intensity = np.clip((20*np.log10(np.maximum(spectrum, 1e-12))+90)/90, 0, 1).T[::-1]
-    rgb = np.stack((255*intensity, 230*intensity**2, 180*intensity**4), axis=-1).astype("uint8")
+    # Display only: preserve original FFT amplitudes/audio, but make quiet calls
+    # readable in small previews. Bound adaptation to avoid magnifying silence.
+    db = 20 * np.log10(np.maximum(spectrum, 1e-12))
+    ceiling = float(np.clip(np.ceil(db.max()), -60, 0))
+    floor = ceiling - 60
+    intensity = np.clip((db - floor) / 60, 0, 1).T[::-1]
+    # Increasing brightness: black, violet, magenta, orange, pale yellow.
+    palette = np.array([[0, 0, 0], [50, 18, 100], [160, 45, 125],
+                        [240, 120, 50], [255, 255, 190]])
+    rgb = np.stack([np.interp(intensity, np.linspace(0, 1, len(palette)),
+                              palette[:, channel]) for channel in range(3)], axis=-1).astype("uint8")
     image = Image.fromarray(rgb)
     envelope = []
     for x in range(width):
@@ -66,7 +75,8 @@ def derive(data, domain):
         playback_duration_seconds=count / rate * factor,
         gain_db=round(20 * math.log10(gain), 2), peak_dbfs=round(20*math.log10(peak), 2) if peak else None,
         spectrogram_png=base64.b64encode(png.getvalue()).decode(),
-        frequency_max_hz=rate / 2, spectrogram_dbfs_min=-90, waveform=envelope)
+        frequency_max_hz=rate / 2, spectrogram_dbfs_min=floor,
+        spectrogram_dbfs_max=ceiling, spectrogram_scale="adaptive", waveform=envelope)
 
 
 def preview(record, root):
